@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { COMPONENTS_DATA, ComponentDoc } from '@/lib/components-data';
-import { A2UIViewer } from '@copilotkit/a2ui-renderer';
+import { A2UIViewer } from '@a2ui/react';
 
 function ComponentSidebar({
   selectedComponent,

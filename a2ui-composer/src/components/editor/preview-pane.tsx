@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { A2UIViewer, type ComponentInstance } from '@copilotkit/a2ui-renderer';
+import { A2UIViewer, type ComponentInstance } from '@a2ui/react';
 
 interface PreviewPaneProps {
   root: string;

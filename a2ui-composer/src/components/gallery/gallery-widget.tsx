@@ -1,7 +1,7 @@
 'use client';
 
 import { Widget } from '@/types/widget';
-import { A2UIViewer } from '@copilotkit/a2ui-renderer';
+import { A2UIViewer } from '@a2ui/react';
 
 interface GalleryWidgetProps {
   widget: Widget;
@@ -14,8 +14,16 @@ export function GalleryWidget({ widget, height = 200, onClick }: GalleryWidgetPr
   const previewData = widget.dataStates?.[0]?.data ?? {};
 
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
       className="w-full text-left rounded-xl border border-white bg-white/80 p-4 shadow-sm transition-all hover:shadow-md hover:border-muted-foreground/30 cursor-pointer overflow-hidden"
       style={{ minHeight: height }}
     >
@@ -34,6 +42,6 @@ export function GalleryWidget({ widget, height = 200, onClick }: GalleryWidgetPr
           />
         </div>
       </div>
-    </button>
+    </div>
   );
 }

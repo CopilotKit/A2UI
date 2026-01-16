@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ExternalLink, Copy, Check } from 'lucide-react';
-import { A2UIViewer } from '@copilotkit/a2ui-renderer';
+import { A2UIViewer } from '@a2ui/react';
 
 // 100 most important Material Icons for common UI patterns
 const MATERIAL_ICONS = [

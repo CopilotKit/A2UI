@@ -1,0 +1,3 @@
+packages:
+  - 'a2ui-composer'
+  - 'renderers/*'

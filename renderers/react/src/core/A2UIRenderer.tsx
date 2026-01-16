@@ -1,0 +1,103 @@
+/*
+ Copyright 2025 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+import { Suspense, type ReactNode } from 'react';
+import { useA2UI } from '../hooks/useA2UI';
+import { ComponentNode } from './ComponentNode';
+import { ComponentRegistry } from '../registry/ComponentRegistry';
+import { cn } from '../lib/utils';
+
+export interface A2UIRendererProps {
+  /** The surface ID to render */
+  surfaceId: string;
+  /** Additional CSS classes for the surface container */
+  className?: string;
+  /** Fallback content when surface is not yet available */
+  fallback?: ReactNode;
+  /** Loading fallback for lazy-loaded components */
+  loadingFallback?: ReactNode;
+  /** Optional custom component registry */
+  registry?: ComponentRegistry;
+}
+
+/**
+ * A2UIRenderer - renders an A2UI surface.
+ *
+ * This is the main entry point for rendering A2UI content in your React app.
+ * It reads the surface state from the A2UI store and renders the component tree.
+ *
+ * @example
+ * ```tsx
+ * function App() {
+ *   return (
+ *     <A2UIProvider onAction={handleAction}>
+ *       <A2UIRenderer surfaceId="main" />
+ *     </A2UIProvider>
+ *   );
+ * }
+ * ```
+ */
+export function A2UIRenderer({
+  surfaceId,
+  className,
+  fallback = null,
+  loadingFallback = (
+    <div className="a2ui-loading" style={{ padding: '16px', opacity: 0.5 }}>
+      Loading...
+    </div>
+  ),
+  registry,
+}: A2UIRendererProps) {
+  const { getSurface, version } = useA2UI();
+
+  // Get surface - this will re-render when version changes
+  const surface = getSurface(surfaceId);
+
+  // No surface yet
+  if (!surface || !surface.componentTree) {
+    return <>{fallback}</>;
+  }
+
+  // Apply CSS custom properties from surface styles (e.g., primaryColor)
+  const surfaceStyles: React.CSSProperties & Record<string, string> = {};
+  if (surface.styles) {
+    // Convert surface styles to CSS custom properties
+    for (const [key, value] of Object.entries(surface.styles)) {
+      // Convert camelCase to kebab-case for CSS custom properties
+      const cssVar = `--a2ui-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+      surfaceStyles[cssVar] = String(value);
+    }
+  }
+
+  return (
+    <div
+      className={cn('a2ui-surface', className)}
+      style={surfaceStyles}
+      data-surface-id={surfaceId}
+      data-version={version}
+    >
+      <Suspense fallback={loadingFallback}>
+        <ComponentNode
+          node={surface.componentTree}
+          surfaceId={surfaceId}
+          registry={registry}
+        />
+      </Suspense>
+    </div>
+  );
+}
+
+export default A2UIRenderer;

@@ -1,0 +1,499 @@
+/*
+ Copyright 2025 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+import { describe, it, expect } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { TestWrapper, TestRenderer, createSimpleMessages } from '../helpers';
+import { tailwindTheme, defaultTheme } from '../../src';
+
+describe('Text Component', () => {
+  describe('Basic Rendering', () => {
+    it('should render text with literal string', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Hello World' },
+      });
+
+      render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText('Hello World')).toBeInTheDocument();
+      });
+    });
+
+    it('should render text with whitespace only', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '   ' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      // Surface should exist with whitespace content
+      const surface = container.querySelector('.a2ui-surface');
+      expect(surface).toBeInTheDocument();
+    });
+
+    it('should render empty string', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      expect(container.querySelector('.a2ui-surface')).toBeInTheDocument();
+    });
+  });
+
+  describe('Usage Hints', () => {
+    const usageHints = ['h1', 'h2', 'h3', 'h4', 'h5', 'caption', 'body'] as const;
+
+    usageHints.forEach((hint) => {
+      it(`should render with usageHint="${hint}"`, async () => {
+        const messages = createSimpleMessages('text-1', 'Text', {
+          text: { literalString: `${hint} text` },
+          usageHint: hint,
+        });
+
+        render(
+          <TestWrapper>
+            <TestRenderer messages={messages} />
+          </TestWrapper>
+        );
+
+        await waitFor(() => {
+          expect(screen.getByText(`${hint} text`)).toBeInTheDocument();
+        });
+      });
+    });
+
+    it('should render h1 as heading element', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Main Title' },
+        usageHint: 'h1',
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        expect(container.querySelector('h1')).toBeInTheDocument();
+      });
+    });
+
+    it('should render h2 as heading element', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Section Title' },
+        usageHint: 'h2',
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        expect(container.querySelector('h2')).toBeInTheDocument();
+      });
+    });
+
+    it('should render caption as span element', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Caption text' },
+        usageHint: 'caption',
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        expect(container.querySelector('span')).toBeInTheDocument();
+      });
+    });
+
+    it('should render body as div element', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Body text' },
+        usageHint: 'body',
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        // Body renders as div
+        const divs = container.querySelectorAll('div');
+        expect(divs.length).toBeGreaterThan(0);
+      });
+    });
+  });
+
+  describe('Theme Support', () => {
+    it('should apply default theme classes', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Themed text' },
+      });
+
+      const { container } = render(
+        <TestWrapper theme={defaultTheme}>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        expect(container.querySelector('.a2ui-text')).toBeInTheDocument();
+      });
+    });
+
+    it('should apply tailwind theme classes', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Tailwind text' },
+        usageHint: 'h1',
+      });
+
+      const { container } = render(
+        <TestWrapper theme={tailwindTheme}>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        // Tailwind theme h1 uses 'text-3xl' class
+        expect(container.querySelector('.text-3xl')).toBeInTheDocument();
+      });
+    });
+
+    it('should apply body variant classes from tailwind theme', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Body text' },
+        usageHint: 'body',
+      });
+
+      const { container } = render(
+        <TestWrapper theme={tailwindTheme}>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        // Tailwind body uses 'text-sm' class
+        expect(container.querySelector('.text-sm')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Markdown Rendering', () => {
+    it('should render bold text', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'This is **bold** text' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const strong = container.querySelector('strong');
+        expect(strong).toBeInTheDocument();
+        expect(strong?.textContent).toBe('bold');
+      });
+    });
+
+    it('should render italic text', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'This is *italic* text' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const em = container.querySelector('em');
+        expect(em).toBeInTheDocument();
+        expect(em?.textContent).toBe('italic');
+      });
+    });
+
+    it('should render inline code', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Use the `console.log()` function' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const code = container.querySelector('code');
+        expect(code).toBeInTheDocument();
+        expect(code?.textContent).toBe('console.log()');
+      });
+    });
+
+    it('should render unordered lists', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '- Item 1\n- Item 2\n- Item 3' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const ul = container.querySelector('ul');
+        expect(ul).toBeInTheDocument();
+        const items = container.querySelectorAll('li');
+        expect(items.length).toBe(3);
+      });
+    });
+
+    it('should render ordered lists', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '1. First\n2. Second\n3. Third' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const ol = container.querySelector('ol');
+        expect(ol).toBeInTheDocument();
+        const items = container.querySelectorAll('li');
+        expect(items.length).toBe(3);
+      });
+    });
+
+    it('should render links', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Visit [Google](https://google.com)' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const link = container.querySelector('a');
+        expect(link).toBeInTheDocument();
+        expect(link?.getAttribute('href')).toBe('https://google.com');
+        expect(link?.textContent).toBe('Google');
+      });
+    });
+
+    it('should auto-linkify URLs', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Check out https://example.com for more' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const link = container.querySelector('a');
+        expect(link).toBeInTheDocument();
+        expect(link?.getAttribute('href')).toBe('https://example.com');
+      });
+    });
+
+    it('should render blockquotes', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '> This is a quote' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const blockquote = container.querySelector('blockquote');
+        expect(blockquote).toBeInTheDocument();
+      });
+    });
+
+    it('should render code blocks', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '```\nconst x = 1;\n```' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const pre = container.querySelector('pre');
+        expect(pre).toBeInTheDocument();
+        const code = pre?.querySelector('code');
+        expect(code).toBeInTheDocument();
+      });
+    });
+
+    it('should convert line breaks to <br>', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'Line 1\nLine 2' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const br = container.querySelector('br');
+        expect(br).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Markdown Theme Classes', () => {
+    it('should apply theme classes to markdown elements', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '- List item' },
+      });
+
+      const { container } = render(
+        <TestWrapper theme={tailwindTheme}>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const ul = container.querySelector('ul');
+        expect(ul).toBeInTheDocument();
+        // tailwindTheme.markdown.ul includes 'list-disc'
+        expect(ul?.classList.contains('list-disc')).toBe(true);
+      });
+    });
+
+    it('should apply paragraph classes from theme', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: 'A paragraph of text.' },
+      });
+
+      const { container } = render(
+        <TestWrapper theme={tailwindTheme}>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const p = container.querySelector('p');
+        expect(p).toBeInTheDocument();
+        // tailwindTheme.markdown.p includes 'leading-7'
+        expect(p?.classList.contains('leading-7')).toBe(true);
+      });
+    });
+  });
+
+  describe('Security', () => {
+    it('should not render raw HTML', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '<script>alert("xss")</script>' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        // Script tag should not be rendered
+        const script = container.querySelector('script');
+        expect(script).not.toBeInTheDocument();
+        // The text should be escaped and visible
+        expect(container.textContent).toContain('<script>');
+      });
+    });
+
+    it('should not render onclick handlers', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '<div onclick="alert(1)">Click me</div>' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        // Should be escaped, not rendered as HTML
+        const div = container.querySelector('[onclick]');
+        expect(div).not.toBeInTheDocument();
+      });
+    });
+
+    it('should not render iframe tags', async () => {
+      const messages = createSimpleMessages('text-1', 'Text', {
+        text: { literalString: '<iframe src="https://evil.com"></iframe>' },
+      });
+
+      const { container } = render(
+        <TestWrapper>
+          <TestRenderer messages={messages} />
+        </TestWrapper>
+      );
+
+      await waitFor(() => {
+        const iframe = container.querySelector('iframe');
+        expect(iframe).not.toBeInTheDocument();
+      });
+    });
+  });
+});

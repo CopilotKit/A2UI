@@ -1,4 +1,4 @@
-import type { ComponentInstance } from "@copilotkit/a2ui-renderer";
+import type { ComponentInstance } from '@a2ui/react';
 
 export interface DataState {
   name: string;

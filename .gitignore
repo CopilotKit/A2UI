@@ -14,3 +14,4 @@ site/
 
 # Python virtual environment
 .venv/
+*.tsbuildinfo

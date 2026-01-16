@@ -11,19 +11,19 @@ Version 0.9 represents a fundamental philosophical shift from "Structured Output
 
 ### Summary Table
 
-| Feature               | v0.8.1                                 | v0.9                                                 |
-| :-------------------- | :------------------------------------- | :--------------------------------------------------- |
-| **Philosophy**        | Structured Output / Function Calling   | Prompt-First / In-Context Schema                     |
-| **Message Types**     | `beginRendering`, `surfaceUpdate`, ... | `createSurface`, `updateComponents`, ...             |
-| **Surface Creation**  | Explicit `beginRendering`              | Explicit `createSurface`                             |
-| **Component Type**    | Key-based wrapper (`{"Text": ...}`)    | Property-based discriminator (`"component": "Text"`) |
-| **Data Model Update** | Array of Key-Value Pairs               | Standard JSON Object                                 |
-| **Data Binding**      | `dataBinding` / `literalString`        | `path` / Native JSON types                           |
-| **Button Context**    | Array of Key-Value pairs               | Standard JSON Object                                 |
-| **Catalog**           | Separate component and function catalogs | Unified Catalog (`standard_catalog.json`) |
-| **Auxiliary Rules**   | N/A                                    | `standard_catalog_rules.txt`                         |
-| **Validation**        | Basic Schema                           | Strict `ValidationFailed` feedback loop              |
-| **Interpolation**     | N/A (Object wrappers only)             | Native `${expression}` syntax                        |
+| Feature                  | v0.8.1                                   | v0.9                                                 |
+| :----------------------- | :--------------------------------------- | :--------------------------------------------------- |
+| **Philosophy**           | Structured Output / Function Calling     | Prompt-First / In-Context Schema                     |
+| **Message Types**        | `beginRendering`, `surfaceUpdate`, ...   | `createSurface`, `updateComponents`, ...             |
+| **Surface Creation**     | Explicit `beginRendering`                | Explicit `createSurface`                             |
+| **Component Type**       | Key-based wrapper (`{"Text": ...}`)      | Property-based discriminator (`"component": "Text"`) |
+| **Data Model Update**    | Array of Key-Value Pairs                 | Standard JSON Object                                 |
+| **Data Binding**         | `dataBinding` / `literalString`          | `path` / Native JSON types                           |
+| **Button Context**       | Array of Key-Value pairs                 | Standard JSON Object                                 |
+| **Catalog**              | Separate component and function catalogs | Unified Catalog (`standard_catalog.json`)            |
+| **Auxiliary Rules**      | N/A                                      | `standard_catalog_rules.txt`                         |
+| **Validation**           | Basic Schema                             | Strict `ValidationFailed` feedback loop              |
+| **Data Synchronization** | Implicit                                 | Explicit Broadcasting (`broadcastDataModel`)         |
 
 ## 2. Architectural & Schema Changes
 
@@ -37,7 +37,7 @@ Version 0.9 represents a fundamental philosophical shift from "Structured Output
 **v0.9:**
 
 - **Modularization**: The schema is strictly split into:
-  - `common_types.json`: Reusable primitives (IDs, paths, weights) and logic/expression types.
+  - `common_types.json`: Reusable primitives (IDs, paths) and logic/expression types.
   - `server_to_client.json`: The "envelope" defining the message types.
   - `standard_catalog.json`: The unified catalog of UI components and functions.
 - **Benefit**: This allows developers to swap out the `standard_catalog.json` for a `custom_catalog.json` without touching the core protocol envelope.
@@ -78,7 +78,7 @@ Version 0.9 represents a fundamental philosophical shift from "Structured Output
 
 - **Replacement**: `beginRendering` is **REPLACED** by `createSurface`.
 - **Purpose**: `createSurface` signals the client to create a new surface and prepare for rendering.
-- **Style Information Removed**: `createSurface` does **NOT** contain style information. Theming is now handled via the client styles, decoupling it from the message stream.
+- **Theme Information**: `createSurface` includes a `theme` property to specify theme parameters (like `primaryColor`). This replaces the `styles` property in v0.8.
 - **Root Rule**: The rule is: "There must be exactly one component with the ID `root`." The "root" attribute that `beginRendering` had has been removed. The client is expected to render as soon as it has a valid tree with a root component.
 - **New Requirement**: `createSurface` now requires a **`catalogId`** (URI) to explicitly state which unified catalog (components and functions) is being used.
 
@@ -104,7 +104,10 @@ Version 0.9 represents a fundamental philosophical shift from "Structured Output
 {
   "createSurface": {
     "surfaceId": "user_profile_card",
-    "catalogId": "https://a2ui.dev/specification/v0_9/standard_catalog.json"
+    "catalogId": "https://a2ui.dev/specification/v0_9/standard_catalog.json",
+    "theme": {
+      "primaryColor": "#007bff"
+    }
   }
 }
 ```
@@ -197,7 +200,7 @@ Specifying an unknown surfaceId will cause an error. It is recommended that clie
 
 **v0.9:**
 
-- **Unified**: Everything is now **`path`**.
+- **Unified**: Everything is now a **`path`**.
 - **Reason**: Reduces cognitive load for the LLM. "Path" always means "JSON Pointer to data."
 
 ### 5.2. Simplified Bound Values
@@ -222,10 +225,22 @@ Specifying an unknown surfaceId will cause an error. It is recommended that clie
 
 **v0.9:**
 
-- **Native Interpolation**: Introduced the `${expression}` syntax for all `DynamicString` properties.
-- **Unified Expression Language**: Allows embedding JSON Pointer paths (absolute and relative) and client-side function calls directly within literal strings.
+- **String Formatting**: Introduced the `string_format` function, which supports `${expression}` syntax for interpolation.
+- **Unified Expression Language**: Allows embedding JSON Pointer paths (absolute and relative) and client-side function calls directly within the format string.
 - **Nesting**: Supports recursive nesting of expressions (e.g., `${formatDate(${/timestamp}, 'yyyy-MM-dd')}`).
-- **Reason**: Improves "token efficiency" and readability for LLMs. Instead of generating complex JSON objects to combine strings and data, the model can write natural-looking template literals.
+- **Reason**: Improves readability for complex strings. Instead of generating complex nested JSON objects (like chained concatenations) to combine strings and data, the model can write natural-looking template literals within the `string_format` function.
+
+### 5.4. Data Synchronization
+
+**v0.8.1:**
+
+- Data synchronization was implicit and relied on ad-hoc mechanisms.
+
+**v0.9:**
+
+- **Explicit Broadcasting**: `createSurface` introduced `broadcastDataModel` (boolean).
+- **Single-Path Updates**: Server pushes updates via `updateDataModel` using simple `path`/`value` pairs.
+- **Broadcasting**: When `broadcastDataModel` is true, the client includes the full data model in every A2A message metadata.
 
 ## 6. Component-Specific Changes
 
@@ -302,14 +317,14 @@ Specifying an unknown surfaceId will cause an error. It is recommended that clie
 
 For developers migrating from earlier versions, here is a quick reference of property renaming:
 
-| Component          | Old Name               | New Name       |
-| :----------------- | :--------------------- | :------------- |
-| **Row / Column**   | `distribution`         | `justify`      |
-| **Row / Column**   | `alignment`            | `align`        |
-| **Modal**          | `entryPointChild`      | `trigger`      |
-| **Modal**          | `contentChild`         | `content`      |
-| **Tabs**           | `tabItems`             | `tabs`         |
-| **TextField**      | `text`                 | `value`        |
-| **Many**           | `usageHint`            | `variant`      |
-| **Client Message** | `userAction`           | `action`       |
-| **Common Type**    | `childrenProperty`     | `ChildList`    |
+| Component          | Old Name           | New Name    |
+| :----------------- | :----------------- | :---------- |
+| **Row / Column**   | `distribution`     | `justify`   |
+| **Row / Column**   | `alignment`        | `align`     |
+| **Modal**          | `entryPointChild`  | `trigger`   |
+| **Modal**          | `contentChild`     | `content`   |
+| **Tabs**           | `tabItems`         | `tabs`      |
+| **TextField**      | `text`             | `value`     |
+| **Many**           | `usageHint`        | `variant`   |
+| **Client Message** | `userAction`       | `action`    |
+| **Common Type**    | `childrenProperty` | `ChildList` |

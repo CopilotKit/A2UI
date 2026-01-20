@@ -33,7 +33,7 @@ describe('Icon Component', () => {
         </TestWrapper>
       );
 
-      // Should render something (either Lucide SVG or Material Icons span)
+      // Should render something (Material Symbols span)
       const surface = container.querySelector('.a2ui-surface');
       expect(surface).toBeInTheDocument();
       expect(surface?.innerHTML).not.toBe('');
@@ -50,7 +50,7 @@ describe('Icon Component', () => {
         </TestWrapper>
       );
 
-      // Should have the surface - empty name falls back to HelpCircle
+      // Should have the surface - empty name returns null (no icon rendered)
       const surface = container.querySelector('.a2ui-surface');
       expect(surface).toBeInTheDocument();
     });
@@ -86,21 +86,22 @@ describe('Icon Component', () => {
   });
 
   describe('Icon Name Mapping', () => {
+    // A2UI names are converted to snake_case for Material Symbols
     const iconMappings = [
-      { a2ui: 'home', expected: 'Home' },
-      { a2ui: 'search', expected: 'Search' },
-      { a2ui: 'settings', expected: 'Settings' },
-      { a2ui: 'favorite', expected: 'Heart' },
-      { a2ui: 'delete', expected: 'Trash2' },
-      { a2ui: 'shoppingCart', expected: 'ShoppingCart' },
-      { a2ui: 'accountCircle', expected: 'UserCircle' },
-      { a2ui: 'notifications', expected: 'Bell' },
-      { a2ui: 'mail', expected: 'Mail' },
-      { a2ui: 'lock', expected: 'Lock' },
+      { a2ui: 'home', expected: 'home' },
+      { a2ui: 'search', expected: 'search' },
+      { a2ui: 'settings', expected: 'settings' },
+      { a2ui: 'favorite', expected: 'favorite' },
+      { a2ui: 'delete', expected: 'delete' },
+      { a2ui: 'shoppingCart', expected: 'shopping_cart' },
+      { a2ui: 'accountCircle', expected: 'account_circle' },
+      { a2ui: 'notifications', expected: 'notifications' },
+      { a2ui: 'mail', expected: 'mail' },
+      { a2ui: 'lock', expected: 'lock' },
     ];
 
-    iconMappings.forEach(({ a2ui }) => {
-      it(`should render "${a2ui}" icon`, () => {
+    iconMappings.forEach(({ a2ui, expected }) => {
+      it(`should render "${a2ui}" icon as "${expected}"`, () => {
         const messages = createSimpleMessages('icon-1', 'Icon', {
           name: { literalString: a2ui },
         });
@@ -111,8 +112,10 @@ describe('Icon Component', () => {
           </TestWrapper>
         );
 
-        // Should render without error
-        expect(container.querySelector('.a2ui-surface')).toBeInTheDocument();
+        // Should render with snake_case name for Material Symbols
+        const icon = container.querySelector('.g-icon');
+        expect(icon).toBeInTheDocument();
+        expect(icon?.textContent).toBe(expected);
       });
     });
   });
@@ -149,8 +152,8 @@ describe('Icon Component', () => {
     });
   });
 
-  describe('Lucide React Integration', () => {
-    it('should render SVG icon when lucide-react is available', () => {
+  describe('Material Symbols Integration', () => {
+    it('should render icon using Material Symbols font', () => {
       const messages = createSimpleMessages('icon-1', 'Icon', {
         name: { literalString: 'home' },
       });
@@ -161,32 +164,32 @@ describe('Icon Component', () => {
         </TestWrapper>
       );
 
-      // When lucide-react is installed, it renders an SVG
-      const svg = container.querySelector('svg');
-      expect(svg).toBeInTheDocument();
+      // Material Symbols uses a span with g-icon class
+      const icon = container.querySelector('.g-icon');
+      expect(icon).toBeInTheDocument();
+      expect(icon?.textContent).toBe('home');
     });
 
-    it('should render with proper sizing classes', () => {
+    it('should convert camelCase icon names to snake_case', () => {
       const messages = createSimpleMessages('icon-1', 'Icon', {
-        name: { literalString: 'search' },
+        name: { literalString: 'shoppingCart' },
       });
 
       const { container } = render(
-        <TestWrapper theme={tailwindTheme}>
+        <TestWrapper>
           <TestRenderer messages={messages} />
         </TestWrapper>
       );
 
-      // SVG should have the element classes applied
-      const svg = container.querySelector('svg');
-      if (svg) {
-        expect(svg.classList.contains('w-5') || svg.classList.contains('h-5')).toBe(true);
-      }
+      // camelCase should be converted to snake_case for Material Symbols
+      const icon = container.querySelector('.g-icon');
+      expect(icon).toBeInTheDocument();
+      expect(icon?.textContent).toBe('shopping_cart');
     });
   });
 
   describe('Unknown Icons', () => {
-    it('should fall back to HelpCircle for unknown icon names', () => {
+    it('should render unknown icon names as-is for Material Symbols', () => {
       const messages = createSimpleMessages('icon-1', 'Icon', {
         name: { literalString: 'unknownIconName12345' },
       });
@@ -197,8 +200,10 @@ describe('Icon Component', () => {
         </TestWrapper>
       );
 
-      // Should still render something (HelpCircle fallback)
-      expect(container.querySelector('svg')).toBeInTheDocument();
+      // Material Symbols renders the icon name as text (font handles display)
+      const icon = container.querySelector('.g-icon');
+      expect(icon).toBeInTheDocument();
+      expect(icon?.textContent).toBe('unknown_icon_name12345');
     });
   });
 });

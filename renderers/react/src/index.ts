@@ -17,6 +17,8 @@
 // Core components and provider
 export {
   A2UIProvider,
+  useA2UIActions,
+  useA2UIState,
   useA2UIContext,
   useA2UIStore, // @deprecated - use useA2UIContext
   useA2UIStoreSelector, // @deprecated - use useA2UIContext or useA2UI

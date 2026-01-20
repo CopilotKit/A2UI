@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -24,7 +24,7 @@ import { ComponentNode } from '../../core/ComponentNode';
 /**
  * Tabs component - displays content in switchable tabs.
  */
-export function Tabs({ node, surfaceId }: A2UIComponentProps<Types.TabsNode>) {
+export const Tabs = memo(function Tabs({ node, surfaceId }: A2UIComponentProps<Types.TabsNode>) {
   const { theme, resolveString } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -74,6 +74,6 @@ export function Tabs({ node, surfaceId }: A2UIComponentProps<Types.TabsNode>) {
       </div>
     </div>
   );
-}
+});
 
 export default Tabs;

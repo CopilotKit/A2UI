@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -28,7 +29,7 @@ type FitMode = 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
  * Supports usageHint values: icon, avatar, smallFeature, mediumFeature, largeFeature, header
  * Supports fit values: contain, cover, fill, none, scale-down (maps to object-fit)
  */
-export function Image({ node, surfaceId }: A2UIComponentProps<Types.ImageNode>) {
+export const Image = memo(function Image({ node, surfaceId }: A2UIComponentProps<Types.ImageNode>) {
   const { theme, resolveString } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -58,6 +59,6 @@ export function Image({ node, surfaceId }: A2UIComponentProps<Types.ImageNode>) 
       style={Object.keys(style).length > 0 ? style : undefined}
     />
   );
-}
+});
 
 export default Image;

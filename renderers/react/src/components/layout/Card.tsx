@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -25,7 +26,7 @@ import { ComponentNode } from '../../core/ComponentNode';
  *
  * Renders either a single child or multiple children.
  */
-export function Card({ node, surfaceId }: A2UIComponentProps<Types.CardNode>) {
+export const Card = memo(function Card({ node, surfaceId }: A2UIComponentProps<Types.CardNode>) {
   const { theme } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -55,6 +56,6 @@ export function Card({ node, surfaceId }: A2UIComponentProps<Types.CardNode>) {
       })}
     </section>
   );
-}
+});
 
 export default Card;

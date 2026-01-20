@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -42,7 +43,7 @@ function getYouTubeVideoId(url: string): string | null {
  *
  * Supports regular video URLs and YouTube URLs (renders as embedded iframe).
  */
-export function Video({ node, surfaceId }: A2UIComponentProps<Types.VideoNode>) {
+export const Video = memo(function Video({ node, surfaceId }: A2UIComponentProps<Types.VideoNode>) {
   const { theme, resolveString } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -79,6 +80,6 @@ export function Video({ node, surfaceId }: A2UIComponentProps<Types.VideoNode>) 
       style={stylesToObject(theme.additionalStyles?.Video)}
     />
   );
-}
+});
 
 export default Video;

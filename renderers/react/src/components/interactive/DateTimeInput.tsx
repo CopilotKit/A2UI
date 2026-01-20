@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { useState, useCallback, useEffect, useId } from 'react';
+import { useState, useCallback, useEffect, useId, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -25,7 +25,7 @@ import { classMapToString, stylesToObject } from '../../lib/utils';
  *
  * Supports enabling date, time, or both. Uses native HTML5 date/time inputs.
  */
-export function DateTimeInput({ node, surfaceId }: A2UIComponentProps<Types.DateTimeInputNode>) {
+export const DateTimeInput = memo(function DateTimeInput({ node, surfaceId }: A2UIComponentProps<Types.DateTimeInputNode>) {
   const { theme, resolveString, setValue, getValue } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
   const id = useId();
@@ -82,6 +82,6 @@ export function DateTimeInput({ node, surfaceId }: A2UIComponentProps<Types.Date
       />
     </div>
   );
-}
+});
 
 export default DateTimeInput;

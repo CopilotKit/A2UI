@@ -18,7 +18,7 @@
 
 import React, { useId, useMemo, useEffect, useRef } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
-import { A2UIProvider, useA2UIContext } from './A2UIProvider';
+import { A2UIProvider, useA2UIActions } from './A2UIProvider';
 import { A2UIRenderer } from './A2UIRenderer';
 import { initializeDefaultCatalog } from '../registry/defaultCatalog';
 import { tailwindTheme } from '../theme/tailwindTheme';
@@ -157,7 +157,7 @@ function A2UIViewerInner({
   data: Record<string, unknown>;
   className?: string;
 }) {
-  const { processMessages } = useA2UIContext();
+  const { processMessages } = useA2UIActions();
   const lastProcessedRef = useRef<string>('');
 
   // Process messages when props change

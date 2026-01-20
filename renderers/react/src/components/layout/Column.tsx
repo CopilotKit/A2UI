@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -52,7 +53,7 @@ const gapMap: Record<Gap, string> = {
  *
  * Supports distribution (justify-content) and alignment (align-items) properties.
  */
-export function Column({ node, surfaceId }: A2UIComponentProps<Types.ColumnNode>) {
+export const Column = memo(function Column({ node, surfaceId }: A2UIComponentProps<Types.ColumnNode>) {
   const { theme } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -93,6 +94,6 @@ export function Column({ node, surfaceId }: A2UIComponentProps<Types.ColumnNode>
       })}
     </section>
   );
-}
+});
 
 export default Column;

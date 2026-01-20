@@ -14,9 +14,18 @@
  limitations under the License.
  */
 
-import { Suspense, useMemo } from 'react';
+import { Suspense, useMemo, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import { ComponentRegistry } from '../registry/ComponentRegistry';
+
+/** Memoized loading fallback to avoid recreating on each render */
+const LoadingFallback = memo(function LoadingFallback() {
+  return (
+    <div className="a2ui-loading" style={{ padding: '8px', opacity: 0.5 }}>
+      Loading...
+    </div>
+  );
+});
 
 interface ComponentNodeProps {
   /** The component node to render (can be null/undefined for safety) */
@@ -32,8 +41,14 @@ interface ComponentNodeProps {
  *
  * Looks up the component in the registry and renders it with the appropriate props.
  * Supports lazy-loaded components via React.Suspense.
+ *
+ * Memoized to prevent unnecessary re-renders when parent updates but node hasn't changed.
  */
-export function ComponentNode({ node, surfaceId, registry }: ComponentNodeProps) {
+export const ComponentNode = memo(function ComponentNode({
+  node,
+  surfaceId,
+  registry,
+}: ComponentNodeProps) {
   // Handle null/undefined/invalid nodes gracefully
   if (!node || typeof node !== 'object' || !('type' in node)) {
     if (node) {
@@ -49,50 +64,53 @@ export function ComponentNode({ node, surfaceId, registry }: ComponentNodeProps)
     [actualRegistry, node.type]
   );
 
+  // Memoize weight style to prevent object recreation
+  const weightStyle = useMemo<React.CSSProperties | undefined>(() => {
+    const weight = node.weight;
+    return typeof weight === 'number'
+      ? { display: 'flex', flex: weight, minHeight: 0 }
+      : undefined;
+  }, [node.weight]);
+
   if (!Component) {
     console.warn(`[A2UI] Unknown component type: ${node.type}`);
-    return (
-      <div className="a2ui-unknown-component" style={{ padding: '8px', backgroundColor: '#fee', color: '#c00', borderRadius: '4px', fontSize: '12px' }}>
-        Unknown component: {node.type}
-      </div>
-    );
+    return <UnknownComponent type={node.type} />;
   }
 
-  // Apply weight as flex style if present
-  // Use display: flex to match Lit's :host behavior for proper child layout
-  const weight = node.weight;
-  const style: React.CSSProperties | undefined = typeof weight === 'number'
-    ? { display: 'flex', flex: weight, minHeight: 0 }
-    : undefined;
-
   // If no weight, render without wrapper for cleaner DOM
-  if (!style) {
+  if (!weightStyle) {
     return (
-      <Suspense
-        fallback={
-          <div className="a2ui-loading" style={{ padding: '8px', opacity: 0.5 }}>
-            Loading...
-          </div>
-        }
-      >
+      <Suspense fallback={<LoadingFallback />}>
         <Component node={node} surfaceId={surfaceId} />
       </Suspense>
     );
   }
 
   return (
-    <div style={style}>
-      <Suspense
-        fallback={
-          <div className="a2ui-loading" style={{ padding: '8px', opacity: 0.5 }}>
-            Loading...
-          </div>
-        }
-      >
+    <div style={weightStyle}>
+      <Suspense fallback={<LoadingFallback />}>
         <Component node={node} surfaceId={surfaceId} />
       </Suspense>
     </div>
   );
-}
+});
+
+/** Memoized unknown component fallback */
+const UnknownComponent = memo(function UnknownComponent({ type }: { type: string }) {
+  return (
+    <div
+      className="a2ui-unknown-component"
+      style={{
+        padding: '8px',
+        backgroundColor: '#fee',
+        color: '#c00',
+        borderRadius: '4px',
+        fontSize: '12px',
+      }}
+    >
+      Unknown component: {type}
+    </div>
+  );
+});
 
 export default ComponentNode;

@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { useState, useCallback, useEffect, useId } from 'react';
+import { useState, useCallback, useEffect, useId, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -27,7 +27,7 @@ type TextFieldType = 'shortText' | 'longText' | 'number' | 'date';
  *
  * Supports various input types and two-way data binding.
  */
-export function TextField({ node, surfaceId }: A2UIComponentProps<Types.TextFieldNode>) {
+export const TextField = memo(function TextField({ node, surfaceId }: A2UIComponentProps<Types.TextFieldNode>) {
   const { theme, resolveString, setValue, getValue } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
   const id = useId();
@@ -111,6 +111,6 @@ export function TextField({ node, surfaceId }: A2UIComponentProps<Types.TextFiel
       )}
     </div>
   );
-}
+});
 
 export default TextField;

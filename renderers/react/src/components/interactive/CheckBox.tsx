@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { useState, useCallback, useEffect, useId } from 'react';
+import { useState, useCallback, useEffect, useId, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -25,7 +25,7 @@ import { classMapToString, stylesToObject } from '../../lib/utils';
  *
  * Supports two-way data binding for the checked state.
  */
-export function CheckBox({ node, surfaceId }: A2UIComponentProps<Types.CheckboxNode>) {
+export const CheckBox = memo(function CheckBox({ node, surfaceId }: A2UIComponentProps<Types.CheckboxNode>) {
   const { theme, resolveString, resolveBoolean, setValue, getValue } = useA2UIComponent(
     node,
     surfaceId
@@ -84,6 +84,6 @@ export function CheckBox({ node, surfaceId }: A2UIComponentProps<Types.CheckboxN
       )}
     </div>
   );
-}
+});
 
 export default CheckBox;

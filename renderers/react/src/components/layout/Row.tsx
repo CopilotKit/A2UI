@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -52,7 +53,7 @@ const gapMap: Record<Gap, string> = {
  *
  * Supports distribution (justify-content), alignment (align-items), and gap properties.
  */
-export function Row({ node, surfaceId }: A2UIComponentProps<Types.RowNode>) {
+export const Row = memo(function Row({ node, surfaceId }: A2UIComponentProps<Types.RowNode>) {
   const { theme } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -93,6 +94,6 @@ export function Row({ node, surfaceId }: A2UIComponentProps<Types.RowNode>) {
       })}
     </section>
   );
-}
+});
 
 export default Row;

@@ -19,19 +19,25 @@ import {
   useContext,
   useRef,
   useState,
-  useCallback,
   useMemo,
   type ReactNode,
 } from 'react';
 import { Data, Types } from '@a2ui/lit/0.8';
-import type { A2UIContextValue } from './store';
+import type { A2UIContextValue, A2UIActions } from './store';
 import { ThemeProvider } from '../theme/ThemeContext';
 import type { OnActionCallback } from '../types';
 
 /**
- * Context for the A2UI state.
+ * Context for stable actions (never changes reference, prevents re-renders).
+ * Components that only need to dispatch actions or read data won't re-render.
  */
-const A2UIContext = createContext<A2UIContextValue | null>(null);
+const A2UIActionsContext = createContext<A2UIActions | null>(null);
+
+/**
+ * Context for reactive state (changes trigger re-renders).
+ * Only components that need to react to state changes subscribe to this.
+ */
+const A2UIStateContext = createContext<{ version: number } | null>(null);
 
 /**
  * Props for the A2UIProvider component.
@@ -48,22 +54,19 @@ export interface A2UIProviderProps {
 /**
  * Provider component that sets up the A2UI context for descendant components.
  *
- * This provider:
- * - Creates and manages the A2UI message processor
- * - Provides the theme context
- * - Handles action callbacks
+ * This provider uses a two-context architecture for performance:
+ * - A2UIActionsContext: Stable actions that never change (no re-renders)
+ * - A2UIStateContext: Reactive state that triggers re-renders when needed
  *
  * @example
  * ```tsx
  * function App() {
  *   const handleAction = async (message) => {
- *     // Send action to server
  *     const response = await fetch('/api/a2ui', {
  *       method: 'POST',
  *       body: JSON.stringify(message)
  *     });
  *     const newMessages = await response.json();
- *     // Process response messages
  *   };
  *
  *   return (
@@ -89,115 +92,119 @@ export function A2UIProvider({ onAction, theme, children }: A2UIProviderProps) {
   const onActionRef = useRef<OnActionCallback | null>(onAction ?? null);
   onActionRef.current = onAction ?? null;
 
-  // ===== Actions =====
+  // Create stable actions object once - stored in ref, never changes
+  const actionsRef = useRef<A2UIActions | null>(null);
+  if (!actionsRef.current) {
+    actionsRef.current = {
+      processMessages: (messages: Types.ServerToClientMessage[]) => {
+        processor.processMessages(messages);
+        setVersion((v) => v + 1);
+      },
 
-  const processMessages = useCallback(
-    (messages: Types.ServerToClientMessage[]) => {
-      processor.processMessages(messages);
-      setVersion((v) => v + 1);
-    },
-    [processor]
-  );
+      setData: (
+        node: Types.AnyComponentNode | null,
+        path: string,
+        value: Types.DataValue,
+        surfaceId: string
+      ) => {
+        processor.setData(node, path, value, surfaceId);
+        setVersion((v) => v + 1);
+      },
 
-  const setData = useCallback(
-    (
-      node: Types.AnyComponentNode | null,
-      path: string,
-      value: Types.DataValue,
-      surfaceId: string
-    ) => {
-      processor.setData(node, path, value, surfaceId);
-      setVersion((v) => v + 1);
-    },
-    [processor]
-  );
+      dispatch: (message: Types.A2UIClientEventMessage) => {
+        if (onActionRef.current) {
+          onActionRef.current(message);
+        }
+      },
 
-  const dispatch = useCallback((message: Types.A2UIClientEventMessage) => {
-    if (onActionRef.current) {
-      onActionRef.current(message);
-    }
-  }, []);
+      clearSurfaces: () => {
+        processor.clearSurfaces();
+        setVersion((v) => v + 1);
+      },
 
-  const clearSurfaces = useCallback(() => {
-    processor.clearSurfaces();
-    setVersion((v) => v + 1);
-  }, [processor]);
+      getSurface: (surfaceId: string) => {
+        return processor.getSurfaces().get(surfaceId);
+      },
 
-  // ===== Selectors =====
+      getSurfaces: () => {
+        return processor.getSurfaces();
+      },
 
-  const getSurface = useCallback(
-    (surfaceId: string) => {
-      return processor.getSurfaces().get(surfaceId);
-    },
-    [processor]
-  );
+      getData: (node: Types.AnyComponentNode, path: string, surfaceId: string) => {
+        return processor.getData(node, path, surfaceId);
+      },
 
-  const getSurfaces = useCallback(() => {
-    return processor.getSurfaces();
-  }, [processor]);
+      resolvePath: (path: string, dataContextPath?: string) => {
+        return processor.resolvePath(path, dataContextPath);
+      },
+    };
+  }
+  const actions = actionsRef.current;
 
-  const getData = useCallback(
-    (node: Types.AnyComponentNode, path: string, surfaceId: string) => {
-      return processor.getData(node, path, surfaceId);
-    },
-    [processor]
-  );
-
-  const resolvePath = useCallback(
-    (path: string, dataContextPath?: string) => {
-      return processor.resolvePath(path, dataContextPath);
-    },
-    [processor]
-  );
-
-  // Memoize context value to prevent unnecessary re-renders
-  const contextValue = useMemo<A2UIContextValue>(
-    () => ({
-      processor,
-      version,
-      onAction: onActionRef.current,
-      processMessages,
-      setData,
-      dispatch,
-      clearSurfaces,
-      getSurface,
-      getSurfaces,
-      getData,
-      resolvePath,
-    }),
-    [
-      processor,
-      version,
-      processMessages,
-      setData,
-      dispatch,
-      clearSurfaces,
-      getSurface,
-      getSurfaces,
-      getData,
-      resolvePath,
-    ]
-  );
+  // State context value - only changes when version changes
+  const stateValue = useMemo(() => ({ version }), [version]);
 
   return (
-    <A2UIContext.Provider value={contextValue}>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
-    </A2UIContext.Provider>
+    <A2UIActionsContext.Provider value={actions}>
+      <A2UIStateContext.Provider value={stateValue}>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      </A2UIStateContext.Provider>
+    </A2UIActionsContext.Provider>
   );
 }
 
 /**
- * Hook to access the A2UI context.
+ * Hook to access stable A2UI actions (won't cause re-renders).
+ * Use this when you only need to dispatch actions or read data.
+ *
+ * @returns Stable actions object
+ * @throws If used outside of an A2UIProvider
+ */
+export function useA2UIActions(): A2UIActions {
+  const actions = useContext(A2UIActionsContext);
+  if (!actions) {
+    throw new Error('useA2UIActions must be used within an A2UIProvider');
+  }
+  return actions;
+}
+
+/**
+ * Hook to subscribe to A2UI state changes.
+ * Components using this will re-render when state changes.
+ *
+ * @returns Current version number
+ * @throws If used outside of an A2UIProvider
+ */
+export function useA2UIState(): { version: number } {
+  const state = useContext(A2UIStateContext);
+  if (!state) {
+    throw new Error('useA2UIState must be used within an A2UIProvider');
+  }
+  return state;
+}
+
+/**
+ * Hook to access the full A2UI context (actions + state).
+ * Components using this will re-render when state changes.
  *
  * @returns The A2UI context value
  * @throws If used outside of an A2UIProvider
  */
 export function useA2UIContext(): A2UIContextValue {
-  const context = useContext(A2UIContext);
-  if (!context) {
-    throw new Error('useA2UIContext must be used within an A2UIProvider');
-  }
-  return context;
+  const actions = useA2UIActions();
+  const state = useA2UIState();
+
+  // Memoize combined value - only changes when state changes
+  // Actions are stable, so this only re-creates when version changes
+  return useMemo(
+    () => ({
+      ...actions,
+      processor: null as unknown as Types.MessageProcessor, // Not exposed directly
+      version: state.version,
+      onAction: null, // Use dispatch instead
+    }),
+    [actions, state.version]
+  );
 }
 
 /**

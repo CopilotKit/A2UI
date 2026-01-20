@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, memo } from 'react';
 import { createPortal } from 'react-dom';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
@@ -28,7 +28,7 @@ import { ComponentNode } from '../../core/ComponentNode';
  * The entryPointChild component triggers the modal to open.
  * The contentChild is displayed inside the modal dialog.
  */
-export function Modal({ node, surfaceId }: A2UIComponentProps<Types.ModalNode>) {
+export const Modal = memo(function Modal({ node, surfaceId }: A2UIComponentProps<Types.ModalNode>) {
   const { theme } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -108,6 +108,6 @@ export function Modal({ node, surfaceId }: A2UIComponentProps<Types.ModalNode>) 
       {isOpen && createPortal(dialogContent, document.body)}
     </>
   );
-}
+});
 
 export default Modal;

@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -119,7 +119,7 @@ function applyMarkdownTheme(html: string, markdownTheme: Types.Theme['markdown']
  *
  * Note: Raw HTML is disabled for security.
  */
-export function Text({ node, surfaceId }: A2UIComponentProps<Types.TextNode>) {
+export const Text = memo(function Text({ node, surfaceId }: A2UIComponentProps<Types.TextNode>) {
   const { theme, resolveString } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -209,6 +209,6 @@ export function Text({ node, surfaceId }: A2UIComponentProps<Types.TextNode>) {
       {textValue}
     </WrapperElement>
   );
-}
+});
 
 export default Text;

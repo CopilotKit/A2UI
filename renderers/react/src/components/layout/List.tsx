@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -35,7 +36,7 @@ const alignmentMap: Record<Alignment, string> = {
  *
  * Supports direction (vertical/horizontal) and alignment properties.
  */
-export function List({ node, surfaceId }: A2UIComponentProps<Types.ListNode>) {
+export const List = memo(function List({ node, surfaceId }: A2UIComponentProps<Types.ListNode>) {
   const { theme } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -72,6 +73,6 @@ export function List({ node, surfaceId }: A2UIComponentProps<Types.ListNode>) {
       })}
     </section>
   );
-}
+});
 
 export default List;

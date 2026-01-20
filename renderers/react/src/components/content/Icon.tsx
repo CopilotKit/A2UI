@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -53,7 +54,7 @@ function hasContainerStructure(
  * <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
  * ```
  */
-export function Icon({ node, surfaceId }: A2UIComponentProps<Types.IconNode>) {
+export const Icon = memo(function Icon({ node, surfaceId }: A2UIComponentProps<Types.IconNode>) {
   const { theme, resolveString } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -97,6 +98,6 @@ export function Icon({ node, surfaceId }: A2UIComponentProps<Types.IconNode>) {
       {snakeCaseName}
     </span>
   );
-}
+});
 
 export default Icon;

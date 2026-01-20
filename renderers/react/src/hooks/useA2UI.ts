@@ -15,7 +15,7 @@
  */
 
 import type { Types } from '@a2ui/lit/0.8';
-import { useA2UIContext } from '../core/A2UIProvider';
+import { useA2UIActions, useA2UIState } from '../core/A2UIProvider';
 
 /**
  * Result returned by the useA2UI hook.
@@ -41,6 +41,10 @@ export interface UseA2UIResult {
  * Main API hook for A2UI. Provides methods to process messages
  * and access surface state.
  *
+ * Note: This hook subscribes to state changes. Components using this
+ * will re-render when the A2UI state changes. For action-only usage
+ * (no re-renders), use useA2UIActions() instead.
+ *
  * @returns Object with message processing and surface access methods
  *
  * @example
@@ -62,14 +66,14 @@ export interface UseA2UIResult {
  * ```
  */
 export function useA2UI(): UseA2UIResult {
-  const { processMessages, getSurface, getSurfaces, clearSurfaces, version } =
-    useA2UIContext();
+  const actions = useA2UIActions();
+  const state = useA2UIState();
 
   return {
-    processMessages,
-    getSurface,
-    getSurfaces,
-    clearSurfaces,
-    version,
+    processMessages: actions.processMessages,
+    getSurface: actions.getSurface,
+    getSurfaces: actions.getSurfaces,
+    clearSurfaces: actions.clearSurfaces,
+    version: state.version,
   };
 }

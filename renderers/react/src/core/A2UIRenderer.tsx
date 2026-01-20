@@ -14,11 +14,20 @@
  limitations under the License.
  */
 
-import { Suspense, type ReactNode } from 'react';
+import { Suspense, useMemo, memo, type ReactNode } from 'react';
 import { useA2UI } from '../hooks/useA2UI';
 import { ComponentNode } from './ComponentNode';
 import { ComponentRegistry } from '../registry/ComponentRegistry';
 import { cn } from '../lib/utils';
+
+/** Default loading fallback - memoized to prevent recreation */
+const DefaultLoadingFallback = memo(function DefaultLoadingFallback() {
+  return (
+    <div className="a2ui-loading" style={{ padding: '16px', opacity: 0.5 }}>
+      Loading...
+    </div>
+  );
+});
 
 export interface A2UIRendererProps {
   /** The surface ID to render */
@@ -39,6 +48,8 @@ export interface A2UIRendererProps {
  * This is the main entry point for rendering A2UI content in your React app.
  * It reads the surface state from the A2UI store and renders the component tree.
  *
+ * Memoized to prevent unnecessary re-renders when props haven't changed.
+ *
  * @example
  * ```tsx
  * function App() {
@@ -50,15 +61,11 @@ export interface A2UIRendererProps {
  * }
  * ```
  */
-export function A2UIRenderer({
+export const A2UIRenderer = memo(function A2UIRenderer({
   surfaceId,
   className,
   fallback = null,
-  loadingFallback = (
-    <div className="a2ui-loading" style={{ padding: '16px', opacity: 0.5 }}>
-      Loading...
-    </div>
-  ),
+  loadingFallback,
   registry,
 }: A2UIRendererProps) {
   const { getSurface, version } = useA2UI();
@@ -66,21 +73,27 @@ export function A2UIRenderer({
   // Get surface - this will re-render when version changes
   const surface = getSurface(surfaceId);
 
+  // Memoize surface styles to prevent object recreation
+  const surfaceStyles = useMemo<React.CSSProperties>(() => {
+    if (!surface?.styles) return {};
+
+    const styles: React.CSSProperties & Record<string, string> = {};
+    // Convert surface styles to CSS custom properties
+    for (const [key, value] of Object.entries(surface.styles)) {
+      // Convert camelCase to kebab-case for CSS custom properties
+      const cssVar = `--a2ui-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+      styles[cssVar] = String(value);
+    }
+    return styles;
+  }, [surface?.styles]);
+
   // No surface yet
   if (!surface || !surface.componentTree) {
     return <>{fallback}</>;
   }
 
-  // Apply CSS custom properties from surface styles (e.g., primaryColor)
-  const surfaceStyles: React.CSSProperties & Record<string, string> = {};
-  if (surface.styles) {
-    // Convert surface styles to CSS custom properties
-    for (const [key, value] of Object.entries(surface.styles)) {
-      // Convert camelCase to kebab-case for CSS custom properties
-      const cssVar = `--a2ui-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
-      surfaceStyles[cssVar] = String(value);
-    }
-  }
+  // Use provided fallback or default memoized component
+  const actualLoadingFallback = loadingFallback ?? <DefaultLoadingFallback />;
 
   return (
     <div
@@ -89,7 +102,7 @@ export function A2UIRenderer({
       data-surface-id={surfaceId}
       data-version={version}
     >
-      <Suspense fallback={loadingFallback}>
+      <Suspense fallback={actualLoadingFallback}>
         <ComponentNode
           node={surface.componentTree}
           surfaceId={surfaceId}
@@ -98,6 +111,6 @@ export function A2UIRenderer({
       </Suspense>
     </div>
   );
-}
+});
 
 export default A2UIRenderer;

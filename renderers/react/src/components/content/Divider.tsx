@@ -14,6 +14,7 @@
  limitations under the License.
  */
 
+import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -26,7 +27,7 @@ type Axis = 'horizontal' | 'vertical';
  *
  * Supports axis values: horizontal (default), vertical
  */
-export function Divider({ node, surfaceId }: A2UIComponentProps<Types.DividerNode>) {
+export const Divider = memo(function Divider({ node, surfaceId }: A2UIComponentProps<Types.DividerNode>) {
   const { theme } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -41,6 +42,6 @@ export function Divider({ node, surfaceId }: A2UIComponentProps<Types.DividerNod
       style={stylesToObject(theme.additionalStyles?.Divider)}
     />
   );
-}
+});
 
 export default Divider;

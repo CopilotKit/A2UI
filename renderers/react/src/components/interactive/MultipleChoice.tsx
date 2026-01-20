@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { useState, useCallback, useEffect, useId } from 'react';
+import { useState, useCallback, useEffect, useId, memo } from 'react';
 import type { Types, Primitives } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -31,7 +31,7 @@ interface Option {
  * When maxAllowedSelections is 1, renders as radio buttons.
  * Otherwise, renders as checkboxes.
  */
-export function MultipleChoice({
+export const MultipleChoice = memo(function MultipleChoice({
   node,
   surfaceId,
 }: A2UIComponentProps<Types.MultipleChoiceNode>) {
@@ -133,6 +133,6 @@ export function MultipleChoice({
       })}
     </div>
   );
-}
+});
 
 export default MultipleChoice;

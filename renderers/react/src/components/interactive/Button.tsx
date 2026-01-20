@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { useCallback } from 'react';
+import { useCallback, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
@@ -27,7 +27,7 @@ import { ComponentNode } from '../../core/ComponentNode';
  * Contains a child component (usually Text or Icon) and dispatches
  * a user action when clicked.
  */
-export function Button({ node, surfaceId }: A2UIComponentProps<Types.ButtonNode>) {
+export const Button = memo(function Button({ node, surfaceId }: A2UIComponentProps<Types.ButtonNode>) {
   const { theme, sendAction } = useA2UIComponent(node, surfaceId);
   const props = node.properties;
 
@@ -70,6 +70,6 @@ export function Button({ node, surfaceId }: A2UIComponentProps<Types.ButtonNode>
       <ComponentNode node={props.child} surfaceId={surfaceId} />
     </button>
   );
-}
+});
 
 export default Button;

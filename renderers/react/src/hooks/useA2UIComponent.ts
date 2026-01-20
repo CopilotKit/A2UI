@@ -16,7 +16,7 @@
 
 import { useCallback, useId, useMemo } from 'react';
 import type { Types, Primitives } from '@a2ui/lit/0.8';
-import { useA2UIContext } from '../core/A2UIProvider';
+import { useA2UIActions } from '../core/A2UIProvider';
 import { useTheme } from '../theme/ThemeContext';
 
 /**
@@ -80,13 +80,15 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
   node: T,
   surfaceId: string
 ): UseA2UIComponentResult {
-  const context = useA2UIContext();
+  // Use stable actions - won't cause re-renders when version changes
+  const actions = useA2UIActions();
   const theme = useTheme();
   const baseId = useId();
 
   /**
    * Resolve a StringValue to its actual string value.
    * Checks literalString, literal, then path in that order.
+   * Note: This reads from data model via stable actions reference.
    */
   const resolveString = useCallback(
     (value: Primitives.StringValue | null | undefined): string | null => {
@@ -100,12 +102,12 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
         return String(value.literal);
       }
       if (value.path) {
-        const data = context.getData(node, value.path, surfaceId);
+        const data = actions.getData(node, value.path, surfaceId);
         return data !== null ? String(data) : null;
       }
       return null;
     },
-    [context, node, surfaceId]
+    [actions, node, surfaceId]
   );
 
   /**
@@ -123,12 +125,12 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
         return Number(value.literal);
       }
       if (value.path) {
-        const data = context.getData(node, value.path, surfaceId);
+        const data = actions.getData(node, value.path, surfaceId);
         return data !== null ? Number(data) : null;
       }
       return null;
     },
-    [context, node, surfaceId]
+    [actions, node, surfaceId]
   );
 
   /**
@@ -146,12 +148,12 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
         return Boolean(value.literal);
       }
       if (value.path) {
-        const data = context.getData(node, value.path, surfaceId);
+        const data = actions.getData(node, value.path, surfaceId);
         return data !== null ? Boolean(data) : null;
       }
       return null;
     },
-    [context, node, surfaceId]
+    [actions, node, surfaceId]
   );
 
   /**
@@ -159,9 +161,9 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
    */
   const setValue = useCallback(
     (path: string, value: Types.DataValue) => {
-      context.setData(node, path, value, surfaceId);
+      actions.setData(node, path, value, surfaceId);
     },
-    [context, node, surfaceId]
+    [actions, node, surfaceId]
   );
 
   /**
@@ -169,9 +171,9 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
    */
   const getValue = useCallback(
     (path: string): Types.DataValue | null => {
-      return context.getData(node, path, surfaceId);
+      return actions.getData(node, path, surfaceId);
     },
-    [context, node, surfaceId]
+    [actions, node, surfaceId]
   );
 
   /**
@@ -191,13 +193,13 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
           } else if (item.value.literalBoolean !== undefined) {
             actionContext[item.key] = item.value.literalBoolean;
           } else if (item.value.path) {
-            const resolvedPath = context.resolvePath(item.value.path, node.dataContextPath);
-            actionContext[item.key] = context.getData(node, resolvedPath, surfaceId);
+            const resolvedPath = actions.resolvePath(item.value.path, node.dataContextPath);
+            actionContext[item.key] = actions.getData(node, resolvedPath, surfaceId);
           }
         }
       }
 
-      context.dispatch({
+      actions.dispatch({
         userAction: {
           name: action.name,
           sourceComponentId: node.id,
@@ -207,7 +209,7 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
         },
       });
     },
-    [context, node, surfaceId]
+    [actions, node, surfaceId]
   );
 
   /**

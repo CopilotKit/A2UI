@@ -77,8 +77,9 @@ export const TextField = memo(function TextField({ node, surfaceId }: A2UICompon
         : 'text';
   const isTextArea = fieldType === 'longText';
 
+  // Use <section> container to match Lit renderer
   return (
-    <div
+    <section
       className={cn(
         classMapToString(theme.components.TextField.container),
         !isValid && 'a2ui-text-field--invalid'
@@ -109,7 +110,7 @@ export const TextField = memo(function TextField({ node, surfaceId }: A2UICompon
           className={classMapToString(theme.components.TextField.element)}
         />
       )}
-    </div>
+    </section>
   );
 });
 

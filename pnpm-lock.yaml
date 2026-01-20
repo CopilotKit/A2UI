@@ -279,8 +279,8 @@ importers:
   renderers/react:
     dependencies:
       '@a2ui/lit':
-        specifier: ^0.8.1
-        version: 0.8.1(signal-polyfill@0.2.2)
+        specifier: workspace:*
+        version: link:../lit
       clsx:
         specifier: ^2.1.0
         version: 2.1.1

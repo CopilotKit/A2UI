@@ -18,8 +18,14 @@
       }
     },
     "./styles": {
-      "import": "./dist/styles/index.js",
-      "require": "./dist/styles/index.cjs"
+      "import": {
+        "types": "./dist/styles/index.d.ts",
+        "default": "./dist/styles/index.js"
+      },
+      "require": {
+        "types": "./dist/styles/index.d.cts",
+        "default": "./dist/styles/index.cjs"
+      }
     },
     "./styles/structural.css": "./dist/structural.css"
   },
@@ -27,7 +33,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && cp src/styles/index.d.ts dist/styles/index.d.ts && cp src/styles/index.d.ts dist/styles/index.d.cts",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -36,7 +42,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@a2ui/lit": "^0.8.1",
+    "@a2ui/lit": "workspace:*",
     "clsx": "^2.1.0"
   },
   "peerDependencies": {

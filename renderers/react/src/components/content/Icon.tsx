@@ -79,24 +79,14 @@ export const Icon = memo(function Icon({ node, surfaceId }: A2UIComponentProps<T
     ? classMapToString(iconTheme.element)
     : '';
 
-  if (hasStructure) {
-    return (
-      <div
-        className={containerClasses}
-        style={stylesToObject(theme.additionalStyles?.Icon)}
-      >
-        <span className={`g-icon ${elementClasses}`.trim()}>{snakeCaseName}</span>
-      </div>
-    );
-  }
-
+  // Always use <section> wrapper with <span class="g-icon"> to match Lit renderer
   return (
-    <span
-      className={`g-icon ${containerClasses}`.trim()}
+    <section
+      className={containerClasses}
       style={stylesToObject(theme.additionalStyles?.Icon)}
     >
-      {snakeCaseName}
-    </span>
+      <span className={`g-icon ${elementClasses}`.trim()}>{snakeCaseName}</span>
+    </section>
   );
 });
 

@@ -43,7 +43,7 @@ export { registerDefaultCatalog, initializeDefaultCatalog } from './registry/def
 // Theme
 export { ThemeProvider, useTheme, useThemeOptional } from './theme/ThemeContext';
 export { defaultTheme } from './theme/defaultTheme';
-export { tailwindTheme } from './theme/tailwindTheme';
+export { litTheme } from './theme/litTheme';
 
 // Utilities
 export { cn, classMapToString, stylesToObject } from './lib/utils';

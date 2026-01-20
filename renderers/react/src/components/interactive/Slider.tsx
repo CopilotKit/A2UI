@@ -63,8 +63,9 @@ export const Slider = memo(function Slider({ node, surfaceId }: A2UIComponentPro
     [valuePath, setValue]
   );
 
+  // Use <section> container to match Lit renderer
   return (
-    <div
+    <section
       className={classMapToString(theme.components.Slider.container)}
       style={stylesToObject(theme.additionalStyles?.Slider)}
     >
@@ -78,7 +79,7 @@ export const Slider = memo(function Slider({ node, surfaceId }: A2UIComponentPro
         className={classMapToString(theme.components.Slider.element)}
       />
       <span className="a2ui-slider__value">{value}</span>
-    </div>
+    </section>
   );
 });
 

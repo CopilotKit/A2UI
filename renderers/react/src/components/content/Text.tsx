@@ -168,31 +168,15 @@ export const Text = memo(function Text({ node, surfaceId }: A2UIComponentProps<T
     return null;
   }, [textValue, theme.markdown, needsMarkdown]);
 
-  // Determine wrapper element based on usage hint
-  const WrapperElement = useMemo(() => {
-    switch (usageHint) {
-      case 'h1':
-      case 'h2':
-      case 'h3':
-      case 'h4':
-      case 'h5':
-        return usageHint;
-      case 'caption':
-        return 'span';
-      case 'body':
-      default:
-        return 'div';
-    }
-  }, [usageHint]);
-
   if (textValue === null || textValue === undefined) {
     return null;
   }
 
+  // Always use <section> wrapper to match Lit renderer
   // Render with markdown (dangerouslySetInnerHTML)
   if (renderedContent) {
     return (
-      <WrapperElement
+      <section
         className={cn(baseClasses, hintClasses, 'a2ui-text-markdown')}
         style={additionalStyles}
         dangerouslySetInnerHTML={renderedContent}
@@ -202,12 +186,12 @@ export const Text = memo(function Text({ node, surfaceId }: A2UIComponentProps<T
 
   // Fallback: render as plain text
   return (
-    <WrapperElement
+    <section
       className={cn(baseClasses, hintClasses)}
       style={additionalStyles}
     >
       {textValue}
-    </WrapperElement>
+    </section>
   );
 });
 

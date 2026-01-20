@@ -99,8 +99,9 @@ export const MultipleChoice = memo(function MultipleChoice({
 
   const isRadio = maxSelections === 1;
 
+  // Use <section> container to match Lit renderer
   return (
-    <div
+    <section
       className={classMapToString(theme.components.MultipleChoice.container)}
       style={stylesToObject(theme.additionalStyles?.MultipleChoice)}
       role={isRadio ? 'radiogroup' : 'group'}
@@ -131,7 +132,7 @@ export const MultipleChoice = memo(function MultipleChoice({
           </label>
         );
       })}
-    </div>
+    </section>
   );
 });
 

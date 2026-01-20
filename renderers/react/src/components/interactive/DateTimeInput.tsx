@@ -68,8 +68,9 @@ export const DateTimeInput = memo(function DateTimeInput({ node, surfaceId }: A2
     inputType = 'time';
   }
 
+  // Use <section> container to match Lit renderer
   return (
-    <div
+    <section
       className={classMapToString(theme.components.DateTimeInput.container)}
       style={stylesToObject(theme.additionalStyles?.DateTimeInput)}
     >
@@ -80,7 +81,7 @@ export const DateTimeInput = memo(function DateTimeInput({ node, surfaceId }: A2
         onChange={handleChange}
         className={classMapToString(theme.components.DateTimeInput.element)}
       />
-    </div>
+    </section>
   );
 });
 

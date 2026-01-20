@@ -35,3 +35,12 @@ export const structuralStyles: string = [
 ]
   .flat(Infinity)
   .join("\n");
+
+/**
+ * Structural styles for use in global/document scope (non-Shadow DOM).
+ * Converts :host selectors to :root for use in React and other frameworks.
+ */
+export const structuralStylesGlobal: string = structuralStyles.replace(
+  /:host\s*\{/g,
+  ":root {"
+);

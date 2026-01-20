@@ -21,7 +21,7 @@ import type { Types } from '@a2ui/lit/0.8';
 import { A2UIProvider, useA2UIActions } from './A2UIProvider';
 import { A2UIRenderer } from './A2UIRenderer';
 import { initializeDefaultCatalog } from '../registry/defaultCatalog';
-import { tailwindTheme } from '../theme/tailwindTheme';
+import { litTheme } from '../theme/litTheme';
 import type { OnActionCallback } from '../types';
 
 /**
@@ -51,7 +51,7 @@ export interface A2UIViewerProps {
   data?: Record<string, unknown>;
   /** Callback when an action is triggered */
   onAction?: (action: A2UIActionEvent) => void;
-  /** Custom theme (defaults to tailwindTheme) */
+  /** Custom theme (defaults to litTheme) */
   theme?: Types.Theme;
   /** Additional CSS class */
   className?: string;
@@ -93,7 +93,7 @@ export function A2UIViewer({
   components,
   data = {},
   onAction,
-  theme = tailwindTheme,
+  theme = litTheme,
   className,
 }: A2UIViewerProps) {
   ensureCatalogInitialized();

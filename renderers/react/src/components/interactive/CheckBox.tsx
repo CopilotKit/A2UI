@@ -62,8 +62,9 @@ export const CheckBox = memo(function CheckBox({ node, surfaceId }: A2UIComponen
     [valuePath, setValue]
   );
 
+  // Use <section> container to match Lit renderer
   return (
-    <div
+    <section
       className={classMapToString(theme.components.CheckBox.container)}
       style={stylesToObject(theme.additionalStyles?.CheckBox)}
     >
@@ -82,7 +83,7 @@ export const CheckBox = memo(function CheckBox({ node, surfaceId }: A2UIComponen
           {label}
         </label>
       )}
-    </div>
+    </section>
   );
 });
 

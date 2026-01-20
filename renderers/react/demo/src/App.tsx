@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useA2UI, A2UIRenderer } from '@a2ui/react';
+import { injectStyles } from '@a2ui/react/styles';
 import type { Types } from '@a2ui/lit/0.8';
 import { samples } from './samples';
 import './index.css';
+
+// Inject Lit structural styles on load
+injectStyles();
 
 // Demo section wrapper
 function DemoSection({
@@ -29,10 +33,10 @@ function DemoItem({
   surfaceId: string;
 }) {
   return (
-    <div className="p-4 bg-slate-50 rounded-lg">
-      <div className="text-xs text-slate-500 mb-2 font-medium">{label}</div>
+    <div className="demo-item">
+      <div className="demo-item-label">{label}</div>
       <div>
-        <A2UIRenderer surfaceId={surfaceId} fallback={<span className="text-slate-400">Loading...</span>} />
+        <A2UIRenderer surfaceId={surfaceId} fallback={<span style={{ color: '#94a3b8' }}>Loading...</span>} />
       </div>
     </div>
   );
@@ -58,28 +62,24 @@ function App() {
 
   if (!ready) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-slate-500">Loading components...</p>
+      <div className="demo-loading">
+        <p>Loading components...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="demo-container">
+      <div className="demo-content">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
-            A2UI React Renderer Demo
-          </h1>
-          <p className="text-slate-600">
-            Component gallery showcasing all A2UI components with the Tailwind theme.
-          </p>
+        <div className="demo-header">
+          <h1>A2UI React Renderer Demo</h1>
+          <p>Component gallery showcasing all A2UI components with the Lit theme.</p>
         </div>
 
         {/* Text Components */}
         <DemoSection title="Text Components">
-          <div className="space-y-4">
+          <div className="demo-space-y">
             <DemoItem label="Basic Text" surfaceId={samples.textBasic.surfaceId} />
             <DemoItem label="Heading 1" surfaceId={samples.textH1.surfaceId} />
             <DemoItem label="Heading 2" surfaceId={samples.textH2.surfaceId} />
@@ -98,7 +98,7 @@ function App() {
         </DemoSection>
 
         {/* Icons */}
-        <DemoSection title="Icons (Lucide React)">
+        <DemoSection title="Icons (Material Symbols)">
           <div className="demo-grid">
             <DemoItem label="Home" surfaceId={samples.iconHome.surfaceId} />
             <DemoItem label="Search" surfaceId={samples.iconSearch.surfaceId} />
@@ -128,7 +128,7 @@ function App() {
 
         {/* Layout Components */}
         <DemoSection title="Layout Components">
-          <div className="space-y-4">
+          <div className="demo-space-y">
             <DemoItem label="Row Layout (Icons)" surfaceId={samples.row.surfaceId} />
             <DemoItem label="Column Layout" surfaceId={samples.column.surfaceId} />
           </div>
@@ -142,15 +142,15 @@ function App() {
         {/* Dividers */}
         <DemoSection title="Dividers">
           <div className="demo-grid">
-            <div className="p-4 bg-slate-50 rounded-lg">
-              <div className="text-xs text-slate-500 mb-2 font-medium">Horizontal Divider</div>
-              <div className="h-20 flex items-center">
-                <A2UIRenderer surfaceId={samples.dividerHorizontal.surfaceId} className="w-full" />
+            <div className="demo-item">
+              <div className="demo-item-label">Horizontal Divider</div>
+              <div style={{ height: '5rem', display: 'flex', alignItems: 'center' }}>
+                <A2UIRenderer surfaceId={samples.dividerHorizontal.surfaceId} />
               </div>
             </div>
-            <div className="p-4 bg-slate-50 rounded-lg">
-              <div className="text-xs text-slate-500 mb-2 font-medium">Vertical Divider</div>
-              <div className="h-20 flex items-center justify-center">
+            <div className="demo-item">
+              <div className="demo-item-label">Vertical Divider</div>
+              <div style={{ height: '5rem' }} className="demo-flex-center">
                 <A2UIRenderer surfaceId={samples.dividerVertical.surfaceId} />
               </div>
             </div>
@@ -158,8 +158,8 @@ function App() {
         </DemoSection>
 
         {/* Footer */}
-        <div className="mt-8 text-center text-slate-500 text-sm">
-          <p>A2UI React Renderer v0.8.0 | Using Tailwind Theme</p>
+        <div className="demo-footer">
+          <p>A2UI React Renderer v0.8.0 | Using Lit Theme</p>
         </div>
       </div>
     </div>

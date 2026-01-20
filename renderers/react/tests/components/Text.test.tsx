@@ -18,7 +18,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { TestWrapper, TestRenderer, createSimpleMessages } from '../helpers';
-import { tailwindTheme, defaultTheme } from '../../src';
+import { litTheme, defaultTheme } from '../../src';
 
 describe('Text Component', () => {
   describe('Basic Rendering', () => {
@@ -91,7 +91,9 @@ describe('Text Component', () => {
       });
     });
 
-    it('should render h1 as heading element', async () => {
+    // Note: All Text components now render as <section> to match Lit renderer DOM structure.
+    // The usageHint only affects CSS classes, not the wrapper element.
+    it('should render h1 with section wrapper (Lit DOM structure)', async () => {
       const messages = createSimpleMessages('text-1', 'Text', {
         text: { literalString: 'Main Title' },
         usageHint: 'h1',
@@ -104,11 +106,14 @@ describe('Text Component', () => {
       );
 
       await waitFor(() => {
-        expect(container.querySelector('h1')).toBeInTheDocument();
+        // Text always renders as <section> to match Lit renderer
+        const section = container.querySelector('section');
+        expect(section).toBeInTheDocument();
+        expect(section?.textContent).toBe('Main Title');
       });
     });
 
-    it('should render h2 as heading element', async () => {
+    it('should render h2 with section wrapper (Lit DOM structure)', async () => {
       const messages = createSimpleMessages('text-1', 'Text', {
         text: { literalString: 'Section Title' },
         usageHint: 'h2',
@@ -121,11 +126,13 @@ describe('Text Component', () => {
       );
 
       await waitFor(() => {
-        expect(container.querySelector('h2')).toBeInTheDocument();
+        const section = container.querySelector('section');
+        expect(section).toBeInTheDocument();
+        expect(section?.textContent).toBe('Section Title');
       });
     });
 
-    it('should render caption as span element', async () => {
+    it('should render caption with section wrapper (Lit DOM structure)', async () => {
       const messages = createSimpleMessages('text-1', 'Text', {
         text: { literalString: 'Caption text' },
         usageHint: 'caption',
@@ -138,11 +145,13 @@ describe('Text Component', () => {
       );
 
       await waitFor(() => {
-        expect(container.querySelector('span')).toBeInTheDocument();
+        const section = container.querySelector('section');
+        expect(section).toBeInTheDocument();
+        expect(section?.textContent).toBe('Caption text');
       });
     });
 
-    it('should render body as div element', async () => {
+    it('should render body with section wrapper (Lit DOM structure)', async () => {
       const messages = createSimpleMessages('text-1', 'Text', {
         text: { literalString: 'Body text' },
         usageHint: 'body',
@@ -155,9 +164,9 @@ describe('Text Component', () => {
       );
 
       await waitFor(() => {
-        // Body renders as div
-        const divs = container.querySelectorAll('div');
-        expect(divs.length).toBeGreaterThan(0);
+        const section = container.querySelector('section');
+        expect(section).toBeInTheDocument();
+        expect(section?.textContent).toBe('Body text');
       });
     });
   });
@@ -179,39 +188,43 @@ describe('Text Component', () => {
       });
     });
 
-    it('should apply tailwind theme classes', async () => {
+    it('should apply lit theme classes for h1', async () => {
       const messages = createSimpleMessages('text-1', 'Text', {
-        text: { literalString: 'Tailwind text' },
+        text: { literalString: 'Lit theme text' },
         usageHint: 'h1',
       });
 
       const { container } = render(
-        <TestWrapper theme={tailwindTheme}>
+        <TestWrapper theme={litTheme}>
           <TestRenderer messages={messages} />
         </TestWrapper>
       );
 
       await waitFor(() => {
-        // Tailwind theme h1 uses 'text-3xl' class
-        expect(container.querySelector('.text-3xl')).toBeInTheDocument();
+        // Lit theme components.Text.h1 uses typography-sz-hs class
+        const section = container.querySelector('section');
+        expect(section).toBeInTheDocument();
+        expect(section?.classList.contains('typography-sz-hs')).toBe(true);
       });
     });
 
-    it('should apply body variant classes from tailwind theme', async () => {
+    it('should apply body variant classes from lit theme', async () => {
       const messages = createSimpleMessages('text-1', 'Text', {
         text: { literalString: 'Body text' },
         usageHint: 'body',
       });
 
       const { container } = render(
-        <TestWrapper theme={tailwindTheme}>
+        <TestWrapper theme={litTheme}>
           <TestRenderer messages={messages} />
         </TestWrapper>
       );
 
       await waitFor(() => {
-        // Tailwind body uses 'text-sm' class
-        expect(container.querySelector('.text-sm')).toBeInTheDocument();
+        // Lit theme body variant inherits from 'all' which has layout-w-100
+        const section = container.querySelector('section');
+        expect(section).toBeInTheDocument();
+        expect(section?.classList.contains('layout-w-100')).toBe(true);
       });
     });
   });
@@ -407,7 +420,7 @@ describe('Text Component', () => {
       });
 
       const { container } = render(
-        <TestWrapper theme={tailwindTheme}>
+        <TestWrapper theme={litTheme}>
           <TestRenderer messages={messages} />
         </TestWrapper>
       );
@@ -415,8 +428,8 @@ describe('Text Component', () => {
       await waitFor(() => {
         const ul = container.querySelector('ul');
         expect(ul).toBeInTheDocument();
-        // tailwindTheme.markdown.ul includes 'list-disc'
-        expect(ul?.classList.contains('list-disc')).toBe(true);
+        // litTheme.markdown.ul includes typography-f-s class
+        expect(ul?.classList.contains('typography-f-s')).toBe(true);
       });
     });
 
@@ -426,7 +439,7 @@ describe('Text Component', () => {
       });
 
       const { container } = render(
-        <TestWrapper theme={tailwindTheme}>
+        <TestWrapper theme={litTheme}>
           <TestRenderer messages={messages} />
         </TestWrapper>
       );
@@ -434,8 +447,8 @@ describe('Text Component', () => {
       await waitFor(() => {
         const p = container.querySelector('p');
         expect(p).toBeInTheDocument();
-        // tailwindTheme.markdown.p includes 'leading-7'
-        expect(p?.classList.contains('leading-7')).toBe(true);
+        // litTheme.markdown.p includes typography-sz-bm class
+        expect(p?.classList.contains('typography-sz-bm')).toBe(true);
       });
     });
   });

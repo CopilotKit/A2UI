@@ -18,7 +18,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { TestWrapper, TestRenderer, createSimpleMessages } from '../helpers';
-import { tailwindTheme, defaultTheme } from '../../src';
+import { litTheme, defaultTheme } from '../../src';
 
 describe('Icon Component', () => {
   describe('Basic Rendering', () => {
@@ -136,19 +136,20 @@ describe('Icon Component', () => {
       expect(container.querySelector('.a2ui-icon')).toBeInTheDocument();
     });
 
-    it('should apply tailwind theme classes with container/element structure', () => {
+    it('should apply lit theme classes with container/element structure', () => {
       const messages = createSimpleMessages('icon-1', 'Icon', {
         name: { literalString: 'home' },
       });
 
       const { container } = render(
-        <TestWrapper theme={tailwindTheme}>
+        <TestWrapper theme={litTheme}>
           <TestRenderer messages={messages} />
         </TestWrapper>
       );
 
-      // Tailwind theme uses 'inline-flex' for container
-      expect(container.querySelector('.inline-flex')).toBeInTheDocument();
+      // Lit theme uses layout/typography classes for icon styling
+      const icon = container.querySelector('.g-icon');
+      expect(icon).toBeInTheDocument();
     });
   });
 

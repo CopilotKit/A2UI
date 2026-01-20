@@ -15,7 +15,12 @@
  */
 
 // Core components and provider
-export { A2UIProvider, useA2UIStore, useA2UIStoreSelector } from './core/A2UIProvider';
+export {
+  A2UIProvider,
+  useA2UIContext,
+  useA2UIStore, // @deprecated - use useA2UIContext
+  useA2UIStoreSelector, // @deprecated - use useA2UIContext or useA2UI
+} from './core/A2UIProvider';
 export type { A2UIProviderProps } from './core/A2UIProvider';
 export { A2UIRenderer } from './core/A2UIRenderer';
 export type { A2UIRendererProps } from './core/A2UIRenderer';

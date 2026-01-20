@@ -14,9 +14,8 @@
  limitations under the License.
  */
 
-import { useCallback } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
-import { useA2UIStore, useA2UIStoreSelector } from '../core/A2UIProvider';
+import { useA2UIContext } from '../core/A2UIProvider';
 
 /**
  * Result returned by the useA2UI hook.
@@ -63,32 +62,8 @@ export interface UseA2UIResult {
  * ```
  */
 export function useA2UI(): UseA2UIResult {
-  const store = useA2UIStore();
-
-  // Subscribe to version for reactivity
-  const version = useA2UIStoreSelector((state) => state.version);
-
-  const processMessages = useCallback(
-    (messages: Types.ServerToClientMessage[]) => {
-      store.getState().processMessages(messages);
-    },
-    [store]
-  );
-
-  const getSurface = useCallback(
-    (surfaceId: string) => {
-      return store.getState().getSurface(surfaceId);
-    },
-    [store]
-  );
-
-  const getSurfaces = useCallback(() => {
-    return store.getState().getSurfaces();
-  }, [store]);
-
-  const clearSurfaces = useCallback(() => {
-    store.getState().clearSurfaces();
-  }, [store]);
+  const { processMessages, getSurface, getSurfaces, clearSurfaces, version } =
+    useA2UIContext();
 
   return {
     processMessages,

@@ -14,12 +14,10 @@
  limitations under the License.
  */
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useId, useMemo } from 'react';
 import type { Types, Primitives } from '@a2ui/lit/0.8';
-import { useA2UIStore } from '../core/A2UIProvider';
+import { useA2UIContext } from '../core/A2UIProvider';
 import { useTheme } from '../theme/ThemeContext';
-
-let idCounter = 0;
 
 /**
  * Result returned by the useA2UIComponent hook.
@@ -82,11 +80,9 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
   node: T,
   surfaceId: string
 ): UseA2UIComponentResult {
-  const store = useA2UIStore();
+  const context = useA2UIContext();
   const theme = useTheme();
-
-  // Get current state for data operations
-  const state = store.getState();
+  const baseId = useId();
 
   /**
    * Resolve a StringValue to its actual string value.
@@ -104,12 +100,12 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
         return String(value.literal);
       }
       if (value.path) {
-        const data = state.getData(node, value.path, surfaceId);
+        const data = context.getData(node, value.path, surfaceId);
         return data !== null ? String(data) : null;
       }
       return null;
     },
-    [state, node, surfaceId]
+    [context, node, surfaceId]
   );
 
   /**
@@ -127,12 +123,12 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
         return Number(value.literal);
       }
       if (value.path) {
-        const data = state.getData(node, value.path, surfaceId);
+        const data = context.getData(node, value.path, surfaceId);
         return data !== null ? Number(data) : null;
       }
       return null;
     },
-    [state, node, surfaceId]
+    [context, node, surfaceId]
   );
 
   /**
@@ -150,12 +146,12 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
         return Boolean(value.literal);
       }
       if (value.path) {
-        const data = state.getData(node, value.path, surfaceId);
+        const data = context.getData(node, value.path, surfaceId);
         return data !== null ? Boolean(data) : null;
       }
       return null;
     },
-    [state, node, surfaceId]
+    [context, node, surfaceId]
   );
 
   /**
@@ -163,9 +159,9 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
    */
   const setValue = useCallback(
     (path: string, value: Types.DataValue) => {
-      state.setData(node, path, value, surfaceId);
+      context.setData(node, path, value, surfaceId);
     },
-    [state, node, surfaceId]
+    [context, node, surfaceId]
   );
 
   /**
@@ -173,9 +169,9 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
    */
   const getValue = useCallback(
     (path: string): Types.DataValue | null => {
-      return state.getData(node, path, surfaceId);
+      return context.getData(node, path, surfaceId);
     },
-    [state, node, surfaceId]
+    [context, node, surfaceId]
   );
 
   /**
@@ -184,42 +180,46 @@ export function useA2UIComponent<T extends Types.AnyComponentNode>(
    */
   const sendAction = useCallback(
     (action: Types.Action) => {
-      const context: Record<string, unknown> = {};
+      const actionContext: Record<string, unknown> = {};
 
       if (action.context) {
         for (const item of action.context) {
           if (item.value.literalString !== undefined) {
-            context[item.key] = item.value.literalString;
+            actionContext[item.key] = item.value.literalString;
           } else if (item.value.literalNumber !== undefined) {
-            context[item.key] = item.value.literalNumber;
+            actionContext[item.key] = item.value.literalNumber;
           } else if (item.value.literalBoolean !== undefined) {
-            context[item.key] = item.value.literalBoolean;
+            actionContext[item.key] = item.value.literalBoolean;
           } else if (item.value.path) {
-            const resolvedPath = state.resolvePath(item.value.path, node.dataContextPath);
-            context[item.key] = state.getData(node, resolvedPath, surfaceId);
+            const resolvedPath = context.resolvePath(item.value.path, node.dataContextPath);
+            actionContext[item.key] = context.getData(node, resolvedPath, surfaceId);
           }
         }
       }
 
-      state.dispatch({
+      context.dispatch({
         userAction: {
           name: action.name,
           sourceComponentId: node.id,
           surfaceId,
           timestamp: new Date().toISOString(),
-          context,
+          context: actionContext,
         },
       });
     },
-    [state, node, surfaceId]
+    [context, node, surfaceId]
   );
 
   /**
    * Generate a unique ID for accessibility purposes.
+   * Uses React's useId() for SSR and Concurrent Mode compatibility.
    */
-  const getUniqueId = useCallback((prefix: string) => {
-    return `${prefix}-${idCounter++}`;
-  }, []);
+  const getUniqueId = useCallback(
+    (prefix: string) => {
+      return `${prefix}${baseId}`;
+    },
+    [baseId]
+  );
 
   return useMemo(
     () => ({

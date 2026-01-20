@@ -18,18 +18,20 @@ import {
   createContext,
   useContext,
   useRef,
-  useEffect,
+  useState,
+  useCallback,
+  useMemo,
   type ReactNode,
 } from 'react';
-import type { Types } from '@a2ui/lit/0.8';
-import { createA2UIStore, type A2UIStoreApi } from './store';
+import { Data, Types } from '@a2ui/lit/0.8';
+import type { A2UIContextValue } from './store';
 import { ThemeProvider } from '../theme/ThemeContext';
 import type { OnActionCallback } from '../types';
 
 /**
- * Context for the A2UI store.
+ * Context for the A2UI state.
  */
-const A2UIStoreContext = createContext<A2UIStoreApi | null>(null);
+const A2UIContext = createContext<A2UIContextValue | null>(null);
 
 /**
  * Props for the A2UIProvider component.
@@ -47,7 +49,7 @@ export interface A2UIProviderProps {
  * Provider component that sets up the A2UI context for descendant components.
  *
  * This provider:
- * - Creates and manages the A2UI Zustand store
+ * - Creates and manages the A2UI message processor
  * - Provides the theme context
  * - Handles action callbacks
  *
@@ -73,58 +75,145 @@ export interface A2UIProviderProps {
  * ```
  */
 export function A2UIProvider({ onAction, theme, children }: A2UIProviderProps) {
-  // Create store only once using ref
-  const storeRef = useRef<A2UIStoreApi | null>(null);
-
-  if (!storeRef.current) {
-    storeRef.current = createA2UIStore(onAction);
+  // Create message processor only once using ref
+  const processorRef = useRef<Types.MessageProcessor | null>(null);
+  if (!processorRef.current) {
+    processorRef.current = Data.createSignalA2uiMessageProcessor();
   }
+  const processor = processorRef.current;
 
-  // Update onAction callback when it changes
-  useEffect(() => {
-    if (storeRef.current) {
-      storeRef.current.getState().setOnAction(onAction ?? null);
+  // Version counter for triggering re-renders
+  const [version, setVersion] = useState(0);
+
+  // Store onAction in a ref so callbacks always have the latest value
+  const onActionRef = useRef<OnActionCallback | null>(onAction ?? null);
+  onActionRef.current = onAction ?? null;
+
+  // ===== Actions =====
+
+  const processMessages = useCallback(
+    (messages: Types.ServerToClientMessage[]) => {
+      processor.processMessages(messages);
+      setVersion((v) => v + 1);
+    },
+    [processor]
+  );
+
+  const setData = useCallback(
+    (
+      node: Types.AnyComponentNode | null,
+      path: string,
+      value: Types.DataValue,
+      surfaceId: string
+    ) => {
+      processor.setData(node, path, value, surfaceId);
+      setVersion((v) => v + 1);
+    },
+    [processor]
+  );
+
+  const dispatch = useCallback((message: Types.A2UIClientEventMessage) => {
+    if (onActionRef.current) {
+      onActionRef.current(message);
     }
-  }, [onAction]);
+  }, []);
+
+  const clearSurfaces = useCallback(() => {
+    processor.clearSurfaces();
+    setVersion((v) => v + 1);
+  }, [processor]);
+
+  // ===== Selectors =====
+
+  const getSurface = useCallback(
+    (surfaceId: string) => {
+      return processor.getSurfaces().get(surfaceId);
+    },
+    [processor]
+  );
+
+  const getSurfaces = useCallback(() => {
+    return processor.getSurfaces();
+  }, [processor]);
+
+  const getData = useCallback(
+    (node: Types.AnyComponentNode, path: string, surfaceId: string) => {
+      return processor.getData(node, path, surfaceId);
+    },
+    [processor]
+  );
+
+  const resolvePath = useCallback(
+    (path: string, dataContextPath?: string) => {
+      return processor.resolvePath(path, dataContextPath);
+    },
+    [processor]
+  );
+
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo<A2UIContextValue>(
+    () => ({
+      processor,
+      version,
+      onAction: onActionRef.current,
+      processMessages,
+      setData,
+      dispatch,
+      clearSurfaces,
+      getSurface,
+      getSurfaces,
+      getData,
+      resolvePath,
+    }),
+    [
+      processor,
+      version,
+      processMessages,
+      setData,
+      dispatch,
+      clearSurfaces,
+      getSurface,
+      getSurfaces,
+      getData,
+      resolvePath,
+    ]
+  );
 
   return (
-    <A2UIStoreContext.Provider value={storeRef.current}>
+    <A2UIContext.Provider value={contextValue}>
       <ThemeProvider theme={theme}>{children}</ThemeProvider>
-    </A2UIStoreContext.Provider>
+    </A2UIContext.Provider>
   );
 }
 
 /**
- * Hook to access the A2UI store.
+ * Hook to access the A2UI context.
  *
- * @returns The A2UI store API
+ * @returns The A2UI context value
  * @throws If used outside of an A2UIProvider
  */
-export function useA2UIStore(): A2UIStoreApi {
-  const store = useContext(A2UIStoreContext);
-  if (!store) {
-    throw new Error('useA2UIStore must be used within an A2UIProvider');
+export function useA2UIContext(): A2UIContextValue {
+  const context = useContext(A2UIContext);
+  if (!context) {
+    throw new Error('useA2UIContext must be used within an A2UIProvider');
   }
-  return store;
+  return context;
 }
 
 /**
- * Hook to access the A2UI store state with a selector.
- * This provides fine-grained reactivity - the component only re-renders
- * when the selected value changes.
+ * @deprecated Use useA2UIContext instead. This alias exists for backward compatibility only.
+ */
+export const useA2UIStore = useA2UIContext;
+
+/**
+ * @deprecated This selector pattern does not provide performance benefits with React Context.
+ * Components will re-render on any context change regardless of what you select.
+ * Use useA2UIContext() or useA2UI() directly instead.
  *
  * @param selector - Function to select a slice of state
  * @returns The selected state
- *
- * @example
- * ```tsx
- * function MyComponent() {
- *   const version = useA2UIStoreSelector((state) => state.version);
- *   // Component only re-renders when version changes
- * }
- * ```
  */
-export function useA2UIStoreSelector<T>(selector: (state: ReturnType<A2UIStoreApi['getState']>) => T): T {
-  const store = useA2UIStore();
-  return store(selector);
+export function useA2UIStoreSelector<T>(selector: (state: A2UIContextValue) => T): T {
+  const context = useA2UIContext();
+  return selector(context);
 }

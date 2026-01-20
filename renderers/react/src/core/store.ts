@@ -14,15 +14,13 @@
  limitations under the License.
  */
 
-import { create } from 'zustand';
-import { subscribeWithSelector } from 'zustand/middleware';
-import { Data, Types } from '@a2ui/lit/0.8';
+import type { Types } from '@a2ui/lit/0.8';
 import type { OnActionCallback } from '../types';
 
 /**
- * The shape of the A2UI Zustand store.
+ * The shape of the A2UI context value.
  */
-export interface A2UIStore {
+export interface A2UIContextValue {
   /** The underlying message processor from @a2ui/lit */
   processor: Types.MessageProcessor;
 
@@ -51,9 +49,6 @@ export interface A2UIStore {
   /** Clear all surfaces */
   clearSurfaces: () => void;
 
-  /** Set the action callback */
-  setOnAction: (callback: OnActionCallback | null) => void;
-
   // ===== Selectors =====
 
   /** Get a surface by ID */
@@ -72,77 +67,3 @@ export interface A2UIStore {
   /** Resolve a relative path to an absolute path */
   resolvePath: (path: string, dataContextPath?: string) => string;
 }
-
-/**
- * Creates a new A2UI store instance.
- *
- * @param onAction - Optional callback for handling user actions
- * @returns A Zustand store for A2UI state management
- */
-export function createA2UIStore(onAction?: OnActionCallback) {
-  return create<A2UIStore>()(
-    subscribeWithSelector((set, get) => {
-      // Create the signal-based message processor from @a2ui/lit
-      const processor = Data.createSignalA2uiMessageProcessor();
-
-      return {
-        processor,
-        version: 0,
-        onAction: onAction ?? null,
-
-        // ===== Actions =====
-
-        processMessages: (messages) => {
-          get().processor.processMessages(messages);
-          // Increment version to trigger React re-renders
-          set((state) => ({ version: state.version + 1 }));
-        },
-
-        setData: (node, path, value, surfaceId) => {
-          get().processor.setData(node, path, value, surfaceId);
-          // Increment version to trigger React re-renders
-          set((state) => ({ version: state.version + 1 }));
-        },
-
-        dispatch: (message) => {
-          const { onAction } = get();
-          if (onAction) {
-            onAction(message);
-          }
-        },
-
-        clearSurfaces: () => {
-          get().processor.clearSurfaces();
-          set((state) => ({ version: state.version + 1 }));
-        },
-
-        setOnAction: (callback) => {
-          set({ onAction: callback });
-        },
-
-        // ===== Selectors =====
-
-        getSurface: (surfaceId) => {
-          return get().processor.getSurfaces().get(surfaceId);
-        },
-
-        getSurfaces: () => {
-          return get().processor.getSurfaces();
-        },
-
-        getData: (node, path, surfaceId) => {
-          return get().processor.getData(node, path, surfaceId);
-        },
-
-        resolvePath: (path, dataContextPath) => {
-          return get().processor.resolvePath(path, dataContextPath);
-        },
-      };
-    })
-  );
-}
-
-/**
- * Type for the store created by createA2UIStore.
- */
-export type A2UIStoreApi = ReturnType<typeof createA2UIStore>;

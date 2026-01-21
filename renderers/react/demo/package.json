@@ -6,16 +6,21 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots",
+    "test:visual:ui": "playwright test --ui",
+    "test:visual:report": "playwright show-report"
   },
   "dependencies": {
-    "@a2ui/react": "file:..",
     "@a2ui/lit": "file:../../lit",
+    "@a2ui/react": "file:..",
+    "markdown-it": "^14.0.0",
     "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "markdown-it": "^14.0.0"
+    "react-dom": "^18.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.2.0",

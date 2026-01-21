@@ -17,15 +17,19 @@
 import type { Types } from '@a2ui/lit/0.8';
 
 /**
- * Lit-compatible theme for A2UI React components.
+ * Default theme for A2UI React components.
  *
  * This theme uses the same CSS class conventions as the Lit renderer,
  * ensuring visual consistency between React and Lit implementations.
  *
+ * IMPORTANT: This theme must be kept in sync with the Lit renderer's internal
+ * styling. If Lit components change their class maps, this file must be updated
+ * to match. Ideally, Lit would export its default theme for direct import.
+ *
  * Requires the structural styles to be injected:
  * @example
  * ```tsx
- * import { A2UIProvider, litTheme } from '@a2ui/react';
+ * import { A2UIProvider } from '@a2ui/react';
  * import { injectStyles } from '@a2ui/react/styles';
  *
  * // Inject structural CSS at app startup
@@ -33,7 +37,7 @@ import type { Types } from '@a2ui/lit/0.8';
  *
  * function App() {
  *   return (
- *     <A2UIProvider theme={litTheme}>
+ *     <A2UIProvider>
  *       <A2UIRenderer surfaceId="main" />
  *     </A2UIProvider>
  *   );
@@ -159,6 +163,13 @@ const elementVideo = {
 // =============================================================================
 
 export const litTheme: Types.Theme = {
+  // ===========================================================================
+  // Additional Styles (inline CSS properties)
+  // ===========================================================================
+
+  // additionalStyles is optional - only define if custom styling is needed
+  // The default Lit theme does not apply any additional inline styles
+
   components: {
     // =========================================================================
     // Content Components
@@ -298,6 +309,7 @@ export const litTheme: Types.Theme = {
       'border-bw-0': true,
       'border-bs-s': true,
       'color-bgc-p30': true,
+      'color-c-p100': true, // White text on dark purple background
       'behavior-ho-70': true,
       'typography-w-400': true,
     },
@@ -440,3 +452,9 @@ export const litTheme: Types.Theme = {
     em: [],
   },
 };
+
+/**
+ * Alias for litTheme - the default theme for A2UI React components.
+ * @see litTheme
+ */
+export const defaultTheme = litTheme;

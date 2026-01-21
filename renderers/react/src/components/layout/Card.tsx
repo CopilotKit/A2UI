@@ -34,15 +34,18 @@ export const Card = memo(function Card({ node, surfaceId }: A2UIComponentProps<T
   const rawChildren = props.children ?? (props.child ? [props.child] : []);
   const children = Array.isArray(rawChildren) ? rawChildren : [];
 
-  // Use CSS variable for background, defaulting to white
-  const cardStyle = {
+  // Match Lit's section styles: height/width 100%, min-height 0, overflow auto
+  const cardStyle: React.CSSProperties = {
+    height: '100%',
+    width: '100%',
+    minHeight: 0,
+    overflow: 'auto',
     ...stylesToObject(theme.additionalStyles?.Card),
-    backgroundColor: 'var(--a2ui-card-bg, white)',
   };
 
   return (
     <section
-      className={classMapToString(theme.components.Card)}
+      className={`a2ui-card ${classMapToString(theme.components.Card)}`}
       style={cardStyle}
     >
       {children.map((child, index) => {

@@ -18,7 +18,7 @@ import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
-import { cn, classMapToString, stylesToObject } from '../../lib/utils';
+import { classMapToString, stylesToObject } from '../../lib/utils';
 import { ComponentNode } from '../../core/ComponentNode';
 
 type Direction = 'vertical' | 'horizontal';
@@ -43,23 +43,30 @@ export const List = memo(function List({ node, surfaceId }: A2UIComponentProps<T
   const direction = (props.direction as Direction) ?? 'vertical';
   const alignment = props.alignment as Alignment | undefined;
 
-  const style: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: direction === 'horizontal' ? 'row' : 'column',
-    overflow: 'auto',
-    ...(alignment && { alignItems: alignmentMap[alignment] }),
-    ...stylesToObject(theme.additionalStyles?.List),
-  };
+  // Match Lit renderer styles exactly:
+  // - Vertical: display: grid
+  // - Horizontal: display: flex with horizontal scroll
+  const style: React.CSSProperties = direction === 'horizontal'
+    ? {
+        display: 'flex',
+        maxWidth: '100%',
+        overflowX: 'scroll',
+        overflowY: 'hidden',
+        scrollbarWidth: 'none',
+        ...(alignment && { alignItems: alignmentMap[alignment] }),
+        ...stylesToObject(theme.additionalStyles?.List),
+      }
+    : {
+        display: 'grid',
+        ...(alignment && { alignItems: alignmentMap[alignment] }),
+        ...stylesToObject(theme.additionalStyles?.List),
+      };
 
   const children = Array.isArray(props.children) ? props.children : [];
 
   return (
     <section
-      className={cn(
-        classMapToString(theme.components.List),
-        `a2ui-list--${direction}`,
-        alignment && `a2ui-list--align-${alignment}`
-      )}
+      className={classMapToString(theme.components.List)}
       style={style}
     >
       {children.map((child, index) => {

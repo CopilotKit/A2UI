@@ -18,7 +18,7 @@ import { useCallback, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
-import { cn, classMapToString, stylesToObject } from '../../lib/utils';
+import { classMapToString, stylesToObject } from '../../lib/utils';
 import { ComponentNode } from '../../core/ComponentNode';
 
 /**
@@ -37,35 +37,11 @@ export const Button = memo(function Button({ node, surfaceId }: A2UIComponentPro
     }
   }, [props.action, sendAction]);
 
-  // primary defaults to true for filled buttons unless explicitly set to false
-  const isPrimary = (props as { primary?: boolean }).primary !== false;
-  const isDisabled = (props as { disabled?: boolean }).disabled ?? false;
-
-  // Support variant-based styling if available, fall back to base + BEM modifier
-  const buttonTheme = theme.components.Button;
-  const hasVariants = 'primary' in buttonTheme || 'secondary' in buttonTheme;
-
-  let buttonClasses: string;
-  if (hasVariants) {
-    const variantTheme = (buttonTheme as { primary?: Record<string, boolean>; secondary?: Record<string, boolean> });
-    const variantClasses = isPrimary
-      ? variantTheme.primary ?? buttonTheme
-      : variantTheme.secondary ?? buttonTheme;
-    buttonClasses = classMapToString(variantClasses as Record<string, boolean>);
-  } else {
-    // Fall back to base classes + BEM modifier for primary
-    buttonClasses = cn(
-      classMapToString(buttonTheme as Record<string, boolean>),
-      isPrimary && 'a2ui-button--primary'
-    );
-  }
-
   return (
     <button
-      className={buttonClasses}
+      className={classMapToString(theme.components.Button)}
       style={stylesToObject(theme.additionalStyles?.Button)}
       onClick={handleClick}
-      disabled={isDisabled}
     >
       <ComponentNode node={props.child} surfaceId={surfaceId} />
     </button>

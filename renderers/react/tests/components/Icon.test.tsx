@@ -132,8 +132,11 @@ describe('Icon Component', () => {
         </TestWrapper>
       );
 
-      // Default theme uses 'a2ui-icon' class
-      expect(container.querySelector('.a2ui-icon')).toBeInTheDocument();
+      // Default theme (litTheme) has empty Icon classes, so check section is rendered
+      // and the icon span has the g-icon class for Google Material Symbols
+      const section = container.querySelector('section');
+      expect(section).toBeInTheDocument();
+      expect(container.querySelector('.g-icon')).toBeInTheDocument();
     });
 
     it('should apply lit theme classes with container/element structure', () => {

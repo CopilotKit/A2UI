@@ -18,7 +18,7 @@ import { useState, useCallback, useEffect, useId, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
-import { cn, classMapToString, stylesToObject } from '../../lib/utils';
+import { classMapToString, stylesToObject } from '../../lib/utils';
 
 type TextFieldType = 'shortText' | 'longText' | 'number' | 'date';
 
@@ -79,13 +79,7 @@ export const TextField = memo(function TextField({ node, surfaceId }: A2UICompon
 
   // Use <section> container to match Lit renderer
   return (
-    <section
-      className={cn(
-        classMapToString(theme.components.TextField.container),
-        !isValid && 'a2ui-text-field--invalid'
-      )}
-      style={stylesToObject(theme.additionalStyles?.TextField)}
-    >
+    <section className={classMapToString(theme.components.TextField.container)}>
       {label && (
         <label
           htmlFor={id}
@@ -100,6 +94,7 @@ export const TextField = memo(function TextField({ node, surfaceId }: A2UICompon
           value={value}
           onChange={handleChange}
           className={classMapToString(theme.components.TextField.element)}
+          style={stylesToObject(theme.additionalStyles?.TextField)}
         />
       ) : (
         <input
@@ -108,6 +103,7 @@ export const TextField = memo(function TextField({ node, surfaceId }: A2UICompon
           value={value}
           onChange={handleChange}
           className={classMapToString(theme.components.TextField.element)}
+          style={stylesToObject(theme.additionalStyles?.TextField)}
         />
       )}
     </section>

@@ -184,7 +184,10 @@ describe('Text Component', () => {
       );
 
       await waitFor(() => {
-        expect(container.querySelector('.a2ui-text')).toBeInTheDocument();
+        // Default theme (litTheme) uses layout-w-100 and layout-g-2 classes for Text.all
+        const section = container.querySelector('section');
+        expect(section).toBeInTheDocument();
+        expect(section?.classList.contains('layout-w-100')).toBe(true);
       });
     });
 

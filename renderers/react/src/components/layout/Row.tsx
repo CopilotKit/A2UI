@@ -18,12 +18,11 @@ import { memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
-import { cn, classMapToString, stylesToObject } from '../../lib/utils';
+import { classMapToString, stylesToObject } from '../../lib/utils';
 import { ComponentNode } from '../../core/ComponentNode';
 
 type Distribution = 'start' | 'center' | 'end' | 'spaceBetween' | 'spaceAround' | 'spaceEvenly';
 type Alignment = 'start' | 'center' | 'end' | 'stretch';
-type Gap = 'none' | 'small' | 'medium' | 'large';
 
 const distributionMap: Record<Distribution, string> = {
   start: 'flex-start',
@@ -41,13 +40,6 @@ const alignmentMap: Record<Alignment, string> = {
   stretch: 'stretch',
 };
 
-const gapMap: Record<Gap, string> = {
-  none: '0px',
-  small: '8px',
-  medium: '12px',
-  large: '16px',
-};
-
 /**
  * Row component - arranges children horizontally using flexbox.
  *
@@ -59,8 +51,8 @@ export const Row = memo(function Row({ node, surfaceId }: A2UIComponentProps<Typ
 
   const distribution = props.distribution as Distribution | undefined;
   const alignment = props.alignment as Alignment | undefined;
-  const gap = (props as { gap?: Gap }).gap;
 
+  // Gap is controlled by theme classes (layout-g-*), not inline styles
   const style: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'row',
@@ -68,7 +60,6 @@ export const Row = memo(function Row({ node, surfaceId }: A2UIComponentProps<Typ
     minHeight: '100%',
     ...(distribution && { justifyContent: distributionMap[distribution] }),
     ...(alignment && { alignItems: alignmentMap[alignment] }),
-    ...(gap && { gap: gapMap[gap] }),
     ...stylesToObject(theme.additionalStyles?.Row),
   };
 
@@ -76,11 +67,7 @@ export const Row = memo(function Row({ node, surfaceId }: A2UIComponentProps<Typ
 
   return (
     <section
-      className={cn(
-        classMapToString(theme.components.Row),
-        distribution && `a2ui-row--${distribution}`,
-        alignment && `a2ui-row--align-${alignment}`
-      )}
+      className={classMapToString(theme.components.Row)}
       style={style}
     >
       {children.map((child, index) => {

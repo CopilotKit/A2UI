@@ -39,8 +39,8 @@ export function classMapToString(classMap: Record<string, boolean> | undefined):
  * @returns A React-compatible style object, or undefined if no styles
  *
  * @example
- * stylesToObject({ 'background-color': 'red', 'font-size': '16px' })
- * // Returns: { backgroundColor: 'red', fontSize: '16px' }
+ * stylesToObject({ 'background-color': 'red', 'font-size': '16px', '--custom-var': 'blue' })
+ * // Returns: { backgroundColor: 'red', fontSize: '16px', '--custom-var': 'blue' }
  */
 export function stylesToObject(
   styles: Record<string, string> | undefined
@@ -49,9 +49,14 @@ export function stylesToObject(
 
   const result: Record<string, string> = {};
   for (const [key, value] of Object.entries(styles)) {
-    // Convert kebab-case to camelCase for React
-    const camelKey = key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-    result[camelKey] = value;
+    // Preserve CSS custom properties (--var-name) as-is
+    if (key.startsWith('--')) {
+      result[key] = value;
+    } else {
+      // Convert kebab-case to camelCase for React
+      const camelKey = key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+      result[camelKey] = value;
+    }
   }
   return result as React.CSSProperties;
 }

@@ -18,7 +18,7 @@ import { useMemo, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
-import { cn, classMapToString, stylesToObject } from '../../lib/utils';
+import { classMapToString, stylesToObject, mergeClassMaps } from '../../lib/utils';
 
 type UsageHint = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'caption' | 'body';
 
@@ -126,9 +126,11 @@ export const Text = memo(function Text({ node, surfaceId }: A2UIComponentProps<T
   const textValue = resolveString(props.text);
   const usageHint = props.usageHint as UsageHint | undefined;
 
-  // Get classes based on usage hint
-  const baseClasses = classMapToString(theme.components.Text.all);
-  const hintClasses = usageHint ? classMapToString(theme.components.Text[usageHint]) : '';
+  // Get merged classes (matches Lit's Styles.merge)
+  const classes = mergeClassMaps(
+    theme.components.Text.all,
+    usageHint ? theme.components.Text[usageHint] : {}
+  );
 
   // Get additional styles based on usage hint
   const additionalStyles = useMemo(() => {
@@ -142,14 +144,9 @@ export const Text = memo(function Text({ node, surfaceId }: A2UIComponentProps<T
     return stylesToObject(textStyles as Record<string, string>);
   }, [theme.additionalStyles?.Text, usageHint]);
 
-  // Check if text needs markdown rendering (has markdown syntax)
-  const needsMarkdown = useMemo(() => {
-    if (!textValue || !markdownRenderer) return false;
-    // Simple heuristic: check for markdown indicators
-    // Skip markdown for simple text without special characters
-    const hasMarkdownSyntax = /[*_`#\[\]\n]/.test(textValue);
-    return hasMarkdownSyntax;
-  }, [textValue]);
+  // Always use markdown rendering when available (matches Lit behavior)
+  // Lit always passes text through markdown directive, even plain text
+  const useMarkdown = markdownRenderer !== null;
 
   // Render markdown content
   const renderedContent = useMemo(() => {
@@ -157,27 +154,52 @@ export const Text = memo(function Text({ node, surfaceId }: A2UIComponentProps<T
       return null;
     }
 
-    // Only use markdown for text that actually needs it
-    if (markdownRenderer && needsMarkdown) {
-      const rawHtml = markdownRenderer.render(textValue);
+    // Always use markdown when available (matches Lit behavior)
+    if (markdownRenderer && useMarkdown) {
+      // Add markdown prefix based on usageHint (matches Lit behavior)
+      let markdownText = textValue;
+      switch (usageHint) {
+        case 'h1':
+          markdownText = `# ${markdownText}`;
+          break;
+        case 'h2':
+          markdownText = `## ${markdownText}`;
+          break;
+        case 'h3':
+          markdownText = `### ${markdownText}`;
+          break;
+        case 'h4':
+          markdownText = `#### ${markdownText}`;
+          break;
+        case 'h5':
+          markdownText = `##### ${markdownText}`;
+          break;
+        case 'caption':
+          markdownText = `*${markdownText}*`;
+          break;
+        default:
+          break; // Body - no prefix
+      }
+
+      const rawHtml = markdownRenderer.render(markdownText);
       const themedHtml = applyMarkdownTheme(rawHtml, theme.markdown);
       return { __html: themedHtml };
     }
 
     // Fallback: render as plain text (escape HTML)
     return null;
-  }, [textValue, theme.markdown, needsMarkdown]);
+  }, [textValue, theme.markdown, useMarkdown, usageHint]);
 
   if (textValue === null || textValue === undefined) {
     return null;
   }
 
   // Always use <section> wrapper to match Lit renderer
-  // Render with markdown (dangerouslySetInnerHTML)
+  // Render with markdown (dangerouslySetInnerHTML) - matches Lit structure
   if (renderedContent) {
     return (
       <section
-        className={cn(baseClasses, hintClasses, 'a2ui-text-markdown')}
+        className={classMapToString(classes)}
         style={additionalStyles}
         dangerouslySetInnerHTML={renderedContent}
       />
@@ -187,7 +209,7 @@ export const Text = memo(function Text({ node, surfaceId }: A2UIComponentProps<T
   // Fallback: render as plain text
   return (
     <section
-      className={cn(baseClasses, hintClasses)}
+      className={classMapToString(classes)}
       style={additionalStyles}
     >
       {textValue}

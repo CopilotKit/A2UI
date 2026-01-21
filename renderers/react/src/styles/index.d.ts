@@ -15,6 +15,13 @@
  */
 
 /**
+ * Default color palette CSS variables.
+ * Defines all the color values (--n-*, --p-*, --s-*, --t-*, --nv-*, --e-*)
+ * that the utility classes reference.
+ */
+export declare const defaultPalette: string;
+
+/**
  * Structural CSS styles converted from Lit renderer.
  * Uses :root {} instead of :host {} for non-Shadow DOM usage.
  */

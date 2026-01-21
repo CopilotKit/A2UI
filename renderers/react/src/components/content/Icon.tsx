@@ -30,20 +30,6 @@ function toSnakeCase(str: string): string {
 }
 
 /**
- * Check if the theme has a container/element structure
- */
-function hasContainerStructure(
-  iconTheme: unknown
-): iconTheme is { container: Record<string, boolean>; element: Record<string, boolean> } {
-  return (
-    typeof iconTheme === 'object' &&
-    iconTheme !== null &&
-    'container' in iconTheme &&
-    'element' in iconTheme
-  );
-}
-
-/**
  * Icon component - renders an icon using Material Symbols Outlined font.
  *
  * This matches the Lit renderer's approach using the g-icon class with
@@ -67,25 +53,13 @@ export const Icon = memo(function Icon({ node, surfaceId }: A2UIComponentProps<T
   // Convert camelCase to snake_case for Material Symbols
   const snakeCaseName = toSnakeCase(iconName);
 
-  const iconTheme = theme.components.Icon;
-  const hasStructure = hasContainerStructure(iconTheme);
-
-  // Get classes based on theme structure
-  const containerClasses = hasStructure
-    ? classMapToString(iconTheme.container)
-    : classMapToString(iconTheme as Record<string, boolean>);
-
-  const elementClasses = hasStructure
-    ? classMapToString(iconTheme.element)
-    : '';
-
-  // Always use <section> wrapper with <span class="g-icon"> to match Lit renderer
+  // Match Lit renderer exactly: section with theme classes, span with g-icon
   return (
     <section
-      className={containerClasses}
+      className={classMapToString(theme.components.Icon)}
       style={stylesToObject(theme.additionalStyles?.Icon)}
     >
-      <span className={`g-icon ${elementClasses}`.trim()}>{snakeCaseName}</span>
+      <span className="g-icon">{snakeCaseName}</span>
     </section>
   );
 });

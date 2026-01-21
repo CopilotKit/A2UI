@@ -42,8 +42,7 @@ export { registerDefaultCatalog, initializeDefaultCatalog } from './registry/def
 
 // Theme
 export { ThemeProvider, useTheme, useThemeOptional } from './theme/ThemeContext';
-export { defaultTheme } from './theme/defaultTheme';
-export { litTheme } from './theme/litTheme';
+export { litTheme, defaultTheme } from './theme/litTheme';
 
 // Utilities
 export { cn, classMapToString, stylesToObject } from './lib/utils';

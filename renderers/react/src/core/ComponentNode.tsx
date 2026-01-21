@@ -64,12 +64,13 @@ export const ComponentNode = memo(function ComponentNode({
     [actualRegistry, node.type]
   );
 
-  // Memoize weight style to prevent object recreation
-  const weightStyle = useMemo<React.CSSProperties | undefined>(() => {
+  // Memoize wrapper style to mimic Lit's :host { display: block; flex: var(--weight); }
+  // Every component needs a block wrapper for proper containment in flex layouts
+  const wrapperStyle = useMemo<React.CSSProperties>(() => {
     const weight = node.weight;
     return typeof weight === 'number'
-      ? { display: 'flex', flex: weight, minHeight: 0 }
-      : undefined;
+      ? { display: 'block', flex: weight }
+      : { display: 'block' };
   }, [node.weight]);
 
   if (!Component) {
@@ -77,17 +78,9 @@ export const ComponentNode = memo(function ComponentNode({
     return <UnknownComponent type={node.type} />;
   }
 
-  // If no weight, render without wrapper for cleaner DOM
-  if (!weightStyle) {
-    return (
-      <Suspense fallback={<LoadingFallback />}>
-        <Component node={node} surfaceId={surfaceId} />
-      </Suspense>
-    );
-  }
-
+  // Always wrap component to mimic Lit's :host element behavior
   return (
-    <div style={weightStyle}>
+    <div style={wrapperStyle}>
       <Suspense fallback={<LoadingFallback />}>
         <Component node={node} surfaceId={surfaceId} />
       </Suspense>

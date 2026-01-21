@@ -22,6 +22,7 @@ import { A2UIProvider, useA2UIActions } from './A2UIProvider';
 import { A2UIRenderer } from './A2UIRenderer';
 import { initializeDefaultCatalog } from '../registry/defaultCatalog';
 import { litTheme } from '../theme/litTheme';
+import { injectStyles } from '../styles';
 import type { OnActionCallback } from '../types';
 
 /**
@@ -57,12 +58,13 @@ export interface A2UIViewerProps {
   className?: string;
 }
 
-// Initialize the component catalog once
-let catalogInitialized = false;
-function ensureCatalogInitialized() {
-  if (!catalogInitialized) {
+// Initialize the component catalog and styles once
+let initialized = false;
+function ensureInitialized() {
+  if (!initialized) {
     initializeDefaultCatalog();
-    catalogInitialized = true;
+    injectStyles(); // Inject structural CSS for litTheme utility classes
+    initialized = true;
   }
 }
 
@@ -96,7 +98,7 @@ export function A2UIViewer({
   theme = litTheme,
   className,
 }: A2UIViewerProps) {
-  ensureCatalogInitialized();
+  ensureInitialized();
 
   // Generate a stable surface ID based on the definition
   const baseId = useId();

@@ -18,7 +18,7 @@ import { useState, memo } from 'react';
 import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
-import { cn, classMapToString, stylesToObject } from '../../lib/utils';
+import { classMapToString, stylesToObject, mergeClassMaps } from '../../lib/utils';
 import { ComponentNode } from '../../core/ComponentNode';
 
 /**
@@ -32,25 +32,33 @@ export const Tabs = memo(function Tabs({ node, surfaceId }: A2UIComponentProps<T
 
   const tabItems = props.tabItems ?? [];
 
+  // Match Lit structure: <section> container with buttons div and slot
   return (
-    <div
+    <section
       className={classMapToString(theme.components.Tabs.container)}
       style={stylesToObject(theme.additionalStyles?.Tabs)}
     >
-      {/* Tab controls */}
-      <div className="a2ui-tabs__controls" role="tablist">
+      {/* Tab buttons - uses Tabs.element for the container */}
+      <div
+        id="buttons"
+        className={classMapToString(theme.components.Tabs.element)}
+      >
         {tabItems.map((tab, index) => {
           const title = resolveString(tab.title);
           const isSelected = index === selectedIndex;
+
+          // Lit merges all + selected classes when selected
           const classes = isSelected
-            ? theme.components.Tabs.controls.selected
+            ? mergeClassMaps(
+                theme.components.Tabs.controls.all,
+                theme.components.Tabs.controls.selected
+              )
             : theme.components.Tabs.controls.all;
 
           return (
             <button
               key={index}
-              role="tab"
-              aria-selected={isSelected}
+              disabled={isSelected}
               className={classMapToString(classes)}
               onClick={() => setSelectedIndex(index)}
             >
@@ -60,19 +68,14 @@ export const Tabs = memo(function Tabs({ node, surfaceId }: A2UIComponentProps<T
         })}
       </div>
 
-      {/* Tab panels */}
-      <div
-        className={classMapToString(theme.components.Tabs.element)}
-        role="tabpanel"
-      >
-        {tabItems[selectedIndex] && (
-          <ComponentNode
-            node={tabItems[selectedIndex].child}
-            surfaceId={surfaceId}
-          />
-        )}
-      </div>
-    </div>
+      {/* Tab content */}
+      {tabItems[selectedIndex] && (
+        <ComponentNode
+          node={tabItems[selectedIndex].child}
+          surfaceId={surfaceId}
+        />
+      )}
+    </section>
   );
 });
 

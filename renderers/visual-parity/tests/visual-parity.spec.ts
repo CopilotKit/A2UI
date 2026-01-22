@@ -153,3 +153,100 @@ test.describe('React Screenshots (for debugging)', () => {
     });
   }
 });
+
+// Debug test to compare DOM structure
+test.describe('DOM Structure Debug', () => {
+  test('debug - compare DOM', async ({ page }) => {
+    // Capture console errors
+    const errors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        errors.push(msg.text());
+      }
+    });
+    page.on('pageerror', err => {
+      errors.push(err.message);
+    });
+
+    // Get Lit DOM - also check shadow DOM
+    await page.goto(`${LIT_BASE_URL}?fixture=textBasic`);
+    await page.waitForSelector('.fixture-container', { state: 'visible' });
+    await page.waitForTimeout(500);
+    const litHtml = await page.locator('.fixture-container').innerHTML();
+
+    // Check a2ui-surface shadow DOM content and text element shadow DOM
+    const litDebug = await page.evaluate(() => {
+      const surface = document.querySelector('a2ui-surface');
+      const surfaceShadow = surface?.shadowRoot?.innerHTML ?? 'no shadow root';
+
+      const textEl = surface?.shadowRoot?.querySelector('a2ui-text');
+      const textShadow = textEl?.shadowRoot?.innerHTML ?? 'no text shadow root';
+
+      // Also check the text property
+      const textProp = JSON.stringify((textEl as any)?.text);
+      const themeProp = JSON.stringify((textEl as any)?.theme?.components?.Text ?? 'no theme');
+
+      // Get computed styles of the section element
+      const sectionEl = textEl?.shadowRoot?.querySelector('section');
+      const h1El = textEl?.shadowRoot?.querySelector('h1');
+      const computedStyle = sectionEl ? window.getComputedStyle(sectionEl) : null;
+      const h1Style = h1El ? window.getComputedStyle(h1El) : null;
+      const litStyles = {
+        fontFamily: computedStyle?.fontFamily,
+        fontSize: computedStyle?.fontSize,
+        lineHeight: computedStyle?.lineHeight,
+        color: computedStyle?.color,
+        sectionMargin: computedStyle?.margin,
+        h1Margin: h1Style?.margin,
+        h1FontSize: h1Style?.fontSize,
+      };
+
+      return { surfaceShadow, textShadow, textProp, themeProp, litStyles };
+    });
+
+    // Get React DOM
+    await page.goto(`${REACT_BASE_URL}?fixture=textBasic`);
+    await page.waitForSelector('.fixture-container', { state: 'visible' });
+    await page.waitForTimeout(500);
+    const reactHtml = await page.locator('.fixture-container').innerHTML();
+
+    // Get React computed styles
+    const reactStyles = await page.evaluate(() => {
+      const sectionEl = document.querySelector('.a2ui-surface section');
+      const h1El = document.querySelector('.a2ui-surface h1');
+      const computedStyle = sectionEl ? window.getComputedStyle(sectionEl) : null;
+      const h1Style = h1El ? window.getComputedStyle(h1El) : null;
+      return {
+        fontFamily: computedStyle?.fontFamily,
+        fontSize: computedStyle?.fontSize,
+        lineHeight: computedStyle?.lineHeight,
+        color: computedStyle?.color,
+        sectionMargin: computedStyle?.margin,
+        h1Margin: h1Style?.margin,
+        h1FontSize: h1Style?.fontSize,
+      };
+    });
+
+    console.log('\n=== Lit Console Errors ===');
+    console.log(errors.length ? errors.join('\n') : 'No errors');
+    console.log('\n=== Lit DOM (light) ===');
+    console.log(litHtml);
+    console.log('\n=== Lit Surface Shadow DOM ===');
+    console.log(litDebug.surfaceShadow);
+    console.log('\n=== Lit Text Shadow DOM ===');
+    console.log(litDebug.textShadow);
+    console.log('\n=== Lit Text .text property ===');
+    console.log(litDebug.textProp);
+    console.log('\n=== Lit Text .theme.components.Text ===');
+    console.log(litDebug.themeProp);
+    console.log('\n=== Lit Computed Styles ===');
+    console.log(JSON.stringify(litDebug.litStyles, null, 2));
+    console.log('\n=== React DOM ===');
+    console.log(reactHtml);
+    console.log('\n=== React Computed Styles ===');
+    console.log(JSON.stringify(reactStyles, null, 2));
+
+    // This test always passes - it's just for debugging
+    expect(true).toBe(true);
+  });
+});

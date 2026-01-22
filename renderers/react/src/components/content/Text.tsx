@@ -19,6 +19,7 @@ import type { Types } from '@a2ui/lit/0.8';
 import type { A2UIComponentProps } from '../../types';
 import { useA2UIComponent } from '../../hooks/useA2UIComponent';
 import { classMapToString, stylesToObject, mergeClassMaps } from '../../lib/utils';
+import MarkdownIt from 'markdown-it';
 
 type UsageHint = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'caption' | 'body';
 
@@ -39,35 +40,15 @@ function isHintedStyles(styles: unknown): styles is HintedStyles {
 }
 
 /**
- * Markdown-it instance (lazily loaded).
- * This is an optional dependency - if not installed, text renders as plain text.
+ * Markdown-it instance for rendering markdown text.
+ * Uses synchronous import to ensure availability at first render (matches Lit renderer).
  */
-type MarkdownIt = {
-  render: (text: string) => string;
-};
-
-let markdownRenderer: MarkdownIt | null = null;
-let markdownLoadAttempted = false;
-
-async function loadMarkdownIt(): Promise<void> {
-  if (markdownLoadAttempted) return;
-  markdownLoadAttempted = true;
-
-  try {
-    const MarkdownIt = (await import('markdown-it')).default;
-    markdownRenderer = new MarkdownIt({
-      html: false, // Security: disable raw HTML
-      breaks: true, // Convert \n to <br>
-      linkify: true, // Auto-convert URLs to links
-      typographer: true, // Smart quotes, dashes, etc.
-    });
-  } catch {
-    // markdown-it not installed, will render as plain text
-  }
-}
-
-// Start loading markdown-it immediately
-loadMarkdownIt();
+const markdownRenderer = new MarkdownIt({
+  html: false, // Security: disable raw HTML
+  breaks: true, // Convert \n to <br>
+  linkify: true, // Auto-convert URLs to links
+  typographer: true, // Smart quotes, dashes, etc.
+});
 
 /**
  * Apply theme classes to markdown HTML elements.
@@ -99,15 +80,10 @@ function applyMarkdownTheme(html: string, markdownTheme: Types.Theme['markdown']
 }
 
 /**
- * Text component - renders text content with optional markdown support.
+ * Text component - renders text content with markdown support.
  *
- * When markdown-it is installed, text is parsed as markdown and rendered as HTML.
+ * Text is parsed as markdown and rendered as HTML (matches Lit renderer behavior).
  * Supports usageHint values: h1, h2, h3, h4, h5, caption, body
- *
- * @example With markdown support:
- * ```bash
- * npm install markdown-it
- * ```
  *
  * Markdown features supported:
  * - **Bold** and *italic* text
@@ -144,76 +120,53 @@ export const Text = memo(function Text({ node, surfaceId }: A2UIComponentProps<T
     return stylesToObject(textStyles as Record<string, string>);
   }, [theme.additionalStyles?.Text, usageHint]);
 
-  // Always use markdown rendering when available (matches Lit behavior)
-  // Lit always passes text through markdown directive, even plain text
-  const useMarkdown = markdownRenderer !== null;
-
-  // Render markdown content
+  // Render markdown content (matches Lit behavior - always uses markdown)
   const renderedContent = useMemo(() => {
     if (textValue === null || textValue === undefined) {
       return null;
     }
 
-    // Always use markdown when available (matches Lit behavior)
-    if (markdownRenderer && useMarkdown) {
-      // Add markdown prefix based on usageHint (matches Lit behavior)
-      let markdownText = textValue;
-      switch (usageHint) {
-        case 'h1':
-          markdownText = `# ${markdownText}`;
-          break;
-        case 'h2':
-          markdownText = `## ${markdownText}`;
-          break;
-        case 'h3':
-          markdownText = `### ${markdownText}`;
-          break;
-        case 'h4':
-          markdownText = `#### ${markdownText}`;
-          break;
-        case 'h5':
-          markdownText = `##### ${markdownText}`;
-          break;
-        case 'caption':
-          markdownText = `*${markdownText}*`;
-          break;
-        default:
-          break; // Body - no prefix
-      }
-
-      const rawHtml = markdownRenderer.render(markdownText);
-      const themedHtml = applyMarkdownTheme(rawHtml, theme.markdown);
-      return { __html: themedHtml };
+    // Add markdown prefix based on usageHint (matches Lit behavior)
+    let markdownText = textValue;
+    switch (usageHint) {
+      case 'h1':
+        markdownText = `# ${markdownText}`;
+        break;
+      case 'h2':
+        markdownText = `## ${markdownText}`;
+        break;
+      case 'h3':
+        markdownText = `### ${markdownText}`;
+        break;
+      case 'h4':
+        markdownText = `#### ${markdownText}`;
+        break;
+      case 'h5':
+        markdownText = `##### ${markdownText}`;
+        break;
+      case 'caption':
+        markdownText = `*${markdownText}*`;
+        break;
+      default:
+        break; // Body - no prefix
     }
 
-    // Fallback: render as plain text (escape HTML)
-    return null;
-  }, [textValue, theme.markdown, useMarkdown, usageHint]);
+    const rawHtml = markdownRenderer.render(markdownText);
+    const themedHtml = applyMarkdownTheme(rawHtml, theme.markdown);
+    return { __html: themedHtml };
+  }, [textValue, theme.markdown, usageHint]);
 
-  if (textValue === null || textValue === undefined) {
+  if (!renderedContent) {
     return null;
   }
 
-  // Always use <section> wrapper to match Lit renderer
-  // Render with markdown (dangerouslySetInnerHTML) - matches Lit structure
-  if (renderedContent) {
-    return (
-      <section
-        className={classMapToString(classes)}
-        style={additionalStyles}
-        dangerouslySetInnerHTML={renderedContent}
-      />
-    );
-  }
-
-  // Fallback: render as plain text
+  // Always use <section> wrapper with markdown rendering (matches Lit structure)
   return (
     <section
       className={classMapToString(classes)}
       style={additionalStyles}
-    >
-      {textValue}
-    </section>
+      dangerouslySetInnerHTML={renderedContent}
+    />
   );
 });
 

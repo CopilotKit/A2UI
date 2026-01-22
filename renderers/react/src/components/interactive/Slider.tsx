@@ -63,22 +63,38 @@ export const Slider = memo(function Slider({ node, surfaceId }: A2UIComponentPro
     [valuePath, setValue]
   );
 
-  // Use <section> container to match Lit renderer
+  // Access label from props if it exists (Lit component supports it but type doesn't define it)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const labelValue = (props as any).label;
+  const { resolveString } = useA2UIComponent(node, surfaceId);
+  const label = labelValue ? resolveString(labelValue) : '';
+
+  // Use <section> container to match Lit renderer structure:
+  // <section><label>...</label><input/><span>value</span></section>
   return (
     <section
       className={classMapToString(theme.components.Slider.container)}
       style={stylesToObject(theme.additionalStyles?.Slider)}
     >
+      <label
+        htmlFor={id}
+        className={classMapToString(theme.components.Slider.label)}
+      >
+        {label}
+      </label>
       <input
         type="range"
         id={id}
+        name="data"
         value={value}
         min={minValue}
         max={maxValue}
         onChange={handleChange}
         className={classMapToString(theme.components.Slider.element)}
       />
-      <span className="a2ui-slider__value">{value}</span>
+      <span className={classMapToString(theme.components.Slider.label)}>
+        {value}
+      </span>
     </section>
   );
 });

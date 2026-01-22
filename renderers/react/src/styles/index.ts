@@ -169,8 +169,16 @@ export const structuralStyles: string = Styles.structuralStyles.replace(
  * CSS overrides that must come AFTER structural styles to take precedence.
  * These fix React-specific issues and allow CSS variable customization.
  * All rules scoped to .a2ui-surface to avoid affecting the rest of the page.
+ *
+ * IMPORTANT: These styles replicate the Shadow DOM scoped CSS from Lit components.
+ * When Lit has `static styles = [...]` with element selectors, we need equivalent
+ * rules here since React uses Light DOM where page CSS can interfere.
  */
 export const styleOverrides: string = `
+/* =========================================================================
+ * Button
+ * ========================================================================= */
+
 /* Button text color override - ensure button text is white regardless of inner element colors */
 .a2ui-surface button.color-c-p100 p,
 .a2ui-surface button.color-c-p100 section,
@@ -179,14 +187,13 @@ export const styleOverrides: string = `
   color: inherit !important;
 }
 
+/* =========================================================================
+ * Card (matches Lit card.ts Shadow DOM styles)
+ * ========================================================================= */
+
 /* Allow card background to be overridden via CSS variable --a2ui-card-bg */
 .a2ui-surface .color-bgc-n100 {
   background-color: var(--a2ui-card-bg, light-dark(var(--n-100), var(--n-0))) !important;
-}
-
-/* Ensure markdown paragraph margins are reset (matches Lit structural styles) */
-.a2ui-surface section p {
-  margin: 0;
 }
 
 /* Match Lit Card's ::slotted(*) rule - direct children get full size */
@@ -195,13 +202,99 @@ export const styleOverrides: string = `
   width: 100%;
 }
 
+/* =========================================================================
+ * Divider (matches Lit divider.ts Shadow DOM styles)
+ * ========================================================================= */
+
 /* Match Lit Divider's Shadow DOM hr styling */
-/* This ensures consistent rendering regardless of page-level CSS resets */
-/* Note: background color is set by theme class (color-bgc-*), not here */
+/* Lit has: hr { height: 1px; background: #ccc; border: none; } */
 .a2ui-surface hr {
   height: 1px;
+  background: #ccc;
   border: none;
   margin: 8px 0;
+}
+
+/* =========================================================================
+ * Text (matches Lit text.ts Shadow DOM styles)
+ * ========================================================================= */
+
+/* Ensure markdown paragraph margins are reset (matches Lit structural styles) */
+.a2ui-surface section p {
+  margin: 0;
+}
+
+/* Match Lit Text's h1-h5 reset - prevents browser defaults from affecting text */
+/* Lit has: h1, h2, h3, h4, h5 { line-height: inherit; font: inherit; } */
+/* Note: Do NOT reset margin here - margins are controlled by theme classes (layout-mb-*) */
+.a2ui-surface section h1,
+.a2ui-surface section h2,
+.a2ui-surface section h3,
+.a2ui-surface section h4,
+.a2ui-surface section h5 {
+  line-height: inherit;
+  font: inherit;
+}
+
+/* =========================================================================
+ * TextField (matches Lit text-field.ts Shadow DOM styles)
+ * ========================================================================= */
+
+/* Match Lit TextField's input styling */
+/* Lit has: input { display: block; width: 100%; } */
+.a2ui-surface section input[type="text"],
+.a2ui-surface section input[type="number"],
+.a2ui-surface section input[type="date"] {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Match Lit TextField's label styling */
+/* Lit has: label { display: block; margin-bottom: 4px; } */
+.a2ui-surface section > label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* Match Lit TextField's textarea styling */
+.a2ui-surface section textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* =========================================================================
+ * CheckBox (matches Lit checkbox.ts Shadow DOM styles)
+ * ========================================================================= */
+
+/* Match Lit CheckBox's input styling */
+/* Lit has: input { display: block; width: 100%; } */
+/* Note: checkbox input width: 100% is from Lit but may need adjustment */
+.a2ui-surface section input[type="checkbox"] {
+  box-sizing: border-box;
+}
+
+/* =========================================================================
+ * Slider (matches Lit slider.ts Shadow DOM styles)
+ * ========================================================================= */
+
+/* Match Lit Slider's input styling */
+/* Lit has: input { display: block; width: 100%; } */
+.a2ui-surface section input[type="range"] {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* =========================================================================
+ * Global box-sizing (matches Lit's * { box-sizing: border-box; } in components)
+ * ========================================================================= */
+
+.a2ui-surface *,
+.a2ui-surface *::before,
+.a2ui-surface *::after {
+  box-sizing: border-box;
 }
 `;
 

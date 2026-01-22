@@ -4,7 +4,8 @@ import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { provide } from '@lit/context';
 import { allFixtures, type FixtureName, type ComponentFixture } from '../../fixtures';
-import { visualParityTheme } from '../../fixtures/theme';
+// Import litTheme from React package - it's designed to work with both renderers
+import { litTheme } from '@a2ui/react';
 
 // Inject structural styles
 const styleEl = document.createElement('style');
@@ -15,7 +16,7 @@ document.head.appendChild(styleEl);
 @customElement('a2ui-theme-provider')
 class ThemeProvider extends LitElement {
   @provide({ context: UI.Context.themeContext })
-  accessor theme: v0_8.Types.Theme = visualParityTheme;
+  accessor theme: v0_8.Types.Theme = litTheme;
 
   render() {
     return html`<slot></slot>`;

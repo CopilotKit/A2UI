@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>A2UI Visual Parity - React</title>
+    <!-- Material Symbols font for icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <style>
       * {
         margin: 0;
@@ -23,6 +25,8 @@
       }
 
       /* Reset heading styles to inherit from parent (match Shadow DOM behavior) */
+      /* Note: margins are controlled by theme utility classes (layout-mt-*, layout-mb-*) */
+      /* so we only reset font properties here, not margins */
       .a2ui-surface section h1,
       .a2ui-surface section h2,
       .a2ui-surface section h3,
@@ -31,7 +35,6 @@
       .a2ui-surface section h6 {
         font-size: inherit;
         font-weight: inherit;
-        margin: 0;
       }
     </style>
   </head>

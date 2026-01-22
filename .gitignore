@@ -15,3 +15,7 @@ site/
 # Python virtual environment
 .venv/
 *.tsbuildinfo
+
+# Playwright test output
+playwright-report/
+test-results/

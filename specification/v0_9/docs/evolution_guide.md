@@ -1,6 +1,6 @@
 # A2UI Protocol Evolution Guide: v0.8.1 to v0.9
 
-This document serves as a comprehensive guide to the changes between A2UI version 0.8 and version 0.9. It details the shifts in philosophy, architecture, and implementation, providing a reference for stakeholders and developers migrating between versions.
+This document serves as a comprehensive guide to the changes between A2UI version 0.8.1 and version 0.9. It details the shifts in philosophy, architecture, and implementation, providing a reference for stakeholders and developers migrating between versions.
 
 ## 1. Executive Summary
 
@@ -11,19 +11,20 @@ Version 0.9 represents a fundamental philosophical shift from "Structured Output
 
 ### Summary Table
 
-| Feature                  | v0.8.1                                   | v0.9                                                 |
-| :----------------------- | :--------------------------------------- | :--------------------------------------------------- |
-| **Philosophy**           | Structured Output / Function Calling     | Prompt-First / In-Context Schema                     |
-| **Message Types**        | `beginRendering`, `surfaceUpdate`, ...   | `createSurface`, `updateComponents`, ...             |
-| **Surface Creation**     | Explicit `beginRendering`                | Explicit `createSurface`                             |
-| **Component Type**       | Key-based wrapper (`{"Text": ...}`)      | Property-based discriminator (`"component": "Text"`) |
-| **Data Model Update**    | Array of Key-Value Pairs                 | Standard JSON Object                                 |
-| **Data Binding**         | `dataBinding` / `literalString`          | `path` / Native JSON types                           |
-| **Button Context**       | Array of Key-Value pairs                 | Standard JSON Object                                 |
-| **Catalog**              | Separate component and function catalogs | Unified Catalog (`standard_catalog.json`)            |
-| **Auxiliary Rules**      | N/A                                      | `standard_catalog_rules.txt`                         |
-| **Validation**           | Basic Schema                             | Strict `ValidationFailed` feedback loop              |
-| **Data Synchronization** | Implicit                                 | Explicit Broadcasting (`broadcastDataModel`)         |
+| Feature                  | v0.8.1                                   | v0.9                                                     |
+| :----------------------- | :--------------------------------------- | :------------------------------------------------------- |
+| **Philosophy**           | Structured Output / Function Calling     | Prompt-First / In-Context Schema                         |
+| **Message Types**        | `beginRendering`, `surfaceUpdate`, ...   | `createSurface`, `updateComponents`, ...                 |
+| **Surface Creation**     | Explicit `beginRendering`                | Explicit `createSurface`                                 |
+| **Component Type**       | Key-based wrapper (`{"Text": ...}`)      | Property-based discriminator (`"component": "Text"`)     |
+| **Data Model Update**    | Array of Key-Value Pairs                 | Standard JSON Object                                     |
+| **Data Binding**         | `dataBinding` / `literalString`          | `path` / Native JSON types                               |
+| **Button Context**       | Array of Key-Value pairs                 | Standard JSON Object                                     |
+| **Button Variant**       | Boolean (`primary: true`)                | Enum (`variant: "primary"`)                              |
+| **Catalog**              | Separate component and function catalogs | Unified Catalog (`standard_catalog.json`)                |
+| **Auxiliary Rules**      | N/A                                      | `standard_catalog_rules.txt`                             |
+| **Validation**           | Basic Schema                             | Strict `ValidationFailed` feedback loop                  |
+| **Data Synchronization** | Implicit                                 | Explicit Client->Server data syncing (`sendDataModel`) |
 
 ## 2. Architectural & Schema Changes
 
@@ -32,7 +33,7 @@ Version 0.9 represents a fundamental philosophical shift from "Structured Output
 **v0.8.1:**
 
 - Monolithic tendencies. `server_to_client.json` often contained deep definitions or relied on complex `oneOf` structures that were hard to decompose.
-- `standard_catalog_definition.json` existed but was often implicitly coupled.
+- `standard_catalog_definition.json` existed but was often implicitly coupled.ß
 
 **v0.9:**
 
@@ -79,7 +80,7 @@ Version 0.9 represents a fundamental philosophical shift from "Structured Output
 - **Replacement**: `beginRendering` is **REPLACED** by `createSurface`.
 - **Purpose**: `createSurface` signals the client to create a new surface and prepare for rendering.
 - **Theme Information**: `createSurface` includes a `theme` property to specify theme parameters (like `primaryColor`). This replaces the `styles` property in v0.8.
-- **Root Rule**: The rule is: "There must be exactly one component with the ID `root`." The "root" attribute that `beginRendering` had has been removed. The client is expected to render as soon as it has a valid tree with a root component.
+- **Root Rule**: The rule is: "There must be exactly one component with the `ComponentId` 'root'." The "root" attribute that `beginRendering` had has been removed. The client is expected to render as soon as it has a valid tree with a root component.
 - **New Requirement**: `createSurface` now requires a **`catalogId`** (URI) to explicitly state which unified catalog (components and functions) is being used.
 
 **Example:**
@@ -225,10 +226,11 @@ Specifying an unknown surfaceId will cause an error. It is recommended that clie
 
 **v0.9:**
 
-- **String Formatting**: Introduced the `string_format` function, which supports `${expression}` syntax for interpolation.
+- **String Formatting**: Introduced the `formatString` function, which supports `${expression}` syntax for interpolation.
 - **Unified Expression Language**: Allows embedding JSON Pointer paths (absolute and relative) and client-side function calls directly within the format string.
 - **Nesting**: Supports recursive nesting of expressions (e.g., `${formatDate(${/timestamp}, 'yyyy-MM-dd')}`).
-- **Reason**: Improves readability for complex strings. Instead of generating complex nested JSON objects (like chained concatenations) to combine strings and data, the model can write natural-looking template literals within the `string_format` function.
+- **Restriction**: String interpolation `${...}` is **ONLY** supported within the `formatString` function. It is not supported in general for string properties, in order to strictly separate data binding definitions from static content.
+- **Reason**: Improves readability for complex strings. Instead of generating complex nested JSON objects (like chained concatenations) to combine strings and data, the model can write natural-looking template literals within the `formatString` function.
 
 ### 5.4. Data Synchronization
 
@@ -238,9 +240,9 @@ Specifying an unknown surfaceId will cause an error. It is recommended that clie
 
 **v0.9:**
 
-- **Explicit Broadcasting**: `createSurface` introduced `broadcastDataModel` (boolean).
+- **Explicit Client->Server Data Model Sync**: `createSurface` introduced `sendDataModel` (boolean).
 - **Single-Path Updates**: Server pushes updates via `updateDataModel` using simple `path`/`value` pairs.
-- **Broadcasting**: When `broadcastDataModel` is true, the client includes the full data model in every A2A message metadata.
+- **Client->Server Data Model Sync**: When `sendDataModel` is true, the client includes the full data model in every A2A message metadata.
 
 ## 6. Component-Specific Changes
 
@@ -256,7 +258,19 @@ Specifying an unknown surfaceId will cause an error. It is recommended that clie
 - **Standard Map**: `context: { "id": "123" }`
 - **Reason**: Token efficiency. LLMs understand JSON objects as maps natively.
 
-### 6.2. TextField
+### 6.2. Button Variant
+
+**v0.8.1:**
+
+- **Boolean**: `primary: true` or `primary: false`.
+- **Limited**: Only two styles were explicitly supported.
+
+**v0.9:**
+
+- **Enum**: `variant: "primary"` or `variant: "borderless"`.
+- **Reason**: More flexible and consistent with other components (like `Text` and `Image`) that use `variant` for styling hints. 'borderless' provides a standard way to represent clickable text or icons without a button-like frame.
+
+### 6.3. TextField
 
 **v0.8.1:**
 
@@ -269,7 +283,7 @@ Specifying an unknown surfaceId will cause an error. It is recommended that clie
 - Validation: **`checks`** (generic list of function calls).
 - **Reason**: Consistency with `Text` and `Image` components which already used `variant`. Validation is now more flexible and reusable. Also, `text` was renamed to **`value`** to match other input components.
 
-### 6.3. ChoicePicker (vs MultipleChoice)
+### 6.4. ChoicePicker (vs MultipleChoice)
 
 **v0.8.1:**
 
@@ -282,7 +296,7 @@ Specifying an unknown surfaceId will cause an error. It is recommended that clie
 - Properties: **`value`** (array), **`variant`** (enum: `multipleSelection`, `mutuallyExclusive`). The `maxAllowedSelections` property was removed.
 - **Reason**: `ChoicePicker` is a more generic name that covers both radio buttons (mutually exclusive) and checkboxes (multiple selection). The `variant` controls the behavior, simplifying the component surface area.
 
-### 6.4. Slider
+### 6.5. Slider
 
 **v0.8.1:**
 

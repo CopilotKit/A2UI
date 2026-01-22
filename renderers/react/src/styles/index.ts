@@ -143,10 +143,10 @@ export const defaultPalette: string = `
   --e-5: #2d0001;
   --e-0: #000000;
 
-  /* Font family */
-  --font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-family-flex: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-family-mono: 'Courier New', Courier, monospace;
+  /* Font family - matches Lit's default-font-family for visual parity */
+  --font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-flex: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-mono: "Courier New", Courier, monospace;
 
   /* Color scheme for light-dark() function - default to light mode */
   --color-scheme: light;
@@ -193,6 +193,15 @@ export const styleOverrides: string = `
 .a2ui-surface .a2ui-card > div {
   height: 100%;
   width: 100%;
+}
+
+/* Match Lit Divider's Shadow DOM hr styling */
+/* This ensures consistent rendering regardless of page-level CSS resets */
+/* Note: background color is set by theme class (color-bgc-*), not here */
+.a2ui-surface hr {
+  height: 1px;
+  border: none;
+  margin: 8px 0;
 }
 `;
 

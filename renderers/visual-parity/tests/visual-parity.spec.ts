@@ -21,8 +21,9 @@ const REACT_BASE_URL = 'http://localhost:5001';
 const LIT_BASE_URL = 'http://localhost:5002';
 
 // Strict threshold for visual parity
-// 0.1 = 10% color difference tolerance per pixel
-const PIXEL_DIFF_THRESHOLD = 0.1;
+// 0.01 = 1% color difference tolerance per pixel (very strict)
+// This catches subtle color differences while allowing minor anti-aliasing variance
+const PIXEL_DIFF_THRESHOLD = 0.01;
 
 // Maximum allowed different pixels (as percentage of total)
 const MAX_DIFF_PERCENT = 1; // 1% of pixels can differ
@@ -85,38 +86,54 @@ function compareImages(
 
 test.describe('Visual Parity: React vs Lit (Direct Comparison)', () => {
   for (const fixture of fixtures) {
-    test(`${fixture} - React matches Lit`, async ({ page }) => {
-      // Screenshot Lit (reference)
-      await page.goto(`${LIT_BASE_URL}?fixture=${fixture}`);
-      await page.waitForSelector('.fixture-container', { state: 'visible' });
-      await page.waitForTimeout(500);
-      const litContainer = page.locator('.fixture-container');
-      const litScreenshot = await litContainer.screenshot();
+    test(`${fixture} - React matches Lit`, async ({ browser }) => {
+      // Use separate contexts to avoid any state leakage between renderers
+      const litContext = await browser.newContext();
+      const reactContext = await browser.newContext();
 
-      // Screenshot React (test subject)
-      await page.goto(`${REACT_BASE_URL}?fixture=${fixture}`);
-      await page.waitForSelector('.fixture-container', { state: 'visible' });
-      await page.waitForTimeout(500);
-      const reactContainer = page.locator('.fixture-container');
-      const reactScreenshot = await reactContainer.screenshot();
+      try {
+        const litPage = await litContext.newPage();
+        const reactPage = await reactContext.newPage();
 
-      // Direct comparison: React vs Lit
-      const { diffPixels, totalPixels, diffPercent } = compareImages(
-        reactScreenshot,
-        litScreenshot
-      );
+        // Screenshot Lit (reference)
+        await litPage.goto(`${LIT_BASE_URL}?fixture=${fixture}`);
+        await litPage.waitForSelector('.fixture-container', { state: 'visible' });
+        await litPage.waitForLoadState('networkidle');
+        // Wait for fonts to load (important for text rendering parity)
+        await litPage.evaluate(() => document.fonts.ready);
+        const litContainer = litPage.locator('.fixture-container');
+        const litScreenshot = await litContainer.screenshot();
 
-      // Report the difference
-      console.log(
-        `${fixture}: ${diffPixels}/${totalPixels} pixels differ (${diffPercent.toFixed(2)}%)`
-      );
+        // Screenshot React (test subject)
+        await reactPage.goto(`${REACT_BASE_URL}?fixture=${fixture}`);
+        await reactPage.waitForSelector('.fixture-container', { state: 'visible' });
+        await reactPage.waitForLoadState('networkidle');
+        // Wait for fonts to load
+        await reactPage.evaluate(() => document.fonts.ready);
+        const reactContainer = reactPage.locator('.fixture-container');
+        const reactScreenshot = await reactContainer.screenshot();
 
-      // Fail if difference exceeds threshold
-      expect(
-        diffPercent,
-        `React and Lit differ by ${diffPercent.toFixed(2)}% (${diffPixels} pixels). ` +
-          `Max allowed: ${MAX_DIFF_PERCENT}%`
-      ).toBeLessThanOrEqual(MAX_DIFF_PERCENT);
+        // Direct comparison: React vs Lit
+        const { diffPixels, totalPixels, diffPercent } = compareImages(
+          reactScreenshot,
+          litScreenshot
+        );
+
+        // Report the difference
+        console.log(
+          `${fixture}: ${diffPixels}/${totalPixels} pixels differ (${diffPercent.toFixed(2)}%)`
+        );
+
+        // Fail if difference exceeds threshold
+        expect(
+          diffPercent,
+          `React and Lit differ by ${diffPercent.toFixed(2)}% (${diffPixels} pixels). ` +
+            `Max allowed: ${MAX_DIFF_PERCENT}%`
+        ).toBeLessThanOrEqual(MAX_DIFF_PERCENT);
+      } finally {
+        await litContext.close();
+        await reactContext.close();
+      }
     });
   }
 });
@@ -169,43 +186,46 @@ test.describe('DOM Structure Debug', () => {
     });
 
     // Get Lit DOM - also check shadow DOM
-    await page.goto(`${LIT_BASE_URL}?fixture=textBasic`);
-    await page.waitForSelector('.fixture-container', { state: 'visible' });
-    await page.waitForTimeout(500);
+    await page.goto(`${LIT_BASE_URL}?fixture=dividerHorizontal`);
+    await page.waitForSelector('.fixture-container', { state: 'attached' });
+    await page.waitForTimeout(1000);
     const litHtml = await page.locator('.fixture-container').innerHTML();
 
-    // Check a2ui-surface shadow DOM content and text element shadow DOM
+    // Check a2ui-surface shadow DOM content
     const litDebug = await page.evaluate(() => {
       const surface = document.querySelector('a2ui-surface');
       const surfaceShadow = surface?.shadowRoot?.innerHTML ?? 'no shadow root';
 
-      const textEl = surface?.shadowRoot?.querySelector('a2ui-text');
-      const textShadow = textEl?.shadowRoot?.innerHTML ?? 'no text shadow root';
+      // Check for root element
+      const rootEl = surface?.shadowRoot?.querySelector('a2ui-root');
+      const rootShadow = rootEl?.shadowRoot?.innerHTML ?? 'no root shadow';
 
-      // Also check the text property
-      const textProp = JSON.stringify((textEl as any)?.text);
-      const themeProp = JSON.stringify((textEl as any)?.theme?.components?.Text ?? 'no theme');
+      // Check for divider element
+      const dividerEl = rootEl?.shadowRoot?.querySelector('a2ui-divider') ??
+                        surface?.shadowRoot?.querySelector('a2ui-divider');
+      const dividerShadow = dividerEl?.shadowRoot?.innerHTML ?? 'no divider shadow root';
 
-      // Get computed styles of the section element
-      const sectionEl = textEl?.shadowRoot?.querySelector('section');
-      const h1El = textEl?.shadowRoot?.querySelector('h1');
-      const computedStyle = sectionEl ? window.getComputedStyle(sectionEl) : null;
-      const h1Style = h1El ? window.getComputedStyle(h1El) : null;
+      // Get computed styles of the hr element
+      const hrEl = dividerEl?.shadowRoot?.querySelector('hr');
+      const hrStyle = hrEl ? window.getComputedStyle(hrEl) : null;
+      const containerStyle = document.querySelector('.fixture-container');
+      const containerComputed = containerStyle ? window.getComputedStyle(containerStyle) : null;
+
       const litStyles = {
-        fontFamily: computedStyle?.fontFamily,
-        fontSize: computedStyle?.fontSize,
-        lineHeight: computedStyle?.lineHeight,
-        color: computedStyle?.color,
-        sectionMargin: computedStyle?.margin,
-        h1Margin: h1Style?.margin,
-        h1FontSize: h1Style?.fontSize,
+        hrHeight: hrStyle?.height,
+        hrWidth: hrStyle?.width,
+        hrDisplay: hrStyle?.display,
+        hrBackground: hrStyle?.background,
+        containerDisplay: containerComputed?.display,
+        containerWidth: containerComputed?.width,
+        containerHeight: containerComputed?.height,
       };
 
-      return { surfaceShadow, textShadow, textProp, themeProp, litStyles };
+      return { surfaceShadow, rootShadow, dividerShadow, litStyles };
     });
 
     // Get React DOM
-    await page.goto(`${REACT_BASE_URL}?fixture=textBasic`);
+    await page.goto(`${REACT_BASE_URL}?fixture=dividerHorizontal`);
     await page.waitForSelector('.fixture-container', { state: 'visible' });
     await page.waitForTimeout(500);
     const reactHtml = await page.locator('.fixture-container').innerHTML();
@@ -233,12 +253,10 @@ test.describe('DOM Structure Debug', () => {
     console.log(litHtml);
     console.log('\n=== Lit Surface Shadow DOM ===');
     console.log(litDebug.surfaceShadow);
-    console.log('\n=== Lit Text Shadow DOM ===');
-    console.log(litDebug.textShadow);
-    console.log('\n=== Lit Text .text property ===');
-    console.log(litDebug.textProp);
-    console.log('\n=== Lit Text .theme.components.Text ===');
-    console.log(litDebug.themeProp);
+    console.log('\n=== Lit Root Shadow DOM ===');
+    console.log(litDebug.rootShadow);
+    console.log('\n=== Lit Divider Shadow DOM ===');
+    console.log(litDebug.dividerShadow);
     console.log('\n=== Lit Computed Styles ===');
     console.log(JSON.stringify(litDebug.litStyles, null, 2));
     console.log('\n=== React DOM ===');

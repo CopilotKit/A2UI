@@ -9,6 +9,6 @@ export default defineConfig({
     strictPort: true,
   },
   optimizeDeps: {
-    include: ['@a2ui/react', '@a2ui/lit'],
+    include: ['@a2ui/react', '@a2ui/lit', 'markdown-it'],
   },
 });

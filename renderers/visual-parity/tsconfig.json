@@ -12,5 +12,5 @@
     "resolveJsonModule": true,
     "jsx": "react-jsx"
   },
-  "include": ["fixtures", "react/src", "lit/src", "tests"]
+  "include": ["fixtures", "react/src", "lit/src", "tests", "types"]
 }

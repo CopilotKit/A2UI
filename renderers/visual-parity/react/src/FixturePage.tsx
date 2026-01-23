@@ -57,6 +57,8 @@ export function FixturePage() {
 
   // No fixture specified - show list of available fixtures
   if (!fixtureName) {
+    const currentTheme = new URLSearchParams(window.location.search).get('theme') || 'lit';
+    const themes = ['lit', 'visualParity', 'minimal'];
     return (
       <div>
         <h1>Visual Parity - React</h1>
@@ -64,10 +66,19 @@ export function FixturePage() {
         <ul>
           {Object.keys(allFixtures).map((name) => (
             <li key={name}>
-              <a href={`?fixture=${name}`}>{name}</a>
+              <a href={`?fixture=${name}&theme=${currentTheme}`}>{name}</a>
             </li>
           ))}
         </ul>
+        <h2>Available themes:</h2>
+        <ul>
+          {themes.map((theme) => (
+            <li key={theme}>
+              <a href={`?theme=${theme}`}>{theme}</a> {theme === currentTheme ? '(current)' : ''}
+            </li>
+          ))}
+        </ul>
+        <p>Current theme: <strong>{currentTheme}</strong></p>
       </div>
     );
   }

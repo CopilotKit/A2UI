@@ -1,7 +1,6 @@
 /**
- * Shared theme for visual parity tests.
- * This exact theme must be used by BOTH React and Lit fixture pages
- * to ensure visual consistency.
+ * Visual parity theme for visual parity tests.
+ * This is an alternate theme designed for testing theme switching.
  */
 
 import type { Types } from '@a2ui/lit/0.8';
@@ -32,6 +31,17 @@ export const visualParityTheme: Types.Theme = {
         'typography-w-500': true,
         'typography-sz-hs': true,
       },
+      h4: {
+        'typography-f-sf': true,
+        'typography-w-500': true,
+        'typography-sz-tl': true,
+      },
+      h5: {
+        'typography-f-sf': true,
+        'typography-w-500': true,
+        'typography-sz-tm': true,
+      },
+      body: {},
       caption: {
         'typography-sz-ls': true,
         'color-c-n40': true,
@@ -44,6 +54,11 @@ export const visualParityTheme: Types.Theme = {
     Image: {
       all: { 'layout-w-100': true },
       avatar: { 'border-br-50': true },
+      header: {},
+      icon: {},
+      largeFeature: {},
+      mediumFeature: {},
+      smallFeature: {},
     },
     Button: {
       'layout-dis-iflx': true,
@@ -206,23 +221,37 @@ export const visualParityTheme: Types.Theme = {
       },
     },
   },
-  elements: {},
+  elements: {
+    a: {},
+    audio: {},
+    body: {},
+    button: {},
+    h1: {},
+    h2: {},
+    h3: {},
+    h4: {},
+    h5: {},
+    iframe: {},
+    input: {},
+    p: {},
+    pre: {},
+    textarea: {},
+    video: {},
+  },
   markdown: {
     // Reset p margin to match non-markdown rendering
     p: ['layout-m-0'],
-    // Reset heading margins (font-size handled via additionalStyles)
+    // Reset heading margins
     h1: ['layout-m-0'],
     h2: ['layout-m-0'],
     h3: ['layout-m-0'],
     h4: ['layout-m-0'],
     h5: ['layout-m-0'],
+    ul: [],
+    ol: [],
+    li: [],
+    a: [],
+    strong: [],
+    em: [],
   },
-  additionalStyles: `
-    /* Reset heading font-sizes to inherit from parent (prevents browser defaults in Light DOM) */
-    section h1, section h2, section h3, section h4, section h5, section h6 {
-      font-size: inherit;
-      font-weight: inherit;
-      margin: 0;
-    }
-  `,
 };

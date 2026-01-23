@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack --port 3001",
+    "dev": "next dev --turbopack --port 3002",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "dependencies": {
-    "@a2ui/lit": "^0.8.1",
+    "@a2ui/lit": "workspace:*",
     "@a2ui/react": "workspace:*",
     "@copilotkit/react-core": "^1.50.1",
     "@copilotkit/react-ui": "^1.50.1",

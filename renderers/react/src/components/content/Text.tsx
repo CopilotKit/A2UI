@@ -66,6 +66,13 @@ function applyMarkdownTheme(html: string, markdownTheme: Types.Theme['markdown']
 /**
  * Text component - renders text content with markdown support.
  *
+ * Structure mirrors Lit's Text component:
+ *   <div class="a2ui-text">      ← :host equivalent
+ *     <section class="...">      ← theme classes
+ *       <h2>...</h2>             ← rendered markdown content
+ *     </section>
+ *   </div>
+ *
  * Text is parsed as markdown and rendered as HTML (matches Lit renderer behavior).
  * Supports usageHint values: h1, h2, h3, h4, h5, caption, body
  *
@@ -144,13 +151,14 @@ export const Text = memo(function Text({ node, surfaceId }: A2UIComponentProps<T
     return null;
   }
 
-  // Always use <section> wrapper with markdown rendering (matches Lit structure)
   return (
-    <section
-      className={classMapToString(classes)}
-      style={additionalStyles}
-      dangerouslySetInnerHTML={renderedContent}
-    />
+    <div className="a2ui-text">
+      <section
+        className={classMapToString(classes)}
+        style={additionalStyles}
+        dangerouslySetInnerHTML={renderedContent}
+      />
+    </div>
   );
 });
 

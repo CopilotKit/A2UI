@@ -62,24 +62,29 @@ export const componentSpecificStyles: string = `
 }
 
 /* =========================================================================
- * Text (matches Lit text.ts Shadow DOM styles)
+ * Text (from Lit text.ts static styles)
  * ========================================================================= */
 
-/* Ensure markdown paragraph margins are reset (matches Lit structural styles) */
-.a2ui-surface section p {
-  margin: 0;
+/* :host { display: block; flex: var(--weight); } */
+.a2ui-surface .a2ui-text {
+  display: block;
+  flex: var(--weight);
 }
 
-/* Match Lit Text's h1-h5 reset - prevents browser defaults from affecting text */
-/* Lit has: h1, h2, h3, h4, h5 { line-height: inherit; font: inherit; } */
-/* Note: Do NOT reset margin here - margins are controlled by theme classes (layout-mb-*) */
-.a2ui-surface section h1,
-.a2ui-surface section h2,
-.a2ui-surface section h3,
-.a2ui-surface section h4,
-.a2ui-surface section h5 {
+/* h1, h2, h3, h4, h5 { line-height: inherit; font: inherit; } */
+/* Use :where() to match Lit's low specificity (0,0,0,1 - just element) */
+:where(.a2ui-surface .a2ui-text) h1,
+:where(.a2ui-surface .a2ui-text) h2,
+:where(.a2ui-surface .a2ui-text) h3,
+:where(.a2ui-surface .a2ui-text) h4,
+:where(.a2ui-surface .a2ui-text) h5 {
   line-height: inherit;
   font: inherit;
+}
+
+/* Ensure markdown paragraph margins are reset */
+.a2ui-surface .a2ui-text p {
+  margin: 0;
 }
 
 /* =========================================================================

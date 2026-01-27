@@ -5,10 +5,10 @@
 export declare const structuralStyles: string;
 
 /**
- * CSS overrides that fix React-specific issues.
- * Must come after structural styles to take precedence.
+ * Component-specific styles that replicate Lit's Shadow DOM scoped CSS.
+ * Transforms :host, element selectors, and ::slotted() for Light DOM use.
  */
-export declare const styleOverrides: string;
+export declare const componentSpecificStyles: string;
 
 /**
  * Injects A2UI structural styles into the document head.

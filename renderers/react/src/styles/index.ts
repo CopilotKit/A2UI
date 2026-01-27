@@ -11,40 +11,39 @@ export const structuralStyles: string = Styles.structuralStyles.replace(
 );
 
 /**
- * CSS overrides that must come AFTER structural styles to take precedence.
- * These fix React-specific issues and allow CSS variable customization.
- * All rules scoped to .a2ui-surface to avoid affecting the rest of the page.
+ * Component-specific styles that replicate Lit's Shadow DOM scoped CSS.
  *
- * IMPORTANT: These styles replicate the Shadow DOM scoped CSS from Lit components.
- * When Lit has `static styles = [...]` with element selectors, we need equivalent
- * rules here since React uses Light DOM where page CSS can interfere.
+ * Each Lit component has `static styles` with :host, element selectors, and ::slotted().
+ * Since React uses Light DOM, we transform these to global CSS scoped under .a2ui-surface.
+ *
+ * Transformation rules:
+ *   :host          → .a2ui-surface .a2ui-{component}
+ *   section        → .a2ui-surface .a2ui-{component} section
+ *   ::slotted(*)   → .a2ui-surface .a2ui-{component} section > *
  */
-export const styleOverrides: string = `
+export const componentSpecificStyles: string = `
 /* =========================================================================
- * Button
+ * Card (from Lit card.ts static styles)
  * ========================================================================= */
 
-/* NOTE: Previously had an override to force button text to inherit color.
- * This was removed to match Lit behavior where nested Text components
- * apply their own color classes (e.g., color-c-n10 from theme.markdown.p).
- *
- * If you want white text in buttons, use the pr-365 approach:
- * - Set theme.markdown.p to use color-c-n35 instead of color-c-n10
- * - Add additionalStyles.Button = { "--n-35": "var(--n-100)" }
- * This overrides the CSS variable only within buttons.
- */
-
-/* =========================================================================
- * Card (matches Lit card.ts Shadow DOM styles)
- * ========================================================================= */
-
-/* Allow card background to be overridden via CSS variable --a2ui-card-bg */
-.a2ui-surface .color-bgc-n100 {
-  background-color: var(--a2ui-card-bg, light-dark(var(--n-100), var(--n-0))) !important;
+/* :host { display: block; flex: var(--weight); min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-card {
+  display: block;
+  flex: var(--weight);
+  min-height: 0;
+  overflow: auto;
 }
 
-/* Match Lit Card's ::slotted(*) rule - direct children get full size */
-.a2ui-surface .a2ui-card > div {
+/* section { height: 100%; width: 100%; min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-card section {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* section ::slotted(*) { height: 100%; width: 100%; } */
+.a2ui-surface .a2ui-card section > * {
   height: 100%;
   width: 100%;
 }
@@ -175,10 +174,10 @@ export function injectStyles(): void {
 
   const styleElement = document.createElement('style');
   styleElement.id = styleId;
-  // Include structural (utility classes) and overrides
+  // Include structural (utility classes) and component-specific styles
   // Note: CSS variables (palette) must be defined by the host application on :root,
   // just like in the Lit renderer. This allows full customization.
-  styleElement.textContent = structuralStyles + '\n' + styleOverrides;
+  styleElement.textContent = structuralStyles + '\n' + componentSpecificStyles;
   document.head.appendChild(styleElement);
 }
 

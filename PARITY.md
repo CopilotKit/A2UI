@@ -151,3 +151,106 @@ The `renderers/visual-parity` directory contains side-by-side comparisons:
 1. Load the same fixture in both Lit and React
 2. Compare rendered output visually and via computed styles
 3. Use browser DevTools to verify CSS specificity matches
+
+## Component CSS Checklist
+
+Each Lit component with `static styles` needs a corresponding entry in `componentSpecificStyles`. Below is the complete list with implementation status:
+
+### ✅ Implemented
+
+| Component | Lit File | Styles |
+|-----------|----------|--------|
+| **Card** | `card.ts` | `:host`, `section`, `::slotted(*)` |
+| **Text** | `text.ts` | `:host`, `h1-h5` (uses `:where()`) |
+
+### 🔄 Need a Second Pass
+
+| Component | Lit File | Styles |
+|-----------|----------|--------|
+| **Divider** | `divider.ts` | `:host`, `hr` |
+| **TextField** | `text-field.ts` | `:host`, `input`, `label` |
+| **CheckBox** | `checkbox.ts` | `:host`, `input` |
+| **Slider** | `slider.ts` | `:host`, `input[type="range"]` |
+
+### ❌ Not Yet Implemented
+
+| Component | Lit File | Styles | Notes |
+|-----------|----------|--------|-------|
+| **Button** | `button.ts` | `:host` | Simple - just display/flex |
+| **Column** | `column.ts` | `:host`, `section`, attribute selectors | Uses `[alignment]` and `[distribution]` attribute selectors |
+| **Row** | `row.ts` | `:host`, `section`, attribute selectors | Uses `[alignment]` and `[distribution]` attribute selectors |
+| **Image** | `image.ts` | `:host`, `img` | Uses `--object-fit` CSS variable |
+| **Video** | `video.ts` | `:host`, `video` | Simple media styling |
+| **Audio** | `audio.ts` | `:host`, `audio` | Simple media styling |
+| **Modal** | `modal.ts` | `dialog`, nested selectors | Complex - has `#controls`, nested button styles |
+| **Tabs** | `tabs.ts` | `:host` | Simple - just display/flex |
+| **List** | `list.ts` | `:host`, `section`, `::slotted(*)` | Uses `[direction]` attribute selector |
+| **MultipleChoice** | `multiple-choice.ts` | `:host`, `select` | Form element styling |
+| **Icon** | `icon.ts` | `:host` | Simple - just display/flex |
+| **DateTimeInput** | `datetime-input.ts` | `:host`, `input` | Has specific input styling (border-radius, padding, border) |
+
+### Special Cases
+
+| Component | Notes |
+|-----------|-------|
+| **Surface** | Root component with different structure; doesn't use `structuralStyles` |
+| **Root** | Internal component, styles handled differently |
+
+## Implementation Hints
+
+### Attribute Selectors (Column, Row, List)
+
+Lit uses `:host([attribute="value"])` for attribute-based styling. In React, use data attributes:
+
+```tsx
+// React component
+<div className="a2ui-column" data-alignment={alignment} data-distribution={distribution}>
+```
+
+```css
+/* componentSpecificStyles */
+.a2ui-surface .a2ui-column[data-alignment="center"] section {
+  align-items: center;
+}
+```
+
+### CSS Variables (Image)
+
+Pass CSS variables via inline style:
+
+```tsx
+// React component
+<div className="a2ui-image" style={{ '--object-fit': fit }}>
+```
+
+```css
+/* componentSpecificStyles */
+.a2ui-surface .a2ui-image img {
+  object-fit: var(--object-fit, fill);
+}
+```
+
+### Nested Selectors (Modal)
+
+For complex nested styles, maintain the hierarchy:
+
+```css
+/* Lit */
+dialog section #controls button { ... }
+
+/* React componentSpecificStyles */
+.a2ui-surface .a2ui-modal dialog section #controls button { ... }
+```
+
+### Form Elements
+
+Form inputs already have some shared styles. Component-specific overrides should be scoped:
+
+```css
+/* DateTimeInput specific */
+.a2ui-surface .a2ui-datetime-input input {
+  border-radius: 8px;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+```

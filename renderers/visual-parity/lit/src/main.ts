@@ -5,12 +5,6 @@ import { customElement, property } from 'lit/decorators.js';
 import { provide } from '@lit/context';
 import { allFixtures, type FixtureName, type ComponentFixture } from '../../fixtures';
 import { getTheme, themeNames, type ThemeName } from '../../fixtures/themes';
-import { globalStyles } from './globalStyles';
-
-// Inject structural styles
-const styleEl = document.createElement('style');
-styleEl.textContent = v0_8.Styles.structuralStyles;
-document.head.appendChild(styleEl);
 
 // Themed surface component that provides theme context directly
 // This matches the pattern from @copilotkit/a2ui-renderer's themed-a2ui-surface
@@ -32,14 +26,11 @@ class ThemedA2UISurface extends LitElement {
   accessor processor: any = undefined;
 
   render() {
-    // Include globalStyles to define CSS custom properties (--p-100, --n-10, etc.)
-    // that the Lit components use for colors
-    return html`<style>${globalStyles}</style>
-      <a2ui-surface
-        .surfaceId=${this.surfaceId}
-        .surface=${this.surface}
-        .processor=${this.processor}
-      ></a2ui-surface>`;
+    return html`<a2ui-surface
+      .surfaceId=${this.surfaceId}
+      .surface=${this.surface}
+      .processor=${this.processor}
+    ></a2ui-surface>`;
   }
 }
 

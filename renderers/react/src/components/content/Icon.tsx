@@ -37,14 +37,15 @@ export const Icon = memo(function Icon({ node, surfaceId }: A2UIComponentProps<T
   // Convert camelCase to snake_case for Material Symbols
   const snakeCaseName = toSnakeCase(iconName);
 
-  // Match Lit renderer exactly: section with theme classes, span with g-icon
   return (
-    <section
-      className={classMapToString(theme.components.Icon)}
-      style={stylesToObject(theme.additionalStyles?.Icon)}
-    >
-      <span className="g-icon">{snakeCaseName}</span>
-    </section>
+    <div className="a2ui-icon">
+      <section
+        className={classMapToString(theme.components.Icon)}
+        style={stylesToObject(theme.additionalStyles?.Icon)}
+      >
+        <span className="g-icon">{snakeCaseName}</span>
+      </section>
+    </div>
   );
 });
 

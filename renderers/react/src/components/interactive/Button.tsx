@@ -22,13 +22,15 @@ export const Button = memo(function Button({ node, surfaceId }: A2UIComponentPro
   }, [props.action, sendAction]);
 
   return (
-    <button
-      className={classMapToString(theme.components.Button)}
-      style={stylesToObject(theme.additionalStyles?.Button)}
-      onClick={handleClick}
-    >
-      <ComponentNode node={props.child} surfaceId={surfaceId} />
-    </button>
+    <div className="a2ui-button">
+      <button
+        className={classMapToString(theme.components.Button)}
+        style={stylesToObject(theme.additionalStyles?.Button)}
+        onClick={handleClick}
+      >
+        <ComponentNode node={props.child} surfaceId={surfaceId} />
+      </button>
+    </div>
   );
 });
 

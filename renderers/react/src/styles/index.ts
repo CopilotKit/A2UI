@@ -159,6 +159,159 @@ export const componentSpecificStyles: string = `
 }
 
 /* =========================================================================
+ * Button (from Lit button.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: block; flex: var(--weight); min-height: 0; } */
+.a2ui-surface .a2ui-button {
+  display: block;
+  flex: var(--weight);
+  min-height: 0;
+}
+
+/* =========================================================================
+ * Icon (from Lit icon.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: block; flex: var(--weight); min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-icon {
+  display: block;
+  flex: var(--weight);
+  min-height: 0;
+  overflow: auto;
+}
+
+/* =========================================================================
+ * Tabs (from Lit tabs.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: block; flex: var(--weight); } */
+.a2ui-surface .a2ui-tabs {
+  display: block;
+  flex: var(--weight);
+}
+
+/* =========================================================================
+ * Image (from Lit image.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: block; flex: var(--weight); min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-image {
+  display: block;
+  flex: var(--weight);
+  min-height: 0;
+  overflow: auto;
+}
+
+/* img { display: block; width: 100%; height: 100%; object-fit: var(--object-fit, fill); } */
+.a2ui-surface .a2ui-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: var(--object-fit, fill);
+}
+
+/* =========================================================================
+ * Video (from Lit video.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: block; flex: var(--weight); min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-video {
+  display: block;
+  flex: var(--weight);
+  min-height: 0;
+  overflow: auto;
+}
+
+/* video { display: block; width: 100%; } */
+.a2ui-surface .a2ui-video video {
+  display: block;
+  width: 100%;
+}
+
+/* =========================================================================
+ * AudioPlayer (from Lit audio.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: block; flex: var(--weight); min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-audio {
+  display: block;
+  flex: var(--weight);
+  min-height: 0;
+  overflow: auto;
+}
+
+/* audio { display: block; width: 100%; } */
+.a2ui-surface .a2ui-audio audio {
+  display: block;
+  width: 100%;
+}
+
+/* =========================================================================
+ * Column (from Lit column.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: flex; flex: var(--weight); } */
+.a2ui-surface .a2ui-column {
+  display: flex;
+  flex: var(--weight);
+}
+
+/* section { display: flex; flex-direction: column; min-width: 100%; height: 100%; } */
+.a2ui-surface .a2ui-column > section {
+  display: flex;
+  flex-direction: column;
+  min-width: 100%;
+  height: 100%;
+}
+
+/* :host([alignment="..."]) section { align-items: ...; } */
+.a2ui-surface .a2ui-column[data-alignment="start"] section { align-items: start; }
+.a2ui-surface .a2ui-column[data-alignment="center"] section { align-items: center; }
+.a2ui-surface .a2ui-column[data-alignment="end"] section { align-items: end; }
+.a2ui-surface .a2ui-column[data-alignment="stretch"] section { align-items: stretch; }
+
+/* :host([distribution="..."]) section { justify-content: ...; } */
+.a2ui-surface .a2ui-column[data-distribution="start"] section { justify-content: start; }
+.a2ui-surface .a2ui-column[data-distribution="center"] section { justify-content: center; }
+.a2ui-surface .a2ui-column[data-distribution="end"] section { justify-content: end; }
+.a2ui-surface .a2ui-column[data-distribution="spaceBetween"] section { justify-content: space-between; }
+.a2ui-surface .a2ui-column[data-distribution="spaceAround"] section { justify-content: space-around; }
+.a2ui-surface .a2ui-column[data-distribution="spaceEvenly"] section { justify-content: space-evenly; }
+
+/* =========================================================================
+ * Row (from Lit row.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: flex; flex: var(--weight); } */
+.a2ui-surface .a2ui-row {
+  display: flex;
+  flex: var(--weight);
+}
+
+/* section { display: flex; flex-direction: row; width: 100%; min-height: 100%; } */
+.a2ui-surface .a2ui-row > section {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  min-height: 100%;
+}
+
+/* :host([alignment="..."]) section { align-items: ...; } */
+.a2ui-surface .a2ui-row[data-alignment="start"] section { align-items: start; }
+.a2ui-surface .a2ui-row[data-alignment="center"] section { align-items: center; }
+.a2ui-surface .a2ui-row[data-alignment="end"] section { align-items: end; }
+.a2ui-surface .a2ui-row[data-alignment="stretch"] section { align-items: stretch; }
+
+/* :host([distribution="..."]) section { justify-content: ...; } */
+.a2ui-surface .a2ui-row[data-distribution="start"] section { justify-content: start; }
+.a2ui-surface .a2ui-row[data-distribution="center"] section { justify-content: center; }
+.a2ui-surface .a2ui-row[data-distribution="end"] section { justify-content: end; }
+.a2ui-surface .a2ui-row[data-distribution="spaceBetween"] section { justify-content: space-between; }
+.a2ui-surface .a2ui-row[data-distribution="spaceAround"] section { justify-content: space-around; }
+.a2ui-surface .a2ui-row[data-distribution="spaceEvenly"] section { justify-content: space-evenly; }
+
+/* =========================================================================
  * Global box-sizing (matches Lit's * { box-sizing: border-box; } in components)
  * ========================================================================= */
 

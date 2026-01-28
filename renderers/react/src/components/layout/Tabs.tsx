@@ -16,8 +16,8 @@ export const Tabs = memo(function Tabs({ node, surfaceId }: A2UIComponentProps<T
 
   const tabItems = props.tabItems ?? [];
 
-  // Match Lit structure: <section> container with buttons div and slot
   return (
+    <div className="a2ui-tabs">
     <section
       className={classMapToString(theme.components.Tabs.container)}
       style={stylesToObject(theme.additionalStyles?.Tabs)}
@@ -60,6 +60,7 @@ export const Tabs = memo(function Tabs({ node, surfaceId }: A2UIComponentProps<T
         />
       )}
     </section>
+    </div>
   );
 });
 

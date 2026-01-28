@@ -37,14 +37,15 @@ export const Image = memo(function Image({ node, surfaceId }: A2UIComponentProps
     return null;
   }
 
-  // Match Lit structure: <section><img /></section>
   return (
-    <section
-      className={classMapToString(classes)}
-      style={style}
-    >
-      <img src={url} alt="" />
-    </section>
+    <div className="a2ui-image">
+      <section
+        className={classMapToString(classes)}
+        style={style}
+      >
+        <img src={url} alt="" />
+      </section>
+    </div>
   );
 });
 

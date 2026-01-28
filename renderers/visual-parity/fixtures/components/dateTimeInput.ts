@@ -11,8 +11,9 @@ export const dateTimeInputDate: ComponentFixture = {
       id: 'dt-date',
       component: {
         DateTimeInput: {
-          label: { literalString: 'Select Date' },
-          type: 'date',
+          value: { literalString: '2025-02-15' },
+          enableDate: true,
+          enableTime: false,
         },
       },
     },
@@ -26,8 +27,9 @@ export const dateTimeInputTime: ComponentFixture = {
       id: 'dt-time',
       component: {
         DateTimeInput: {
-          label: { literalString: 'Select Time' },
-          type: 'time',
+          value: { literalString: '14:30' },
+          enableDate: false,
+          enableTime: true,
         },
       },
     },
@@ -41,8 +43,9 @@ export const dateTimeInputBoth: ComponentFixture = {
       id: 'dt-both',
       component: {
         DateTimeInput: {
-          label: { literalString: 'Date and Time' },
-          type: 'datetime-local',
+          value: { literalString: '2025-02-15T14:30' },
+          enableDate: true,
+          enableTime: true,
         },
       },
     },

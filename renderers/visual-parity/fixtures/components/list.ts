@@ -29,7 +29,7 @@ export const listHorizontal: ComponentFixture = {
     {
       id: 'list-h',
       component: {
-        List: { children: ['list-h-1', 'list-h-2', 'list-h-3'], axis: 'horizontal' },
+        List: { children: ['list-h-1', 'list-h-2', 'list-h-3'], direction: 'horizontal' },
       },
     },
   ],

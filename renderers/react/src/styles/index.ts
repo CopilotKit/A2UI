@@ -312,6 +312,59 @@ export const componentSpecificStyles: string = `
 .a2ui-surface .a2ui-row[data-distribution="spaceEvenly"] section { justify-content: space-evenly; }
 
 /* =========================================================================
+ * List (from Lit list.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: block; flex: var(--weight); min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-list {
+  display: block;
+  flex: var(--weight);
+  min-height: 0;
+  overflow: auto;
+}
+
+/* :host([direction="vertical"]) section { display: grid; } */
+.a2ui-surface .a2ui-list[data-direction="vertical"] > section {
+  display: grid;
+}
+
+/* :host([direction="horizontal"]) section { display: flex; max-width: 100%; overflow-x: scroll; ... } */
+.a2ui-surface .a2ui-list[data-direction="horizontal"] > section {
+  display: flex;
+  max-width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+
+/* :host([direction="horizontal"]) section > ::slotted(*) { flex: 1 0 fit-content; ... } */
+.a2ui-surface .a2ui-list[data-direction="horizontal"] > section > * {
+  flex: 1 0 fit-content;
+  max-width: min(80%, 400px);
+}
+
+/* =========================================================================
+ * DateTimeInput (from Lit datetime-input.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: block; flex: var(--weight); min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-datetime-input {
+  display: block;
+  flex: var(--weight);
+  min-height: 0;
+  overflow: auto;
+}
+
+/* input { display: block; border-radius: 8px; padding: 8px; border: 1px solid #ccc; width: 100%; } */
+.a2ui-surface .a2ui-datetime-input input {
+  display: block;
+  border-radius: 8px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+/* =========================================================================
  * Global box-sizing (matches Lit's * { box-sizing: border-box; } in components)
  * ========================================================================= */
 

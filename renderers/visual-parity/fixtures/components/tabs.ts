@@ -16,9 +16,9 @@ export const tabsBasic: ComponentFixture = {
       id: 'tabs-basic',
       component: {
         Tabs: {
-          tabs: [
-            { id: 'tab1', label: { literalString: 'Tab 1' }, child: 'tab1-content' },
-            { id: 'tab2', label: { literalString: 'Tab 2' }, child: 'tab2-content' },
+          tabItems: [
+            { title: { literalString: 'Tab 1' }, child: 'tab1-content' },
+            { title: { literalString: 'Tab 2' }, child: 'tab2-content' },
           ],
         },
       },
@@ -39,11 +39,11 @@ export const tabsMultiple: ComponentFixture = {
       id: 'tabs-multi',
       component: {
         Tabs: {
-          tabs: [
-            { id: 'tabm1', label: { literalString: 'Overview' }, child: 'tabm1-content' },
-            { id: 'tabm2', label: { literalString: 'Details' }, child: 'tabm2-content' },
-            { id: 'tabm3', label: { literalString: 'Reviews' }, child: 'tabm3-content' },
-            { id: 'tabm4', label: { literalString: 'Related' }, child: 'tabm4-content' },
+          tabItems: [
+            { title: { literalString: 'Overview' }, child: 'tabm1-content' },
+            { title: { literalString: 'Details' }, child: 'tabm2-content' },
+            { title: { literalString: 'Reviews' }, child: 'tabm3-content' },
+            { title: { literalString: 'Related' }, child: 'tabm4-content' },
           ],
         },
       },
@@ -75,10 +75,10 @@ export const tabsComplex: ComponentFixture = {
       id: 'tabs-complex',
       component: {
         Tabs: {
-          tabs: [
-            { id: 'tab-profile', label: { literalString: 'Profile' }, child: 'profile-col' },
-            { id: 'tab-settings', label: { literalString: 'Settings' }, child: 'settings-col' },
-            { id: 'tab-activity', label: { literalString: 'Activity' }, child: 'activity-col' },
+          tabItems: [
+            { title: { literalString: 'Profile' }, child: 'profile-col' },
+            { title: { literalString: 'Settings' }, child: 'settings-col' },
+            { title: { literalString: 'Activity' }, child: 'activity-col' },
           ],
         },
       },

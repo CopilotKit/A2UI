@@ -62,10 +62,12 @@ export const componentSpecificStyles: string = `
 }
 
 /* hr { height: 1px; background: #ccc; border: none; } */
+/* Add margin to match browser default that Lit gets via Shadow DOM isolation */
 .a2ui-surface .a2ui-divider hr {
   height: 1px;
   background: #ccc;
   border: none;
+  margin: 0.5em 0;
 }
 
 /* =========================================================================

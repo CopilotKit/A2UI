@@ -19,8 +19,9 @@ export const Slider = memo(function Slider({ node, surfaceId }: A2UIComponentPro
 
   const valuePath = props.value?.path;
   const initialValue = resolveNumber(props.value) ?? 0;
+  // Match Lit's default values (minValue=0, maxValue=0)
   const minValue = props.minValue ?? 0;
-  const maxValue = props.maxValue ?? 100;
+  const maxValue = props.maxValue ?? 0;
 
   const [value, setLocalValue] = useState(initialValue);
 

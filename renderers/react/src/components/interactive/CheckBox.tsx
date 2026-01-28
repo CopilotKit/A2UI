@@ -46,28 +46,36 @@ export const CheckBox = memo(function CheckBox({ node, surfaceId }: A2UIComponen
     [valuePath, setValue]
   );
 
-  // Use <section> container to match Lit renderer
+  // Structure mirrors Lit's CheckBox component:
+  //   <div class="a2ui-checkbox">  ← :host equivalent
+  //     <section class="...">      ← internal element
+  //       <input>...</input>
+  //       <label>...</label>
+  //     </section>
+  //   </div>
   return (
-    <section
-      className={classMapToString(theme.components.CheckBox.container)}
-      style={stylesToObject(theme.additionalStyles?.CheckBox)}
-    >
-      <input
-        type="checkbox"
-        id={id}
-        checked={checked}
-        onChange={handleChange}
-        className={classMapToString(theme.components.CheckBox.element)}
-      />
-      {label && (
-        <label
-          htmlFor={id}
-          className={classMapToString(theme.components.CheckBox.label)}
-        >
-          {label}
-        </label>
-      )}
-    </section>
+    <div className="a2ui-checkbox">
+      <section
+        className={classMapToString(theme.components.CheckBox.container)}
+        style={stylesToObject(theme.additionalStyles?.CheckBox)}
+      >
+        <input
+          type="checkbox"
+          id={id}
+          checked={checked}
+          onChange={handleChange}
+          className={classMapToString(theme.components.CheckBox.element)}
+        />
+        {label && (
+          <label
+            htmlFor={id}
+            className={classMapToString(theme.components.CheckBox.label)}
+          >
+            {label}
+          </label>
+        )}
+      </section>
+    </div>
   );
 });
 

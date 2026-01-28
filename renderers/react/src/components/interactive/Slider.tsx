@@ -53,33 +53,41 @@ export const Slider = memo(function Slider({ node, surfaceId }: A2UIComponentPro
   const { resolveString } = useA2UIComponent(node, surfaceId);
   const label = labelValue ? resolveString(labelValue) : '';
 
-  // Use <section> container to match Lit renderer structure:
-  // <section><label>...</label><input/><span>value</span></section>
+  // Structure mirrors Lit's Slider component:
+  //   <div class="a2ui-slider">    ← :host equivalent
+  //     <section class="...">      ← internal element
+  //       <label>...</label>
+  //       <input>...</input>
+  //       <span>value</span>
+  //     </section>
+  //   </div>
   return (
-    <section
-      className={classMapToString(theme.components.Slider.container)}
-      style={stylesToObject(theme.additionalStyles?.Slider)}
-    >
-      <label
-        htmlFor={id}
-        className={classMapToString(theme.components.Slider.label)}
+    <div className="a2ui-slider">
+      <section
+        className={classMapToString(theme.components.Slider.container)}
+        style={stylesToObject(theme.additionalStyles?.Slider)}
       >
-        {label}
-      </label>
-      <input
-        type="range"
-        id={id}
-        name="data"
-        value={value}
-        min={minValue}
-        max={maxValue}
-        onChange={handleChange}
-        className={classMapToString(theme.components.Slider.element)}
-      />
-      <span className={classMapToString(theme.components.Slider.label)}>
-        {value}
-      </span>
-    </section>
+        <label
+          htmlFor={id}
+          className={classMapToString(theme.components.Slider.label)}
+        >
+          {label}
+        </label>
+        <input
+          type="range"
+          id={id}
+          name="data"
+          value={value}
+          min={minValue}
+          max={maxValue}
+          onChange={handleChange}
+          className={classMapToString(theme.components.Slider.element)}
+        />
+        <span className={classMapToString(theme.components.Slider.label)}>
+          {value}
+        </span>
+      </section>
+    </div>
   );
 });
 

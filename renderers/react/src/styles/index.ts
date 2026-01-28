@@ -35,7 +35,8 @@ export const componentSpecificStyles: string = `
 }
 
 /* section { height: 100%; width: 100%; min-height: 0; overflow: auto; } */
-.a2ui-surface .a2ui-card section {
+/* Use > to target only Card's direct section, not nested sections (e.g., TextField's section) */
+.a2ui-surface .a2ui-card > section {
   height: 100%;
   width: 100%;
   min-height: 0;
@@ -43,22 +44,28 @@ export const componentSpecificStyles: string = `
 }
 
 /* section ::slotted(*) { height: 100%; width: 100%; } */
-.a2ui-surface .a2ui-card section > * {
+/* Use > section > to only target Card's slotted children, not deeply nested elements */
+.a2ui-surface .a2ui-card > section > * {
   height: 100%;
   width: 100%;
 }
 
 /* =========================================================================
- * Divider (matches Lit divider.ts Shadow DOM styles)
+ * Divider (from Lit divider.ts static styles)
  * ========================================================================= */
 
-/* Match Lit Divider's Shadow DOM hr styling */
-/* Lit has: hr { height: 1px; background: #ccc; border: none; } */
-.a2ui-surface hr {
+/* :host { display: block; min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-divider {
+  display: block;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* hr { height: 1px; background: #ccc; border: none; } */
+.a2ui-surface .a2ui-divider hr {
   height: 1px;
   background: #ccc;
   border: none;
-  margin: 8px 0;
 }
 
 /* =========================================================================
@@ -88,54 +95,65 @@ export const componentSpecificStyles: string = `
 }
 
 /* =========================================================================
- * TextField (matches Lit text-field.ts Shadow DOM styles)
+ * TextField (from Lit text-field.ts static styles)
  * ========================================================================= */
 
-/* Match Lit TextField's input styling */
-/* Lit has: input { display: block; width: 100%; } */
-.a2ui-surface section input[type="text"],
-.a2ui-surface section input[type="number"],
-.a2ui-surface section input[type="date"] {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
+/* :host { display: flex; flex: var(--weight); } */
+.a2ui-surface .a2ui-textfield {
+  display: flex;
+  flex: var(--weight);
 }
 
-/* Match Lit TextField's label styling */
-/* Lit has: label { display: block; margin-bottom: 4px; } */
-.a2ui-surface section > label {
+/* input { display: block; width: 100%; } */
+.a2ui-surface .a2ui-textfield input {
+  display: block;
+  width: 100%;
+}
+
+/* label { display: block; margin-bottom: 4px; } */
+.a2ui-surface .a2ui-textfield label {
   display: block;
   margin-bottom: 4px;
 }
 
-/* Match Lit TextField's textarea styling */
-.a2ui-surface section textarea {
+/* textarea - same styling as input for multiline text fields */
+.a2ui-surface .a2ui-textfield textarea {
   display: block;
   width: 100%;
-  box-sizing: border-box;
 }
 
 /* =========================================================================
- * CheckBox (matches Lit checkbox.ts Shadow DOM styles)
+ * CheckBox (from Lit checkbox.ts static styles)
  * ========================================================================= */
 
-/* Match Lit CheckBox's input styling */
-/* Lit has: input { display: block; width: 100%; } */
-/* Note: checkbox input width: 100% is from Lit but may need adjustment */
-.a2ui-surface section input[type="checkbox"] {
-  box-sizing: border-box;
+/* :host { display: block; flex: var(--weight); min-height: 0; overflow: auto; } */
+.a2ui-surface .a2ui-checkbox {
+  display: block;
+  flex: var(--weight);
+  min-height: 0;
+  overflow: auto;
+}
+
+/* input { display: block; width: 100%; } */
+.a2ui-surface .a2ui-checkbox input {
+  display: block;
+  width: 100%;
 }
 
 /* =========================================================================
- * Slider (matches Lit slider.ts Shadow DOM styles)
+ * Slider (from Lit slider.ts static styles)
  * ========================================================================= */
 
-/* Match Lit Slider's input styling */
-/* Lit has: input { display: block; width: 100%; } */
-.a2ui-surface section input[type="range"] {
+/* :host { display: block; flex: var(--weight); } */
+.a2ui-surface .a2ui-slider {
+  display: block;
+  flex: var(--weight);
+}
+
+/* input { display: block; width: 100%; } */
+.a2ui-surface .a2ui-slider input {
   display: block;
   width: 100%;
-  box-sizing: border-box;
 }
 
 /* =========================================================================

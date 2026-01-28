@@ -6,15 +6,22 @@ import { classMapToString, stylesToObject } from '../../lib/utils';
 
 /**
  * Divider component - renders a visual separator line.
+ *
+ * Structure mirrors Lit's Divider component:
+ *   <div class="a2ui-divider">  ← :host equivalent
+ *     <hr class="...">          ← internal element
+ *   </div>
  */
 export const Divider = memo(function Divider({ node, surfaceId }: A2UIComponentProps<Types.DividerNode>) {
   const { theme } = useA2UIComponent(node, surfaceId);
 
   return (
-    <hr
-      className={classMapToString(theme.components.Divider)}
-      style={stylesToObject(theme.additionalStyles?.Divider)}
-    />
+    <div className="a2ui-divider">
+      <hr
+        className={classMapToString(theme.components.Divider)}
+        style={stylesToObject(theme.additionalStyles?.Divider)}
+      />
+    </div>
   );
 });
 

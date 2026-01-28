@@ -61,36 +61,46 @@ export const TextField = memo(function TextField({ node, surfaceId }: A2UICompon
         : 'text';
   const isTextArea = fieldType === 'longText';
 
-  // Use <section> container to match Lit renderer
+  // Structure mirrors Lit's TextField component:
+  //   <div class="a2ui-textfield">  ← :host equivalent
+  //     <section class="...">       ← container with theme classes
+  //       <label>...</label>
+  //       <input>...</input>
+  //     </section>
+  //   </div>
   return (
-    <section className={classMapToString(theme.components.TextField.container)}>
-      {label && (
-        <label
-          htmlFor={id}
-          className={classMapToString(theme.components.TextField.label)}
-        >
-          {label}
-        </label>
-      )}
-      {isTextArea ? (
-        <textarea
-          id={id}
-          value={value}
-          onChange={handleChange}
-          className={classMapToString(theme.components.TextField.element)}
-          style={stylesToObject(theme.additionalStyles?.TextField)}
-        />
-      ) : (
-        <input
-          type={inputType}
-          id={id}
-          value={value}
-          onChange={handleChange}
-          className={classMapToString(theme.components.TextField.element)}
-          style={stylesToObject(theme.additionalStyles?.TextField)}
-        />
-      )}
-    </section>
+    <div className="a2ui-textfield">
+      <section className={classMapToString(theme.components.TextField.container)}>
+        {label && (
+          <label
+            htmlFor={id}
+            className={classMapToString(theme.components.TextField.label)}
+          >
+            {label}
+          </label>
+        )}
+        {isTextArea ? (
+          <textarea
+            id={id}
+            value={value}
+            onChange={handleChange}
+            placeholder="Please enter a value"
+            className={classMapToString(theme.components.TextField.element)}
+            style={stylesToObject(theme.additionalStyles?.TextField)}
+          />
+        ) : (
+          <input
+            type={inputType}
+            id={id}
+            value={value}
+            onChange={handleChange}
+            placeholder="Please enter a value"
+            className={classMapToString(theme.components.TextField.element)}
+            style={stylesToObject(theme.additionalStyles?.TextField)}
+          />
+        )}
+      </section>
+    </div>
   );
 });
 

@@ -118,7 +118,7 @@ export const nestedProfile: ComponentFixture = {
   root: 'nested-profile',
   components: [
     // Avatar and info
-    { id: 'profile-avatar', component: { Image: { src: { literalString: 'https://via.placeholder.com/80/6366f1/ffffff?text=JD' }, usageHint: 'avatar' } } },
+    { id: 'profile-avatar', component: { Image: { url: { literalString: 'https://via.placeholder.com/80/6366f1/ffffff?text=JD' }, usageHint: 'avatar' } } },
     { id: 'profile-name', component: { Text: { text: { literalString: 'Jane Doe' }, usageHint: 'h2' } } },
     { id: 'profile-role', component: { Text: { text: { literalString: 'Product Designer' }, usageHint: 'caption' } } },
     { id: 'profile-info', component: { Column: { children: ['profile-name', 'profile-role'] } } },
@@ -145,17 +145,23 @@ export const nestedProfile: ComponentFixture = {
 
 export const nestedSettings: ComponentFixture = {
   root: 'nested-settings',
+  data: {
+    '/settings/notify': true,
+    '/settings/dark': false,
+    '/settings/auto': true,
+    '/settings/volume': 60,
+  },
   components: [
     // Header
     { id: 'settings-title', component: { Text: { text: { literalString: 'Settings' }, usageHint: 'h2' } } },
     // Preferences section
     { id: 'pref-title', component: { Text: { text: { literalString: 'Preferences' }, usageHint: 'h3' } } },
-    { id: 'pref-notify', component: { CheckBox: { label: { literalString: 'Enable notifications' }, value: { literalBoolean: true } } } },
-    { id: 'pref-dark', component: { CheckBox: { label: { literalString: 'Dark mode' }, value: { literalBoolean: false } } } },
-    { id: 'pref-auto', component: { CheckBox: { label: { literalString: 'Auto-update' }, value: { literalBoolean: true } } } },
+    { id: 'pref-notify', component: { CheckBox: { label: { literalString: 'Enable notifications' }, value: { path: '/settings/notify' } } } },
+    { id: 'pref-dark', component: { CheckBox: { label: { literalString: 'Dark mode' }, value: { path: '/settings/dark' } } } },
+    { id: 'pref-auto', component: { CheckBox: { label: { literalString: 'Auto-update' }, value: { path: '/settings/auto' } } } },
     { id: 'pref-section', component: { Column: { children: ['pref-title', 'pref-notify', 'pref-dark', 'pref-auto'] } } },
-    // Volume slider
-    { id: 'vol-slider', component: { Slider: { label: { literalString: 'Volume' }, value: { literalNumber: 60 } } } },
+    // Volume slider (no label - Lit bug doesn't wire labels; use path binding with min/max)
+    { id: 'vol-slider', component: { Slider: { value: { path: '/settings/volume' }, minValue: 0, maxValue: 100 } } },
     // Divider
     { id: 'settings-div', component: { Divider: {} } },
     // Buttons

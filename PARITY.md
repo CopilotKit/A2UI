@@ -174,7 +174,7 @@ Each Lit component with `static styles` needs a corresponding entry in `componen
 
 | Component | Lit File | Styles | Issue |
 |-----------|----------|--------|-------|
-| **List** | `list.ts` | `:host`, `section`, `::slotted(*)` | Basic fixtures OK, but `listWithCards` has 2.39% diff |
+| **List** | `list.ts` | `:host`, `section`, `::slotted(*)` | Basic fixtures (text, icons, rows) pass 0%. Cards inside List show ~2.4% diff - spacing within Cards differs. Grid layout interaction with Card children suspected. |
 | **Image** | `image.ts` | `:host`, `img` | Test fixtures timeout - cannot verify parity |
 | **Video** | `video.ts` | `:host`, `video` | No test fixtures - cannot verify parity |
 | **Audio** | `audio.ts` | `:host`, `audio` | No test fixtures - cannot verify parity |

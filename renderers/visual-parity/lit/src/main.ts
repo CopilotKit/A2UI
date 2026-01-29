@@ -35,29 +35,87 @@ class ThemedA2UISurface extends LitElement {
 }
 
 /**
+ * Convert a value to a ValueMap entry.
+ * ValueMap uses typed fields: valueBoolean, valueString, valueNumber, valueMap
+ */
+function toValueMap(key: string, value: unknown): v0_8.Types.ValueMap {
+  if (typeof value === 'boolean') {
+    return { key, valueBoolean: value };
+  } else if (typeof value === 'string') {
+    return { key, valueString: value };
+  } else if (typeof value === 'number') {
+    return { key, valueNumber: value };
+  } else if (typeof value === 'object' && value !== null) {
+    return {
+      key,
+      valueMap: Object.entries(value).map(([k, v]) => toValueMap(k, v)),
+    };
+  }
+  return { key, valueString: String(value) };
+}
+
+/**
+ * Convert fixture data to dataModelUpdate messages.
+ * Paths like "/checkbox/checked" need to be split into parent path + key.
+ */
+function dataToMessages(
+  data: Record<string, unknown>,
+  surfaceId: string
+): v0_8.Types.ServerToClientMessage[] {
+  const messages: v0_8.Types.ServerToClientMessage[] = [];
+
+  for (const [path, value] of Object.entries(data)) {
+    // Split path into parent and key (e.g., "/checkbox/checked" -> "/checkbox", "checked")
+    const lastSlash = path.lastIndexOf('/');
+    const parentPath = lastSlash > 0 ? path.substring(0, lastSlash) : '/';
+    const key = path.substring(lastSlash + 1);
+
+    messages.push({
+      dataModelUpdate: {
+        surfaceId,
+        path: parentPath,
+        contents: [toValueMap(key, value)],
+      },
+    } as v0_8.Types.ServerToClientMessage);
+  }
+
+  return messages;
+}
+
+/**
  * Convert a ComponentFixture to A2UI server messages.
  */
 function fixtureToMessages(
   fixture: ComponentFixture,
   surfaceId: string
 ): v0_8.Types.ServerToClientMessage[] {
-  return [
-    {
-      surfaceUpdate: {
-        surfaceId,
-        components: fixture.components.map((c) => ({
-          id: c.id,
-          component: c.component,
-        })),
-      },
-    } as v0_8.Types.ServerToClientMessage,
-    {
-      beginRendering: {
-        root: fixture.root,
-        surfaceId,
-      },
-    } as v0_8.Types.ServerToClientMessage,
-  ];
+  const messages: v0_8.Types.ServerToClientMessage[] = [];
+
+  // Send initial data model values (before components render)
+  if (fixture.data) {
+    messages.push(...dataToMessages(fixture.data, surfaceId));
+  }
+
+  // Send component definitions
+  messages.push({
+    surfaceUpdate: {
+      surfaceId,
+      components: fixture.components.map((c) => ({
+        id: c.id,
+        component: c.component,
+      })),
+    },
+  } as v0_8.Types.ServerToClientMessage);
+
+  // Begin rendering
+  messages.push({
+    beginRendering: {
+      root: fixture.root,
+      surfaceId,
+    },
+  } as v0_8.Types.ServerToClientMessage);
+
+  return messages;
 }
 
 /**

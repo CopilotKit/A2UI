@@ -1,11 +1,13 @@
 /**
  * Image component fixtures for visual parity testing.
- * Uses placeholder images for consistent testing.
+ *
+ * TODO: Add real test images to react/public/ and lit/public/ folders
+ * and update these URLs to use /test-image.png format.
  */
 
 import type { ComponentFixture } from '../types';
 
-// Use a simple colored placeholder for testing
+// Placeholder URLs - replace with local images in public/ folders
 const placeholderUrl = 'https://via.placeholder.com/150/6366f1/ffffff?text=A2UI';
 const avatarUrl = 'https://via.placeholder.com/64/6366f1/ffffff?text=U';
 const largeUrl = 'https://via.placeholder.com/400x200/6366f1/ffffff?text=Large';
@@ -16,7 +18,7 @@ export const imageBasic: ComponentFixture = {
     {
       id: 'img-basic',
       component: {
-        Image: { src: { literalString: placeholderUrl } },
+        Image: { url: { literalString: placeholderUrl } },
       },
     },
   ],
@@ -29,7 +31,7 @@ export const imageAvatar: ComponentFixture = {
       id: 'img-avatar',
       component: {
         Image: {
-          src: { literalString: avatarUrl },
+          url: { literalString: avatarUrl },
           usageHint: 'avatar',
         },
       },
@@ -44,7 +46,7 @@ export const imageHeader: ComponentFixture = {
       id: 'img-header',
       component: {
         Image: {
-          src: { literalString: largeUrl },
+          url: { literalString: largeUrl },
           usageHint: 'header',
         },
       },
@@ -59,7 +61,7 @@ export const imageIcon: ComponentFixture = {
       id: 'img-icon',
       component: {
         Image: {
-          src: { literalString: avatarUrl },
+          url: { literalString: avatarUrl },
           usageHint: 'icon',
         },
       },
@@ -74,7 +76,7 @@ export const imageLargeFeature: ComponentFixture = {
       id: 'img-large',
       component: {
         Image: {
-          src: { literalString: largeUrl },
+          url: { literalString: largeUrl },
           usageHint: 'largeFeature',
         },
       },
@@ -89,7 +91,7 @@ export const imageMediumFeature: ComponentFixture = {
       id: 'img-medium',
       component: {
         Image: {
-          src: { literalString: placeholderUrl },
+          url: { literalString: placeholderUrl },
           usageHint: 'mediumFeature',
         },
       },
@@ -104,7 +106,7 @@ export const imageSmallFeature: ComponentFixture = {
       id: 'img-small',
       component: {
         Image: {
-          src: { literalString: avatarUrl },
+          url: { literalString: avatarUrl },
           usageHint: 'smallFeature',
         },
       },

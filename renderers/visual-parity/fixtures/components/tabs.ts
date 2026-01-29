@@ -53,16 +53,20 @@ export const tabsMultiple: ComponentFixture = {
 
 export const tabsComplex: ComponentFixture = {
   root: 'tabs-complex',
+  data: {
+    '/tabs/notify': true,
+    '/tabs/dark': false,
+  },
   components: [
     // Profile tab content
-    { id: 'profile-avatar', component: { Image: { src: { literalString: 'https://via.placeholder.com/64/6366f1/ffffff?text=U' }, usageHint: 'avatar' } } },
+    { id: 'profile-avatar', component: { Image: { url: { literalString: 'https://via.placeholder.com/64/6366f1/ffffff?text=U' }, usageHint: 'avatar' } } },
     { id: 'profile-name', component: { Text: { text: { literalString: 'John Doe' }, usageHint: 'h3' } } },
     { id: 'profile-bio', component: { Text: { text: { literalString: 'Software developer and UI enthusiast.' } } } },
     { id: 'profile-col', component: { Column: { children: ['profile-avatar', 'profile-name', 'profile-bio'] } } },
     // Settings tab content
     { id: 'settings-title', component: { Text: { text: { literalString: 'Preferences' }, usageHint: 'h3' } } },
-    { id: 'settings-cb1', component: { CheckBox: { label: { literalString: 'Enable notifications' }, value: { literalBoolean: true } } } },
-    { id: 'settings-cb2', component: { CheckBox: { label: { literalString: 'Dark mode' }, value: { literalBoolean: false } } } },
+    { id: 'settings-cb1', component: { CheckBox: { label: { literalString: 'Enable notifications' }, value: { path: '/tabs/notify' } } } },
+    { id: 'settings-cb2', component: { CheckBox: { label: { literalString: 'Dark mode' }, value: { path: '/tabs/dark' } } } },
     { id: 'settings-col', component: { Column: { children: ['settings-title', 'settings-cb1', 'settings-cb2'] } } },
     // Activity tab content
     { id: 'activity-title', component: { Text: { text: { literalString: 'Recent Activity' }, usageHint: 'h3' } } },

@@ -156,38 +156,43 @@ The `renderers/visual-parity` directory contains side-by-side comparisons:
 
 Each Lit component with `static styles` needs a corresponding entry in `componentSpecificStyles`. Below is the complete list with implementation status:
 
-### ✅ Implemented
+### ✅ Implemented (0% pixel diff in visual parity tests)
 
-| Component | Lit File | Styles |
-|-----------|----------|--------|
-| **Card** | `card.ts` | `:host`, `section`, `::slotted(*)` |
-| **Text** | `text.ts` | `:host`, `h1-h5` (uses `:where()`) |
+| Component | Lit File | Styles | Notes |
+|-----------|----------|--------|-------|
+| **Card** | `card.ts` | `:host`, `section`, `::slotted(*)` | Uses `> section` child combinator |
+| **Text** | `text.ts` | `:host`, `h1-h5` (uses `:where()`) | Paragraph margin reset added |
+| **Divider** | `divider.ts` | `:host`, `hr` | Added margin to match browser default |
+| **TextField** | `text-field.ts` | `:host`, `input`, `label`, `textarea` | Multiline support added |
+| **Button** | `button.ts` | `:host` | Simple display/flex |
+| **Icon** | `icon.ts` | `:host` | Simple display/flex |
+| **Column** | `column.ts` | `:host`, `section`, attribute selectors | Uses `data-alignment` and `data-distribution` |
+| **Row** | `row.ts` | `:host`, `section`, attribute selectors | Uses `data-alignment` and `data-distribution` |
+| **Tabs** | `tabs.ts` | `:host` | Fixed by removing global `margin/padding` reset from test pages |
 
-### 🔄 Need a Second Pass
+### 🔄 Need Investigation (size mismatch or >1% pixel diff)
 
-| Component | Lit File | Styles |
-|-----------|----------|--------|
-| **Divider** | `divider.ts` | `:host`, `hr` |
-| **TextField** | `text-field.ts` | `:host`, `input`, `label` |
-| **CheckBox** | `checkbox.ts` | `:host`, `input` |
-| **Slider** | `slider.ts` | `:host`, `input[type="range"]` |
+| Component | Lit File | Styles | Issue |
+|-----------|----------|--------|-------|
+| **Slider** | `slider.ts` | `:host`, `input[type="range"]` | Size mismatch between renderers (100% diff) |
+| **CheckBox** | `checkbox.ts` | `:host`, `input` | Lit bug: doesn't render checked state correctly (2.57% diff) |
+| **DateTimeInput** | `datetime-input.ts` | `:host`, `input` | 7-10% diff on date/time, size mismatch on combined |
+| **List** | `list.ts` | `:host`, `section`, `::slotted(*)` | Basic fixtures OK, but `listWithCards` has 2.39% diff |
+| **Image** | `image.ts` | `:host`, `img` | Test fixtures timeout - cannot verify parity |
+| **Video** | `video.ts` | `:host`, `video` | No test fixtures - cannot verify parity |
+| **Audio** | `audio.ts` | `:host`, `audio` | No test fixtures - cannot verify parity |
+
+### ⚠️ Known Implementation Differences
+
+| Component | Lit File | Styles | Notes |
+|-----------|----------|--------|-------|
+| **MultipleChoice** | `multiple-choice.ts` | `:host`, `select` | React uses radio/checkbox inputs, Lit uses `<select>` dropdown. Skipped in visual parity tests. |
 
 ### ❌ Not Yet Implemented
 
 | Component | Lit File | Styles | Notes |
 |-----------|----------|--------|-------|
-| **Button** | `button.ts` | `:host` | Simple - just display/flex |
-| **Column** | `column.ts` | `:host`, `section`, attribute selectors | Uses `[alignment]` and `[distribution]` attribute selectors |
-| **Row** | `row.ts` | `:host`, `section`, attribute selectors | Uses `[alignment]` and `[distribution]` attribute selectors |
-| **Image** | `image.ts` | `:host`, `img` | Uses `--object-fit` CSS variable |
-| **Video** | `video.ts` | `:host`, `video` | Simple media styling |
-| **Audio** | `audio.ts` | `:host`, `audio` | Simple media styling |
-| **Modal** | `modal.ts` | `dialog`, nested selectors | Complex - has `#controls`, nested button styles |
-| **Tabs** | `tabs.ts` | `:host` | Simple - just display/flex |
-| **List** | `list.ts` | `:host`, `section`, `::slotted(*)` | Uses `[direction]` attribute selector |
-| **MultipleChoice** | `multiple-choice.ts` | `:host`, `select` | Form element styling |
-| **Icon** | `icon.ts` | `:host` | Simple - just display/flex |
-| **DateTimeInput** | `datetime-input.ts` | `:host`, `input` | Has specific input styling (border-radius, padding, border) |
+| **Modal** | `modal.ts` | `dialog`, nested selectors | Complex - has `#controls`, nested button styles. No CSS in `componentSpecificStyles` yet. |
 
 ### Special Cases
 

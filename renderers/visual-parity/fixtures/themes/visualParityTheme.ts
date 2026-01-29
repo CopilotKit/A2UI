@@ -104,8 +104,8 @@ export const visualParityTheme: Types.Theme = {
     },
     Divider: {
       'layout-w-100': true,
-      'layout-h-1': true,
       'color-bgc-n90': true,
+      // Note: 'layout-h-1' was removed - class doesn't exist (only layout-h-10 through layout-h-100)
     },
     TextField: {
       container: {

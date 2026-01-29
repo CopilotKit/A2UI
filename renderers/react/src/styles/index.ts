@@ -356,7 +356,8 @@ export const componentSpecificStyles: string = `
 }
 
 /* input { display: block; border-radius: 8px; padding: 8px; border: 1px solid #ccc; width: 100%; } */
-.a2ui-surface .a2ui-datetime-input input {
+/* Use :where() to match Lit's low specificity (0,0,0,1) so theme utility classes can override */
+:where(.a2ui-surface .a2ui-datetime-input) input {
   display: block;
   border-radius: 8px;
   padding: 8px;

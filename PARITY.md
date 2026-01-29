@@ -174,7 +174,6 @@ Each Lit component with `static styles` needs a corresponding entry in `componen
 
 | Component | Lit File | Styles | Issue |
 |-----------|----------|--------|-------|
-| **DateTimeInput** | `datetime-input.ts` | `:host`, `input` | 7-10% diff on date/time, size mismatch on combined |
 | **List** | `list.ts` | `:host`, `section`, `::slotted(*)` | Basic fixtures OK, but `listWithCards` has 2.39% diff |
 | **Image** | `image.ts` | `:host`, `img` | Test fixtures timeout - cannot verify parity |
 | **Video** | `video.ts` | `:host`, `video` | No test fixtures - cannot verify parity |
@@ -185,6 +184,7 @@ Each Lit component with `static styles` needs a corresponding entry in `componen
 | Component | Lit File | Styles | Notes |
 |-----------|----------|--------|-------|
 | **CheckBox** | `checkbox.ts` | `:host`, `input` | Lit bug: uses `.value` instead of `.checked`, so checked state never displays. Styling matches 0% when both unchecked. |
+| **DateTimeInput** | `datetime-input.ts` | `:host`, `input` | Lit bugs: (1) `getMonth()` not +1 shows wrong month, (2) `new Date('14:30')` fails for time-only. React passes value directly to native input. CSS uses `:where()` for input styles. Date/datetime pass at 0.1-0.2%. |
 | **Slider** | `slider.ts` | `:host`, `input[type="range"]` | Lit bug: `label` property not wired in root.ts, so labels never render. Basic slider (no label) passes. |
 | **MultipleChoice** | `multiple-choice.ts` | `:host`, `select` | React uses radio/checkbox inputs, Lit uses `<select>` dropdown. Skipped in visual parity tests. |
 

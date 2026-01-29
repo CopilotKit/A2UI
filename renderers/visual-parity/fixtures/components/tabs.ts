@@ -59,7 +59,7 @@ export const tabsComplex: ComponentFixture = {
   },
   components: [
     // Profile tab content
-    { id: 'profile-avatar', component: { Image: { url: { literalString: 'https://via.placeholder.com/64/6366f1/ffffff?text=U' }, usageHint: 'avatar' } } },
+    { id: 'profile-avatar', component: { Image: { url: { literalString: 'https://picsum.photos/seed/user/64/64' }, usageHint: 'avatar' } } },
     { id: 'profile-name', component: { Text: { text: { literalString: 'John Doe' }, usageHint: 'h3' } } },
     { id: 'profile-bio', component: { Text: { text: { literalString: 'Software developer and UI enthusiast.' } } } },
     { id: 'profile-col', component: { Column: { children: ['profile-avatar', 'profile-name', 'profile-bio'] } } },

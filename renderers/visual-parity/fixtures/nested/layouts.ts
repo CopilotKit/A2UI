@@ -118,7 +118,7 @@ export const nestedProfile: ComponentFixture = {
   root: 'nested-profile',
   components: [
     // Avatar and info
-    { id: 'profile-avatar', component: { Image: { url: { literalString: 'https://via.placeholder.com/80/6366f1/ffffff?text=JD' }, usageHint: 'avatar' } } },
+    { id: 'profile-avatar', component: { Image: { url: { literalString: 'https://picsum.photos/seed/profile/80/80' }, usageHint: 'avatar' } } },
     { id: 'profile-name', component: { Text: { text: { literalString: 'Jane Doe' }, usageHint: 'h2' } } },
     { id: 'profile-role', component: { Text: { text: { literalString: 'Product Designer' }, usageHint: 'caption' } } },
     { id: 'profile-info', component: { Column: { children: ['profile-name', 'profile-role'] } } },

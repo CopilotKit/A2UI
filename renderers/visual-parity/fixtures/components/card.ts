@@ -35,7 +35,7 @@ export const cardWithImage: ComponentFixture = {
       id: 'card-img-image',
       component: {
         Image: {
-          src: { literalString: 'https://via.placeholder.com/300x150/6366f1/ffffff?text=Card+Image' },
+          url: { literalString: 'https://picsum.photos/seed/card/300/150' },
           usageHint: 'header',
         },
       },
@@ -68,7 +68,7 @@ export const cardComplex: ComponentFixture = {
       id: 'card-complex-avatar',
       component: {
         Image: {
-          src: { literalString: 'https://via.placeholder.com/48/6366f1/ffffff?text=A' },
+          url: { literalString: 'https://picsum.photos/seed/avatar/48/48' },
           usageHint: 'avatar',
         },
       },

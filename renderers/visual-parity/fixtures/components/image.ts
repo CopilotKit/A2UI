@@ -1,16 +1,15 @@
 /**
  * Image component fixtures for visual parity testing.
- *
- * TODO: Add real test images to react/public/ and lit/public/ folders
- * and update these URLs to use /test-image.png format.
+ * Uses picsum.photos for placeholder images (same as a2ui-composer).
+ * The seed parameter ensures consistent images across test runs.
  */
 
 import type { ComponentFixture } from '../types';
 
-// Placeholder URLs - replace with local images in public/ folders
-const placeholderUrl = 'https://via.placeholder.com/150/6366f1/ffffff?text=A2UI';
-const avatarUrl = 'https://via.placeholder.com/64/6366f1/ffffff?text=U';
-const largeUrl = 'https://via.placeholder.com/400x200/6366f1/ffffff?text=Large';
+// Picsum URLs with seed for consistent images
+const placeholderUrl = 'https://picsum.photos/seed/a2ui/150/150';
+const avatarUrl = 'https://picsum.photos/seed/avatar/64/64';
+const largeUrl = 'https://picsum.photos/seed/large/400/200';
 
 export const imageBasic: ComponentFixture = {
   root: 'img-basic',

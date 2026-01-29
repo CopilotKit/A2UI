@@ -174,7 +174,6 @@ Each Lit component with `static styles` needs a corresponding entry in `componen
 
 | Component | Lit File | Styles | Issue |
 |-----------|----------|--------|-------|
-| **Slider** | `slider.ts` | `:host`, `input[type="range"]` | Size mismatch between renderers (100% diff) |
 | **CheckBox** | `checkbox.ts` | `:host`, `input` | Lit bug: doesn't render checked state correctly (2.57% diff) |
 | **DateTimeInput** | `datetime-input.ts` | `:host`, `input` | 7-10% diff on date/time, size mismatch on combined |
 | **List** | `list.ts` | `:host`, `section`, `::slotted(*)` | Basic fixtures OK, but `listWithCards` has 2.39% diff |
@@ -186,6 +185,7 @@ Each Lit component with `static styles` needs a corresponding entry in `componen
 
 | Component | Lit File | Styles | Notes |
 |-----------|----------|--------|-------|
+| **Slider** | `slider.ts` | `:host`, `input[type="range"]` | Lit bug: `label` property not wired in root.ts, so labels never render. Basic slider (no label) passes. |
 | **MultipleChoice** | `multiple-choice.ts` | `:host`, `select` | React uses radio/checkbox inputs, Lit uses `<select>` dropdown. Skipped in visual parity tests. |
 
 ### ❌ Not Yet Implemented

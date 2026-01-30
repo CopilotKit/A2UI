@@ -266,18 +266,19 @@ export const componentSpecificStyles: string = `
 }
 
 /* :host([alignment="..."]) section { align-items: ...; } */
-.a2ui-surface .a2ui-column[data-alignment="start"] section { align-items: start; }
-.a2ui-surface .a2ui-column[data-alignment="center"] section { align-items: center; }
-.a2ui-surface .a2ui-column[data-alignment="end"] section { align-items: end; }
-.a2ui-surface .a2ui-column[data-alignment="stretch"] section { align-items: stretch; }
+/* Use > section to only target Column's direct section, not nested sections (e.g., CheckBox's section) */
+.a2ui-surface .a2ui-column[data-alignment="start"] > section { align-items: start; }
+.a2ui-surface .a2ui-column[data-alignment="center"] > section { align-items: center; }
+.a2ui-surface .a2ui-column[data-alignment="end"] > section { align-items: end; }
+.a2ui-surface .a2ui-column[data-alignment="stretch"] > section { align-items: stretch; }
 
 /* :host([distribution="..."]) section { justify-content: ...; } */
-.a2ui-surface .a2ui-column[data-distribution="start"] section { justify-content: start; }
-.a2ui-surface .a2ui-column[data-distribution="center"] section { justify-content: center; }
-.a2ui-surface .a2ui-column[data-distribution="end"] section { justify-content: end; }
-.a2ui-surface .a2ui-column[data-distribution="spaceBetween"] section { justify-content: space-between; }
-.a2ui-surface .a2ui-column[data-distribution="spaceAround"] section { justify-content: space-around; }
-.a2ui-surface .a2ui-column[data-distribution="spaceEvenly"] section { justify-content: space-evenly; }
+.a2ui-surface .a2ui-column[data-distribution="start"] > section { justify-content: start; }
+.a2ui-surface .a2ui-column[data-distribution="center"] > section { justify-content: center; }
+.a2ui-surface .a2ui-column[data-distribution="end"] > section { justify-content: end; }
+.a2ui-surface .a2ui-column[data-distribution="spaceBetween"] > section { justify-content: space-between; }
+.a2ui-surface .a2ui-column[data-distribution="spaceAround"] > section { justify-content: space-around; }
+.a2ui-surface .a2ui-column[data-distribution="spaceEvenly"] > section { justify-content: space-evenly; }
 
 /* =========================================================================
  * Row (from Lit row.ts static styles)
@@ -298,18 +299,19 @@ export const componentSpecificStyles: string = `
 }
 
 /* :host([alignment="..."]) section { align-items: ...; } */
-.a2ui-surface .a2ui-row[data-alignment="start"] section { align-items: start; }
-.a2ui-surface .a2ui-row[data-alignment="center"] section { align-items: center; }
-.a2ui-surface .a2ui-row[data-alignment="end"] section { align-items: end; }
-.a2ui-surface .a2ui-row[data-alignment="stretch"] section { align-items: stretch; }
+/* Use > section to only target Row's direct section, not nested sections */
+.a2ui-surface .a2ui-row[data-alignment="start"] > section { align-items: start; }
+.a2ui-surface .a2ui-row[data-alignment="center"] > section { align-items: center; }
+.a2ui-surface .a2ui-row[data-alignment="end"] > section { align-items: end; }
+.a2ui-surface .a2ui-row[data-alignment="stretch"] > section { align-items: stretch; }
 
 /* :host([distribution="..."]) section { justify-content: ...; } */
-.a2ui-surface .a2ui-row[data-distribution="start"] section { justify-content: start; }
-.a2ui-surface .a2ui-row[data-distribution="center"] section { justify-content: center; }
-.a2ui-surface .a2ui-row[data-distribution="end"] section { justify-content: end; }
-.a2ui-surface .a2ui-row[data-distribution="spaceBetween"] section { justify-content: space-between; }
-.a2ui-surface .a2ui-row[data-distribution="spaceAround"] section { justify-content: space-around; }
-.a2ui-surface .a2ui-row[data-distribution="spaceEvenly"] section { justify-content: space-evenly; }
+.a2ui-surface .a2ui-row[data-distribution="start"] > section { justify-content: start; }
+.a2ui-surface .a2ui-row[data-distribution="center"] > section { justify-content: center; }
+.a2ui-surface .a2ui-row[data-distribution="end"] > section { justify-content: end; }
+.a2ui-surface .a2ui-row[data-distribution="spaceBetween"] > section { justify-content: space-between; }
+.a2ui-surface .a2ui-row[data-distribution="spaceAround"] > section { justify-content: space-around; }
+.a2ui-surface .a2ui-row[data-distribution="spaceEvenly"] > section { justify-content: space-evenly; }
 
 /* =========================================================================
  * List (from Lit list.ts static styles)

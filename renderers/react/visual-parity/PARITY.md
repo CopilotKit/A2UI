@@ -141,9 +141,11 @@ Use `:where()` when the Lit component has element selectors that should be overr
 
 ## File Organization
 
-- **`src/styles/index.ts`**: Contains `structuralStyles` (from Lit) and `componentSpecificStyles` (React-specific)
-- **Component files**: Render the mirrored structure with appropriate class names
+- **`../src/styles/index.ts`**: Contains `structuralStyles` (from Lit) and `componentSpecificStyles` (React-specific)
+- **`../src/components/`**: Component files that render the mirrored structure with appropriate class names
 - **`injectStyles()`**: Injects both structural and component-specific styles into the document
+- **`./fixtures/`**: Test fixtures for visual parity testing
+- **`./tests/`**: Playwright test specs
 
 ## Troubleshooting
 
@@ -162,7 +164,7 @@ This happens when Vite's dependency optimization cache becomes stale, typically 
 
 **Fix:** Clear the Vite cache and restart:
 ```bash
-cd renderers/react/visual-parity
+# From renderers/react/visual-parity/
 rm -rf node_modules/.vite react/node_modules/.vite lit/node_modules/.vite
 npm run dev:react  # or dev:lit
 ```
@@ -179,12 +181,14 @@ If you edit files in `renderers/react/src/` but the visual parity app doesn't re
 
 **Fix:** Rebuild the package and clear Vite's cache:
 ```bash
+# From renderers/react/visual-parity/
+
 # 1. Rebuild the React renderer
-cd renderers/react
+cd ../
 npm run build
 
 # 2. Clear Vite cache and restart
-cd ../visual-parity
+cd visual-parity
 rm -rf react/node_modules/.vite node_modules/.vite
 npm run dev:react
 ```
@@ -193,10 +197,26 @@ npm run dev:react
 
 ## Testing Parity
 
-The `renderers/react/visual-parity` directory contains side-by-side comparisons:
-1. Load the same fixture in both Lit and React
-2. Compare rendered output visually and via computed styles
-3. Use browser DevTools to verify CSS specificity matches
+This directory contains the visual parity test suite:
+
+```bash
+# Run all tests
+npm test
+
+# Run specific component tests
+npm test -- --grep "button"
+
+# Run dev servers for manual inspection
+npm run dev
+```
+
+The tests:
+1. Load the same fixture in both Lit (localhost:5002) and React (localhost:5001)
+2. Take screenshots of both renderers
+3. Compare pixel differences using pixelmatch
+4. Fail if difference exceeds 1%
+
+See [README.md](./README.md) for detailed usage instructions.
 
 ## Component CSS Checklist
 

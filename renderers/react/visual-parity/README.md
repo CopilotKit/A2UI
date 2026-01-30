@@ -280,5 +280,5 @@ npm run test:ui
 
 ## Related Documentation
 
-- [PARITY.md](../../../PARITY.md) - CSS transformation approach for React/Lit parity
+- [PARITY.md](./PARITY.md) - CSS transformation approach for React/Lit parity
 - [CSS-CLEANUP.md](../../../CSS-CLEANUP.md) - Plan for CSS architecture cleanup

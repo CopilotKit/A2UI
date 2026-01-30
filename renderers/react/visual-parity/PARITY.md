@@ -247,13 +247,15 @@ Each Lit component with `static styles` needs a corresponding entry in `componen
 | **Video** | `video.ts` | `:host`, `video` | No test fixtures yet |
 | **AudioPlayer** | `audio.ts` | `:host`, `audio` | No test fixtures yet |
 
-### ⚠️ Known Implementation Differences
+### ⚠️ Lit Renderer Issues
 
-| Component | Lit File | Styles | Notes |
-|-----------|----------|--------|-------|
-| **CheckBox** | `checkbox.ts` | `:host`, `input` | Lit bug: uses `.value` instead of `.checked`, so checked state never displays. Unchecked state passes 0%. |
-| **DateTimeInput** | `datetime-input.ts` | `:host`, `input` | Lit bug: `new Date('14:30')` fails for time-only inputs. Date and datetime types pass at 0.1-0.2%. |
-| **MultipleChoice** | `multiple-choice.ts` | `:host`, `select` | React uses radio/checkbox inputs, Lit uses `<select>` dropdown. Skipped in visual parity tests. |
+| Component | Lit File | Issue |
+|-----------|----------|-------|
+| **Slider** | `slider.ts` | Value does not update when slider moves |
+| **Divider** | `divider.ts` | Ignores `axis` property - always renders same orientation |
+| **CheckBox** | `checkbox.ts` | Uses `.value` instead of `.checked` (line 100), so checked state never displays. Also checks `literalBoolean` (line 110), so `false` values cause component to not render - only works via path binding. |
+| **DateTimeInput** | `datetime-input.ts` | Uses `getMonth()` which is 0-indexed (0-11) without adding 1, causing issues in January and one month off otherwise. Also parses all values through `new Date()` constructor which does not accept time-only strings. React uses HTML5 inputs directly as they match A2UI format. |
+| **MultipleChoice** | `multiple-choice.ts` | React uses radio/checkbox inputs, Lit uses `<select>` dropdown. Skipped in visual parity tests. |
 
 ### Special Cases
 

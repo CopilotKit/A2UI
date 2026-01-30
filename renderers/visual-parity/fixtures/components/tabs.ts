@@ -62,18 +62,18 @@ export const tabsComplex: ComponentFixture = {
     { id: 'profile-avatar', component: { Image: { url: { literalString: 'https://picsum.photos/seed/user/64/64' }, usageHint: 'avatar' } } },
     { id: 'profile-name', component: { Text: { text: { literalString: 'John Doe' }, usageHint: 'h3' } } },
     { id: 'profile-bio', component: { Text: { text: { literalString: 'Software developer and UI enthusiast.' } } } },
-    { id: 'profile-col', component: { Column: { children: ['profile-avatar', 'profile-name', 'profile-bio'] } } },
+    { id: 'profile-col', component: { Column: { children: { explicitList: ['profile-avatar', 'profile-name', 'profile-bio'] } } } },
     // Settings tab content
     { id: 'settings-title', component: { Text: { text: { literalString: 'Preferences' }, usageHint: 'h3' } } },
     { id: 'settings-cb1', component: { CheckBox: { label: { literalString: 'Enable notifications' }, value: { path: '/tabs/notify' } } } },
     { id: 'settings-cb2', component: { CheckBox: { label: { literalString: 'Dark mode' }, value: { path: '/tabs/dark' } } } },
-    { id: 'settings-col', component: { Column: { children: ['settings-title', 'settings-cb1', 'settings-cb2'] } } },
+    { id: 'settings-col', component: { Column: { children: { explicitList: ['settings-title', 'settings-cb1', 'settings-cb2'] } } } },
     // Activity tab content
     { id: 'activity-title', component: { Text: { text: { literalString: 'Recent Activity' }, usageHint: 'h3' } } },
     { id: 'activity-1', component: { Text: { text: { literalString: 'Completed task A' } } } },
     { id: 'activity-2', component: { Text: { text: { literalString: 'Updated profile' } } } },
     { id: 'activity-3', component: { Text: { text: { literalString: 'Joined project B' } } } },
-    { id: 'activity-col', component: { Column: { children: ['activity-title', 'activity-1', 'activity-2', 'activity-3'] } } },
+    { id: 'activity-col', component: { Column: { children: { explicitList: ['activity-title', 'activity-1', 'activity-2', 'activity-3'] } } } },
     // Tabs
     {
       id: 'tabs-complex',

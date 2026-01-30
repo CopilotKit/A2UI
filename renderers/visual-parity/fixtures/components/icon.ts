@@ -27,7 +27,7 @@ export const iconMultiple: ComponentFixture = {
     {
       id: 'icons-row',
       component: {
-        Row: { children: ['icon-home', 'icon-search', 'icon-settings', 'icon-favorite', 'icon-star'] },
+        Row: { children: { explicitList: ['icon-home', 'icon-search', 'icon-settings', 'icon-favorite', 'icon-star'] } },
       },
     },
   ],

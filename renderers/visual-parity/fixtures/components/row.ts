@@ -13,7 +13,7 @@ export const row: ComponentFixture = {
     {
       id: 'row-1',
       component: {
-        Row: { children: ['row-icon-1', 'row-icon-2', 'row-icon-3'] },
+        Row: { children: { explicitList: ['row-icon-1', 'row-icon-2', 'row-icon-3'] } },
       },
     },
   ],
@@ -28,7 +28,7 @@ export const rowWithText: ComponentFixture = {
     {
       id: 'row-text',
       component: {
-        Row: { children: ['row-text-1', 'row-text-2', 'row-text-3'] },
+        Row: { children: { explicitList: ['row-text-1', 'row-text-2', 'row-text-3'] } },
       },
     },
   ],
@@ -43,7 +43,7 @@ export const rowStart: ComponentFixture = {
     {
       id: 'row-start',
       component: {
-        Row: { children: ['row-start-1', 'row-start-2', 'row-start-3'], distribution: 'start' },
+        Row: { children: { explicitList: ['row-start-1', 'row-start-2', 'row-start-3'] }, distribution: 'start' },
       },
     },
   ],
@@ -58,7 +58,7 @@ export const rowCenter: ComponentFixture = {
     {
       id: 'row-center',
       component: {
-        Row: { children: ['row-center-1', 'row-center-2', 'row-center-3'], distribution: 'center' },
+        Row: { children: { explicitList: ['row-center-1', 'row-center-2', 'row-center-3'] }, distribution: 'center' },
       },
     },
   ],
@@ -73,7 +73,7 @@ export const rowEnd: ComponentFixture = {
     {
       id: 'row-end',
       component: {
-        Row: { children: ['row-end-1', 'row-end-2', 'row-end-3'], distribution: 'end' },
+        Row: { children: { explicitList: ['row-end-1', 'row-end-2', 'row-end-3'] }, distribution: 'end' },
       },
     },
   ],
@@ -88,7 +88,7 @@ export const rowSpaceBetween: ComponentFixture = {
     {
       id: 'row-space',
       component: {
-        Row: { children: ['row-space-1', 'row-space-2', 'row-space-3'], distribution: 'spaceBetween' },
+        Row: { children: { explicitList: ['row-space-1', 'row-space-2', 'row-space-3'] }, distribution: 'spaceBetween' },
       },
     },
   ],

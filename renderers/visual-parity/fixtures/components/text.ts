@@ -100,21 +100,6 @@ export const textCaption: ComponentFixture = {
   ],
 };
 
-export const textMarkdown: ComponentFixture = {
-  root: 'text-markdown',
-  components: [
-    {
-      id: 'text-markdown',
-      component: {
-        Text: {
-          text: { literalString: '**Bold text** and *italic text* with a [link](https://example.com).' },
-          markdown: true,
-        },
-      },
-    },
-  ],
-};
-
 export const textFixtures = {
   textBasic,
   textH1,
@@ -124,5 +109,4 @@ export const textFixtures = {
   textH5,
   textBody,
   textCaption,
-  textMarkdown,
 };

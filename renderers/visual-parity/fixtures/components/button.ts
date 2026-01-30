@@ -58,7 +58,7 @@ export const buttonWithIcon: ComponentFixture = {
     {
       id: 'btn-icon-row',
       component: {
-        Row: { children: ['btn-icon-icon', 'btn-icon-text'] },
+        Row: { children: { explicitList: ['btn-icon-icon', 'btn-icon-text'] } },
       },
     },
     {
@@ -70,27 +70,8 @@ export const buttonWithIcon: ComponentFixture = {
   ],
 };
 
-export const buttonDisabled: ComponentFixture = {
-  root: 'btn-disabled',
-  components: [
-    {
-      id: 'btn-disabled-text',
-      component: {
-        Text: { text: { literalString: 'Disabled Button' } },
-      },
-    },
-    {
-      id: 'btn-disabled',
-      component: {
-        Button: { child: 'btn-disabled-text', action: { name: 'disabled' }, disabled: true },
-      },
-    },
-  ],
-};
-
 export const buttonFixtures = {
   buttonPrimary,
   buttonSecondary,
   buttonWithIcon,
-  buttonDisabled,
 };

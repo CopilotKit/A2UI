@@ -24,36 +24,7 @@ export const textFieldWithValue: ComponentFixture = {
       component: {
         TextField: {
           label: { literalString: 'Email' },
-          value: { literalString: 'user@example.com' },
-        },
-      },
-    },
-  ],
-};
-
-export const textFieldMultiline: ComponentFixture = {
-  root: 'tf-multi',
-  components: [
-    {
-      id: 'tf-multi',
-      component: {
-        TextField: {
-          label: { literalString: 'Description' },
-          multiline: true,
-        },
-      },
-    },
-  ],
-};
-
-export const textFieldNoLabel: ComponentFixture = {
-  root: 'tf-nolabel',
-  components: [
-    {
-      id: 'tf-nolabel',
-      component: {
-        TextField: {
-          value: { literalString: 'No label text field' },
+          text: { literalString: 'user@example.com' },
         },
       },
     },
@@ -63,6 +34,4 @@ export const textFieldNoLabel: ComponentFixture = {
 export const textFieldFixtures = {
   textField,
   textFieldWithValue,
-  textFieldMultiline,
-  textFieldNoLabel,
 };

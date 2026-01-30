@@ -14,7 +14,7 @@ export const listVertical: ComponentFixture = {
     {
       id: 'list-v',
       component: {
-        List: { children: ['list-v-1', 'list-v-2', 'list-v-3', 'list-v-4'] },
+        List: { children: { explicitList: ['list-v-1', 'list-v-2', 'list-v-3', 'list-v-4'] } },
       },
     },
   ],
@@ -29,7 +29,7 @@ export const listHorizontal: ComponentFixture = {
     {
       id: 'list-h',
       component: {
-        List: { children: ['list-h-1', 'list-h-2', 'list-h-3'], direction: 'horizontal' },
+        List: { children: { explicitList: ['list-h-1', 'list-h-2', 'list-h-3'] }, direction: 'horizontal' },
       },
     },
   ],
@@ -41,20 +41,23 @@ export const listWithCards: ComponentFixture = {
     // Card 1
     { id: 'card1-title', component: { Text: { text: { literalString: 'Card One' }, usageHint: 'h3' } } },
     { id: 'card1-body', component: { Text: { text: { literalString: 'First card content' } } } },
-    { id: 'card1', component: { Card: { children: ['card1-title', 'card1-body'] } } },
+    { id: 'card1-col', component: { Column: { children: { explicitList: ['card1-title', 'card1-body'] } } } },
+    { id: 'card1', component: { Card: { child: 'card1-col' } } },
     // Card 2
     { id: 'card2-title', component: { Text: { text: { literalString: 'Card Two' }, usageHint: 'h3' } } },
     { id: 'card2-body', component: { Text: { text: { literalString: 'Second card content' } } } },
-    { id: 'card2', component: { Card: { children: ['card2-title', 'card2-body'] } } },
+    { id: 'card2-col', component: { Column: { children: { explicitList: ['card2-title', 'card2-body'] } } } },
+    { id: 'card2', component: { Card: { child: 'card2-col' } } },
     // Card 3
     { id: 'card3-title', component: { Text: { text: { literalString: 'Card Three' }, usageHint: 'h3' } } },
     { id: 'card3-body', component: { Text: { text: { literalString: 'Third card content' } } } },
-    { id: 'card3', component: { Card: { children: ['card3-title', 'card3-body'] } } },
+    { id: 'card3-col', component: { Column: { children: { explicitList: ['card3-title', 'card3-body'] } } } },
+    { id: 'card3', component: { Card: { child: 'card3-col' } } },
     // List
     {
       id: 'list-cards',
       component: {
-        List: { children: ['card1', 'card2', 'card3'] },
+        List: { children: { explicitList: ['card1', 'card2', 'card3'] } },
       },
     },
   ],
@@ -67,17 +70,17 @@ export const listMixed: ComponentFixture = {
     // Feature items with icons
     { id: 'feat1-icon', component: { Icon: { name: { literalString: 'check' } } } },
     { id: 'feat1-text', component: { Text: { text: { literalString: 'Feature One' } } } },
-    { id: 'feat1', component: { Row: { children: ['feat1-icon', 'feat1-text'] } } },
+    { id: 'feat1', component: { Row: { children: { explicitList: ['feat1-icon', 'feat1-text'] } } } },
     { id: 'feat2-icon', component: { Icon: { name: { literalString: 'check' } } } },
     { id: 'feat2-text', component: { Text: { text: { literalString: 'Feature Two' } } } },
-    { id: 'feat2', component: { Row: { children: ['feat2-icon', 'feat2-text'] } } },
+    { id: 'feat2', component: { Row: { children: { explicitList: ['feat2-icon', 'feat2-text'] } } } },
     { id: 'feat3-icon', component: { Icon: { name: { literalString: 'check' } } } },
     { id: 'feat3-text', component: { Text: { text: { literalString: 'Feature Three' } } } },
-    { id: 'feat3', component: { Row: { children: ['feat3-icon', 'feat3-text'] } } },
+    { id: 'feat3', component: { Row: { children: { explicitList: ['feat3-icon', 'feat3-text'] } } } },
     {
       id: 'list-mixed',
       component: {
-        List: { children: ['list-mixed-h', 'feat1', 'feat2', 'feat3'] },
+        List: { children: { explicitList: ['list-mixed-h', 'feat1', 'feat2', 'feat3'] } },
       },
     },
   ],

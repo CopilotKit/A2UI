@@ -20,9 +20,15 @@ export const card: ComponentFixture = {
       },
     },
     {
+      id: 'card-content',
+      component: {
+        Column: { children: { explicitList: ['card-title', 'card-body'] } },
+      },
+    },
+    {
       id: 'card-1',
       component: {
-        Card: { children: ['card-title', 'card-body'] },
+        Card: { child: 'card-content' },
       },
     },
   ],
@@ -53,9 +59,15 @@ export const cardWithImage: ComponentFixture = {
       },
     },
     {
+      id: 'card-img-content',
+      component: {
+        Column: { children: { explicitList: ['card-img-image', 'card-img-title', 'card-img-body'] } },
+      },
+    },
+    {
       id: 'card-img',
       component: {
-        Card: { children: ['card-img-image', 'card-img-title', 'card-img-body'] },
+        Card: { child: 'card-img-content' },
       },
     },
   ],
@@ -88,13 +100,13 @@ export const cardComplex: ComponentFixture = {
     {
       id: 'card-complex-info',
       component: {
-        Column: { children: ['card-complex-name', 'card-complex-role'] },
+        Column: { children: { explicitList: ['card-complex-name', 'card-complex-role'] } },
       },
     },
     {
       id: 'card-complex-header',
       component: {
-        Row: { children: ['card-complex-avatar', 'card-complex-info'] },
+        Row: { children: { explicitList: ['card-complex-avatar', 'card-complex-info'] } },
       },
     },
     {
@@ -110,9 +122,15 @@ export const cardComplex: ComponentFixture = {
       },
     },
     {
+      id: 'card-complex-content',
+      component: {
+        Column: { children: { explicitList: ['card-complex-header', 'card-complex-divider', 'card-complex-body'] } },
+      },
+    },
+    {
       id: 'card-complex',
       component: {
-        Card: { children: ['card-complex-header', 'card-complex-divider', 'card-complex-body'] },
+        Card: { child: 'card-complex-content' },
       },
     },
   ],

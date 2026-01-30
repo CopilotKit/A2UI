@@ -13,7 +13,7 @@ export const column: ComponentFixture = {
     {
       id: 'col-1',
       component: {
-        Column: { children: ['col-text-1', 'col-text-2', 'col-text-3'] },
+        Column: { children: { explicitList: ['col-text-1', 'col-text-2', 'col-text-3'] } },
       },
     },
   ],
@@ -28,7 +28,7 @@ export const columnStart: ComponentFixture = {
     {
       id: 'col-start',
       component: {
-        Column: { children: ['col-start-1', 'col-start-2', 'col-start-3'], distribution: 'start' },
+        Column: { children: { explicitList: ['col-start-1', 'col-start-2', 'col-start-3'] }, distribution: 'start' },
       },
     },
   ],
@@ -43,7 +43,7 @@ export const columnCenter: ComponentFixture = {
     {
       id: 'col-center',
       component: {
-        Column: { children: ['col-center-1', 'col-center-2', 'col-center-3'], distribution: 'center' },
+        Column: { children: { explicitList: ['col-center-1', 'col-center-2', 'col-center-3'] }, distribution: 'center' },
       },
     },
   ],
@@ -58,7 +58,7 @@ export const columnEnd: ComponentFixture = {
     {
       id: 'col-end',
       component: {
-        Column: { children: ['col-end-1', 'col-end-2', 'col-end-3'], distribution: 'end' },
+        Column: { children: { explicitList: ['col-end-1', 'col-end-2', 'col-end-3'] }, distribution: 'end' },
       },
     },
   ],
@@ -73,7 +73,7 @@ export const columnMixed: ComponentFixture = {
     {
       id: 'col-mixed',
       component: {
-        Column: { children: ['col-mixed-h', 'col-mixed-body', 'col-mixed-caption'] },
+        Column: { children: { explicitList: ['col-mixed-h', 'col-mixed-body', 'col-mixed-caption'] } },
       },
     },
   ],

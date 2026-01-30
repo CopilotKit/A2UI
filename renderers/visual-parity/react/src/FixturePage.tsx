@@ -26,12 +26,15 @@ function toValueMap(key: string, value: unknown): Types.ValueMap {
 /**
  * Convert fixture data to dataModelUpdate messages.
  * Paths like "/checkbox/checked" need to be split into parent path + key.
+ * Multiple keys under the same parent path are grouped into one message
+ * to avoid overwriting (each dataModelUpdate replaces data at that path).
  */
 function dataToMessages(
   data: Record<string, unknown>,
   surfaceId: string
 ): Types.ServerToClientMessage[] {
-  const messages: Types.ServerToClientMessage[] = [];
+  // Group values by parent path to avoid overwriting
+  const byParentPath = new Map<string, Types.ValueMap[]>();
 
   for (const [path, value] of Object.entries(data)) {
     // Split path into parent and key (e.g., "/checkbox/checked" -> "/checkbox", "checked")
@@ -39,11 +42,20 @@ function dataToMessages(
     const parentPath = lastSlash > 0 ? path.substring(0, lastSlash) : '/';
     const key = path.substring(lastSlash + 1);
 
+    if (!byParentPath.has(parentPath)) {
+      byParentPath.set(parentPath, []);
+    }
+    byParentPath.get(parentPath)!.push(toValueMap(key, value));
+  }
+
+  // Create one message per parent path with all contents grouped
+  const messages: Types.ServerToClientMessage[] = [];
+  for (const [parentPath, contents] of byParentPath) {
     messages.push({
       dataModelUpdate: {
         surfaceId,
         path: parentPath,
-        contents: [toValueMap(key, value)],
+        contents,
       },
     } as Types.ServerToClientMessage);
   }

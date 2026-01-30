@@ -145,6 +145,28 @@ Use `:where()` when the Lit component has element selectors that should be overr
 - **Component files**: Render the mirrored structure with appropriate class names
 - **`injectStyles()`**: Injects both structural and component-specific styles into the document
 
+## Troubleshooting
+
+### Vite Cache Issues (504 Outdated Optimize Dep)
+
+If you see errors like:
+```
+Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)
+Uncaught TypeError: Failed to fetch dynamically imported module
+```
+
+This happens when Vite's dependency optimization cache becomes stale, typically after:
+- Switching git branches
+- Updating dependencies
+- Rebuilding the React renderer
+
+**Fix:** Clear the Vite cache and restart:
+```bash
+cd renderers/visual-parity
+rm -rf node_modules/.vite react/node_modules/.vite lit/node_modules/.vite
+npm run dev:react  # or dev:lit
+```
+
 ## Testing Parity
 
 The `renderers/visual-parity` directory contains side-by-side comparisons:

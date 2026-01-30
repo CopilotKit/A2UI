@@ -192,6 +192,40 @@ export const componentSpecificStyles: string = `
 }
 
 /* =========================================================================
+ * Modal (from Lit modal.ts static styles)
+ * ========================================================================= */
+
+/* :host { display: block; flex: var(--weight); } */
+.a2ui-surface .a2ui-modal {
+  display: block;
+  flex: var(--weight);
+}
+
+/* dialog { padding: 0; border: none; background: none; } */
+.a2ui-surface .a2ui-modal dialog {
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+/* dialog section #controls { display: flex; justify-content: end; margin-bottom: 4px; } */
+.a2ui-surface .a2ui-modal dialog section #controls {
+  display: flex;
+  justify-content: end;
+  margin-bottom: 4px;
+}
+
+/* dialog section #controls button { padding: 0; background: none; ... } */
+.a2ui-surface .a2ui-modal dialog section #controls button {
+  padding: 0;
+  background: none;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border: none;
+}
+
+/* =========================================================================
  * Image (from Lit image.ts static styles)
  * ========================================================================= */
 

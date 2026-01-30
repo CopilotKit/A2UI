@@ -234,31 +234,26 @@ Each Lit component with `static styles` needs a corresponding entry in `componen
 | **Icon** | `icon.ts` | `:host` | Simple display/flex |
 | **Column** | `column.ts` | `:host`, `section`, attribute selectors | Uses `data-alignment` and `data-distribution` |
 | **Row** | `row.ts` | `:host`, `section`, attribute selectors | Uses `data-alignment` and `data-distribution` |
-| **Tabs** | `tabs.ts` | `:host` | Fixed by removing global `margin/padding` reset from test pages |
+| **List** | `list.ts` | `:host`, `section`, `::slotted(*)` | All fixtures pass 0% including cards inside lists |
+| **Image** | `image.ts` | `:host`, `img` | All usage hints pass 0% |
+| **Slider** | `slider.ts` | `:host`, `input[type="range"]` | Basic slider passes 0% |
+| **Tabs** | `tabs.ts` | `:host`, `section`, `button` | All fixtures pass 0% |
 
-### 🔄 Need Investigation (size mismatch or >1% pixel diff)
+### 🔄 Need Investigation
 
 | Component | Lit File | Styles | Issue |
 |-----------|----------|--------|-------|
-| **List** | `list.ts` | `:host`, `section`, `::slotted(*)` | Basic fixtures (text, icons, rows) pass 0%. Cards inside List show ~2.4% diff - spacing within Cards differs. Grid layout interaction with Card children suspected. |
-| **Image** | `image.ts` | `:host`, `img` | Test fixtures timeout - cannot verify parity |
-| **Video** | `video.ts` | `:host`, `video` | No test fixtures - cannot verify parity |
-| **Audio** | `audio.ts` | `:host`, `audio` | No test fixtures - cannot verify parity |
+| **Modal** | `modal.ts` | `:host`, `dialog`, `#controls`, `button` | No test fixtures yet |
+| **Video** | `video.ts` | `:host`, `video` | No test fixtures yet |
+| **AudioPlayer** | `audio.ts` | `:host`, `audio` | No test fixtures yet |
 
 ### ⚠️ Known Implementation Differences
 
 | Component | Lit File | Styles | Notes |
 |-----------|----------|--------|-------|
-| **CheckBox** | `checkbox.ts` | `:host`, `input` | Lit bug: uses `.value` instead of `.checked`, so checked state never displays. Styling matches 0% when both unchecked. |
-| **DateTimeInput** | `datetime-input.ts` | `:host`, `input` | Lit bugs: (1) `getMonth()` not +1 shows wrong month, (2) `new Date('14:30')` fails for time-only. React passes value directly to native input. CSS uses `:where()` for input styles. Date/datetime pass at 0.1-0.2%. |
-| **Slider** | `slider.ts` | `:host`, `input[type="range"]` | Lit bug: `label` property not wired in root.ts, so labels never render. Basic slider (no label) passes. |
+| **CheckBox** | `checkbox.ts` | `:host`, `input` | Lit bug: uses `.value` instead of `.checked`, so checked state never displays. Unchecked state passes 0%. |
+| **DateTimeInput** | `datetime-input.ts` | `:host`, `input` | Lit bug: `new Date('14:30')` fails for time-only inputs. Date and datetime types pass at 0.1-0.2%. |
 | **MultipleChoice** | `multiple-choice.ts` | `:host`, `select` | React uses radio/checkbox inputs, Lit uses `<select>` dropdown. Skipped in visual parity tests. |
-
-### ❌ Not Yet Implemented
-
-| Component | Lit File | Styles | Notes |
-|-----------|----------|--------|-------|
-| **Modal** | `modal.ts` | `dialog`, nested selectors | Complex - has `#controls`, nested button styles. No CSS in `componentSpecificStyles` yet. |
 
 ### Special Cases
 

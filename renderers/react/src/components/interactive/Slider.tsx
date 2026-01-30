@@ -10,7 +10,7 @@ import { classMapToString, stylesToObject } from '../../lib/utils';
  * Supports two-way data binding for the value.
  */
 export const Slider = memo(function Slider({ node, surfaceId }: A2UIComponentProps<Types.SliderNode>) {
-  const { theme, resolveNumber, setValue, getValue } = useA2UIComponent(
+  const { theme, resolveNumber, resolveString, setValue, getValue } = useA2UIComponent(
     node,
     surfaceId
   );
@@ -51,7 +51,6 @@ export const Slider = memo(function Slider({ node, surfaceId }: A2UIComponentPro
   // Access label from props if it exists (Lit component supports it but type doesn't define it)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const labelValue = (props as any).label;
-  const { resolveString } = useA2UIComponent(node, surfaceId);
   const label = labelValue ? resolveString(labelValue) : '';
 
   // Structure mirrors Lit's Slider component:

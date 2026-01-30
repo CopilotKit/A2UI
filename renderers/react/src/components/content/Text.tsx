@@ -26,13 +26,14 @@ function isHintedStyles(styles: unknown): styles is HintedStyles {
 /**
  * Markdown-it instance for rendering markdown text.
  * Uses synchronous import to ensure availability at first render (matches Lit renderer).
+ *
+ * Configuration matches Lit's markdown directive (uses MarkdownIt defaults):
+ * - html: false (default) - Security: disable raw HTML
+ * - linkify: false (default) - Don't auto-convert URLs/emails to links
+ * - breaks: false (default) - Don't convert \n to <br>
+ * - typographer: false (default) - Don't use smart quotes/dashes
  */
-const markdownRenderer = new MarkdownIt({
-  html: false, // Security: disable raw HTML
-  breaks: true, // Convert \n to <br>
-  linkify: true, // Auto-convert URLs to links
-  typographer: true, // Smart quotes, dashes, etc.
-});
+const markdownRenderer = new MarkdownIt();
 
 /**
  * Apply theme classes to markdown HTML elements.

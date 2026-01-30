@@ -25,8 +25,13 @@ export const Card = memo(function Card({ node, surfaceId }: A2UIComponentProps<T
   const rawChildren = props.children ?? (props.child ? [props.child] : []);
   const children = Array.isArray(rawChildren) ? rawChildren : [];
 
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-card">
+    <div className="a2ui-card" style={hostStyle}>
       <section
         className={classMapToString(theme.components.Card)}
         style={stylesToObject(theme.additionalStyles?.Card)}

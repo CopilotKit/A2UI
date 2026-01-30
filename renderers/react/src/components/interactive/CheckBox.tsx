@@ -53,8 +53,14 @@ export const CheckBox = memo(function CheckBox({ node, surfaceId }: A2UIComponen
   //       <label>...</label>
   //     </section>
   //   </div>
+
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-checkbox">
+    <div className="a2ui-checkbox" style={hostStyle}>
       <section
         className={classMapToString(theme.components.CheckBox.container)}
         style={stylesToObject(theme.additionalStyles?.CheckBox)}

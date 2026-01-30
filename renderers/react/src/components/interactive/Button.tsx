@@ -21,8 +21,13 @@ export const Button = memo(function Button({ node, surfaceId }: A2UIComponentPro
     }
   }, [props.action, sendAction]);
 
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-button">
+    <div className="a2ui-button" style={hostStyle}>
       <button
         className={classMapToString(theme.components.Button)}
         style={stylesToObject(theme.additionalStyles?.Button)}

@@ -68,8 +68,14 @@ export const TextField = memo(function TextField({ node, surfaceId }: A2UICompon
   //       <input>...</input>
   //     </section>
   //   </div>
+
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-textfield">
+    <div className="a2ui-textfield" style={hostStyle}>
       <section className={classMapToString(theme.components.TextField.container)}>
         {label && (
           <label

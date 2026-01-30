@@ -18,8 +18,13 @@ export const AudioPlayer = memo(function AudioPlayer({ node, surfaceId }: A2UICo
     return null;
   }
 
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-audio">
+    <div className="a2ui-audio" style={hostStyle}>
       <section
         className={classMapToString(theme.components.AudioPlayer)}
         style={stylesToObject(theme.additionalStyles?.AudioPlayer)}

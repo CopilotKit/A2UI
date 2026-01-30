@@ -37,8 +37,13 @@ export const Icon = memo(function Icon({ node, surfaceId }: A2UIComponentProps<T
   // Convert camelCase to snake_case for Material Symbols
   const snakeCaseName = toSnakeCase(iconName);
 
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-icon">
+    <div className="a2ui-icon" style={hostStyle}>
       <section
         className={classMapToString(theme.components.Icon)}
         style={stylesToObject(theme.additionalStyles?.Icon)}

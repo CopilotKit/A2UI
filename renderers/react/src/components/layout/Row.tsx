@@ -20,8 +20,13 @@ export const Row = memo(function Row({ node, surfaceId }: A2UIComponentProps<Typ
 
   const children = Array.isArray(props.children) ? props.children : [];
 
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-row" data-alignment={alignment} data-distribution={distribution}>
+    <div className="a2ui-row" data-alignment={alignment} data-distribution={distribution} style={hostStyle}>
       <section
         className={classMapToString(theme.components.Row)}
         style={stylesToObject(theme.additionalStyles?.Row)}

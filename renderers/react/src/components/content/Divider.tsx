@@ -15,8 +15,13 @@ import { classMapToString, stylesToObject } from '../../lib/utils';
 export const Divider = memo(function Divider({ node, surfaceId }: A2UIComponentProps<Types.DividerNode>) {
   const { theme } = useA2UIComponent(node, surfaceId);
 
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-divider">
+    <div className="a2ui-divider" style={hostStyle}>
       <hr
         className={classMapToString(theme.components.Divider)}
         style={stylesToObject(theme.additionalStyles?.Divider)}

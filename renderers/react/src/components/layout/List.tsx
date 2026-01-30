@@ -19,8 +19,13 @@ export const List = memo(function List({ node, surfaceId }: A2UIComponentProps<T
 
   const children = Array.isArray(props.children) ? props.children : [];
 
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-list" data-direction={direction}>
+    <div className="a2ui-list" data-direction={direction} style={hostStyle}>
       <section
         className={classMapToString(theme.components.List)}
         style={stylesToObject(theme.additionalStyles?.List)}

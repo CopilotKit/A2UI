@@ -69,8 +69,14 @@ export const DateTimeInput = memo(function DateTimeInput({ node, surfaceId }: A2
   //       <input>                        ← input element
   //     </section>
   //   </div>
+
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-datetime-input">
+    <div className="a2ui-datetime-input" style={hostStyle}>
       <section
         className={classMapToString(theme.components.DateTimeInput.container)}
         style={stylesToObject(theme.additionalStyles?.DateTimeInput)}

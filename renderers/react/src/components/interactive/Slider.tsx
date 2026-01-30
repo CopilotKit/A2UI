@@ -62,8 +62,14 @@ export const Slider = memo(function Slider({ node, surfaceId }: A2UIComponentPro
   //       <span>value</span>
   //     </section>
   //   </div>
+
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-slider">
+    <div className="a2ui-slider" style={hostStyle}>
       <section
         className={classMapToString(theme.components.Slider.container)}
         style={stylesToObject(theme.additionalStyles?.Slider)}

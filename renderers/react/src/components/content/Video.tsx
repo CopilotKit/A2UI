@@ -39,8 +39,13 @@ export const Video = memo(function Video({ node, surfaceId }: A2UIComponentProps
 
   const youtubeId = getYouTubeVideoId(url);
 
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-video">
+    <div className="a2ui-video" style={hostStyle}>
       <section
         className={classMapToString(theme.components.Video)}
         style={stylesToObject(theme.additionalStyles?.Video)}

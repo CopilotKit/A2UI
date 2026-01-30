@@ -16,8 +16,13 @@ export const Tabs = memo(function Tabs({ node, surfaceId }: A2UIComponentProps<T
 
   const tabItems = props.tabItems ?? [];
 
+  // Apply --weight CSS variable on root div (:host equivalent) for flex layouts
+  const hostStyle: React.CSSProperties = node.weight !== undefined
+    ? { '--weight': node.weight } as React.CSSProperties
+    : {};
+
   return (
-    <div className="a2ui-tabs">
+    <div className="a2ui-tabs" style={hostStyle}>
     <section
       className={classMapToString(theme.components.Tabs.container)}
       style={stylesToObject(theme.additionalStyles?.Tabs)}

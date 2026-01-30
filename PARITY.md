@@ -162,7 +162,7 @@ This happens when Vite's dependency optimization cache becomes stale, typically 
 
 **Fix:** Clear the Vite cache and restart:
 ```bash
-cd renderers/visual-parity
+cd renderers/react/visual-parity
 rm -rf node_modules/.vite react/node_modules/.vite lit/node_modules/.vite
 npm run dev:react  # or dev:lit
 ```
@@ -193,7 +193,7 @@ npm run dev:react
 
 ## Testing Parity
 
-The `renderers/visual-parity` directory contains side-by-side comparisons:
+The `renderers/react/visual-parity` directory contains side-by-side comparisons:
 1. Load the same fixture in both Lit and React
 2. Compare rendered output visually and via computed styles
 3. Use browser DevTools to verify CSS specificity matches

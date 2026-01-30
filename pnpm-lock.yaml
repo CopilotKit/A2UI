@@ -322,14 +322,14 @@ importers:
         specifier: ^3.0.0
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.10.9)(jiti@2.6.1)(jsdom@25.0.1)(less@4.5.1)(lightningcss@1.30.2)(sass@1.97.2)
 
-  renderers/visual-parity:
+  renderers/react/visual-parity:
     dependencies:
       '@a2ui/lit':
         specifier: workspace:*
-        version: link:../lit
+        version: link:../../lit
       '@a2ui/react':
         specifier: workspace:*
-        version: link:../react
+        version: link:..
       '@lit/context':
         specifier: ^1.1.0
         version: 1.1.6

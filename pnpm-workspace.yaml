@@ -1,3 +1,4 @@
 packages:
   - 'a2ui-composer'
   - 'renderers/*'
+  - 'renderers/react/visual-parity'

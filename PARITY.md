@@ -167,6 +167,30 @@ rm -rf node_modules/.vite react/node_modules/.vite lit/node_modules/.vite
 npm run dev:react  # or dev:lit
 ```
 
+### React Renderer Changes Not Picked Up
+
+If you edit files in `renderers/react/src/` but the visual parity app doesn't reflect the changes, this is because the visual parity app imports from the **built** `@a2ui/react` package, not directly from source.
+
+**Why this happens:**
+1. Source changes are in `renderers/react/src/`
+2. Visual parity app imports from `@a2ui/react/styles` (workspace package)
+3. Vite pre-bundles workspace dependencies into `node_modules/.vite`
+4. The pre-bundled cache still has the old built version
+
+**Fix:** Rebuild the package and clear Vite's cache:
+```bash
+# 1. Rebuild the React renderer
+cd renderers/react
+npm run build
+
+# 2. Clear Vite cache and restart
+cd ../visual-parity
+rm -rf react/node_modules/.vite node_modules/.vite
+npm run dev:react
+```
+
+**Note:** Vite's HMR works for changes *within* the visual parity app, but changes to workspace dependencies require rebuilding + cache clearing.
+
 ## Testing Parity
 
 The `renderers/visual-parity` directory contains side-by-side comparisons:

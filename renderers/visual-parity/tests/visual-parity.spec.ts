@@ -12,12 +12,10 @@ import { themeNames, type ThemeName } from '../fixtures/themes';
  *
  * Strategy:
  * - Lit is treated as the "reference" implementation
- * - React screenshots are compared DIRECTLY against Lit screenshots
+ * - React screenshots are compared DIRECTLY against Lit screenshots (in memory)
  * - Tests fail if the pixel difference exceeds the threshold
  * - Tests run across multiple themes to ensure theme switching works correctly
- *
- * To update Lit baselines after intentional Lit changes:
- *   npx playwright test --update-snapshots
+ * - No baseline snapshots are saved - comparison is always live Lit vs React
  */
 
 const REACT_BASE_URL = 'http://localhost:5001';
@@ -171,49 +169,6 @@ test.describe('Visual Parity: React vs Lit', () => {
           }
         });
       }
-    });
-  }
-});
-
-// =============================================================================
-// Lit Baseline Screenshots (using default/lit theme)
-// =============================================================================
-
-test.describe('Lit Baseline Screenshots', () => {
-  // These capture Lit baselines for reference
-  // Use --update-snapshots to regenerate after intentional Lit changes
-  for (const fixture of fixturesToTest) {
-    test(`Lit baseline: ${fixture}`, async ({ page }) => {
-      const url = buildUrl(LIT_BASE_URL, fixture, 'lit');
-      await page.goto(url);
-      await page.waitForSelector('.fixture-container', { state: 'visible' });
-      await page.waitForTimeout(500);
-
-      const container = page.locator('.fixture-container');
-      await expect(container).toHaveScreenshot(`lit-${fixture}.png`, {
-        maxDiffPixels: 0, // Lit baselines should be stable
-      });
-    });
-  }
-});
-
-// =============================================================================
-// React Screenshots (for debugging)
-// =============================================================================
-
-test.describe('React Screenshots (for debugging)', () => {
-  // These capture React screenshots for visual inspection
-  for (const fixture of fixturesToTest) {
-    test(`React: ${fixture}`, async ({ page }) => {
-      const url = buildUrl(REACT_BASE_URL, fixture, 'lit');
-      await page.goto(url);
-      await page.waitForSelector('.fixture-container', { state: 'visible' });
-      await page.waitForTimeout(500);
-
-      const container = page.locator('.fixture-container');
-      await expect(container).toHaveScreenshot(`react-${fixture}.png`, {
-        maxDiffPixels: 50, // Allow small changes in React during development
-      });
     });
   }
 });

@@ -47,10 +47,17 @@ import { config as restaurantConfig } from "./configs/restaurant.js";
 import { config as contactsConfig } from "./configs/contacts.js";
 import { styleMap } from "lit/directives/style-map.js";
 
+// Mock mode support
+import { getMockResponse } from "./mock/restaurantMessages.js";
+
 const configs: Record<string, AppConfig> = {
   restaurant: restaurantConfig,
   contacts: contactsConfig,
 };
+
+// Check if mock mode is enabled via URL parameter
+const urlParams = new URLSearchParams(window.location.search);
+const isMockMode = urlParams.get("mock") === "true";
 
 @customElement("a2ui-shell")
 export class A2UILayoutEditor extends SignalWatcher(LitElement) {
@@ -263,6 +270,22 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
           rotate: 360deg;
         }
       }
+
+      .mock-badge {
+        position: fixed;
+        top: var(--bb-grid-size-3);
+        left: var(--bb-grid-size-4);
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        z-index: 1000;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+      }
     `,
   ];
 
@@ -305,6 +328,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
 
   render() {
     return [
+      isMockMode ? html`<div class="mock-badge">Mock Mode</div>` : nothing,
       this.#renderThemeToggle(),
       this.#maybeRenderForm(),
       this.#maybeRenderData(),
@@ -402,13 +426,23 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
   }
 
   async #sendMessage(
-    message: v0_8.Types.A2UIClientEventMessage
+    message: v0_8.Types.A2UIClientEventMessage | string
   ): Promise<v0_8.Types.ServerToClientMessage[]> {
     try {
       this.#requesting = true;
       this.#startLoadingAnimation();
-      const response = this.#a2uiClient.send(message);
-      await response;
+
+      let response: v0_8.Types.ServerToClientMessage[];
+
+      if (isMockMode) {
+        // Simulate network delay in mock mode
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        response = getMockResponse(message);
+        console.log("Mock response:", response);
+      } else {
+        response = await this.#a2uiClient.send(message);
+      }
+
       this.#requesting = false;
       this.#stopLoadingAnimation();
 

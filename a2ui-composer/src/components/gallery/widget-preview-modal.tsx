@@ -5,15 +5,18 @@ import { X, RotateCcw, ExternalLink } from 'lucide-react';
 import { Widget } from '@/types/widget';
 import { Button } from '@/components/ui/button';
 import { A2UIViewer } from '@a2ui/react';
+import { A2UIViewer as LitViewer } from '@copilotkit/a2ui-renderer';
 import Editor from '@monaco-editor/react';
 
 interface WidgetPreviewModalProps {
   widget: Widget;
+  renderer?: 'react' | 'lit';
   onClose: () => void;
   onOpenInEditor?: () => void;
 }
 
-export function WidgetPreviewModal({ widget, onClose, onOpenInEditor }: WidgetPreviewModalProps) {
+export function WidgetPreviewModal({ widget, renderer = 'react', onClose, onOpenInEditor }: WidgetPreviewModalProps) {
+  const Viewer = renderer === 'lit' ? LitViewer : A2UIViewer;
   // Get the actual A2UI JSON
   const componentsJson = JSON.stringify(widget.components, null, 2);
   const dataJson = JSON.stringify(widget.dataStates?.[0]?.data ?? {}, null, 2);
@@ -65,7 +68,7 @@ export function WidgetPreviewModal({ widget, onClose, onOpenInEditor }: WidgetPr
 
           {/* Preview area */}
           <div className="flex flex-1 items-center justify-center p-8 bg-muted/30">
-            <A2UIViewer
+            <Viewer
               root={widget.root}
               components={widget.components}
               data={previewData}

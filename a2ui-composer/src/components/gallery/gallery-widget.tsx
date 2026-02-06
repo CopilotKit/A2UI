@@ -2,14 +2,17 @@
 
 import { Widget } from '@/types/widget';
 import { A2UIViewer } from '@a2ui/react';
+import { A2UIViewer as LitViewer } from '@copilotkit/a2ui-renderer';
 
 interface GalleryWidgetProps {
   widget: Widget;
   height?: number;
+  renderer?: 'react' | 'lit';
   onClick?: () => void;
 }
 
-export function GalleryWidget({ widget, height = 200, onClick }: GalleryWidgetProps) {
+export function GalleryWidget({ widget, height = 200, renderer = 'react', onClick }: GalleryWidgetProps) {
+  const Viewer = renderer === 'lit' ? LitViewer : A2UIViewer;
   // Get the first data state's data for preview
   const previewData = widget.dataStates?.[0]?.data ?? {};
 
@@ -30,7 +33,7 @@ export function GalleryWidget({ widget, height = 200, onClick }: GalleryWidgetPr
           className="pointer-events-none flex-1 flex items-center justify-center"
           style={{ '--a2ui-card-bg': 'transparent' } as React.CSSProperties}
         >
-          <A2UIViewer
+          <Viewer
             root={widget.root}
             components={widget.components}
             data={previewData}

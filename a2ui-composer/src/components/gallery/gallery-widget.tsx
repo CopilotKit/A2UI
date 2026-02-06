@@ -3,6 +3,7 @@
 import { Widget } from '@/types/widget';
 import { A2UIViewer } from '@a2ui/react';
 import { A2UIViewer as LitViewer } from '@copilotkit/a2ui-renderer';
+import { copilotKitTheme } from '@/styles/copilotkit-theme';
 
 interface GalleryWidgetProps {
   widget: Widget;
@@ -37,6 +38,7 @@ export function GalleryWidget({ widget, height = 200, renderer = 'react', onClic
             root={widget.root}
             components={widget.components}
             data={previewData}
+            theme={copilotKitTheme}
           />
         </div>
       </div>

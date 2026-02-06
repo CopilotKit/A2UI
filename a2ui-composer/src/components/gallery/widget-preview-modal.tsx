@@ -6,6 +6,7 @@ import { Widget } from '@/types/widget';
 import { Button } from '@/components/ui/button';
 import { A2UIViewer } from '@a2ui/react';
 import { A2UIViewer as LitViewer } from '@copilotkit/a2ui-renderer';
+import { copilotKitTheme } from '@/styles/copilotkit-theme';
 import Editor from '@monaco-editor/react';
 
 interface WidgetPreviewModalProps {
@@ -72,6 +73,7 @@ export function WidgetPreviewModal({ widget, renderer = 'react', onClose, onOpen
               root={widget.root}
               components={widget.components}
               data={previewData}
+              theme={copilotKitTheme}
             />
           </div>
         </div>

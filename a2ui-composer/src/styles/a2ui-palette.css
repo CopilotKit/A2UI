@@ -1,5 +1,5 @@
 /*
- * Default A2UI color palette variables.
+ * Default A2UI surface styles.
  *
  * These CSS custom properties are required by the A2UI structural utility
  * classes (color-bgc-*, color-c-*, color-bc-*). Normally they are generated
@@ -11,6 +11,9 @@
  */
 
 .a2ui-surface {
+  /* Font — matches the CopilotKit wrapper's globalStyles */
+  font-family: "Google Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
   /* Neutral */
   --n-100: #ffffff;
   --n-99: #fcfcfc;

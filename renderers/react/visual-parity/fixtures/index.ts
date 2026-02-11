@@ -23,6 +23,9 @@ import {
   sliderFixtures,
   dateTimeInputFixtures,
   multipleChoiceFixtures,
+  videoFixtures,
+  audioPlayerFixtures,
+  modalFixtures,
 } from './components';
 
 import { nestedFixtures } from './nested';
@@ -61,8 +64,14 @@ export const allFixtures = {
   ...sliderFixtures,
   // DateTimeInput component (3 fixtures)
   ...dateTimeInputFixtures,
-  // MultipleChoice component (4 fixtures)
+  // MultipleChoice component (1 fixture)
   ...multipleChoiceFixtures,
+  // Video component (2 fixtures)
+  ...videoFixtures,
+  // AudioPlayer component (3 fixtures)
+  ...audioPlayerFixtures,
+  // Modal component (2 fixtures)
+  ...modalFixtures,
   // Nested layouts (7 fixtures)
   ...nestedFixtures,
 } as const;

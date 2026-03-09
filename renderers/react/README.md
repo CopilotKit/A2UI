@@ -1,21 +1,22 @@
 # @a2ui/react
 
-React renderer for A2UI (Agent-to-User Interface) - enables AI agents to generate rich, interactive user interfaces through declarative JSON.
+React renderer for A2UI (Agent-to-User Interface) - enables AI agents to
+generate rich, interactive user interfaces through declarative JSON.
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Architecture](#architecture)
-- [Components](#components)
-- [Hooks](#hooks)
-- [Theme System](#theme-system)
-- [Component Registry](#component-registry)
-- [Styles](#styles)
-- [Development](#development)
-- [Visual Parity Testing](#visual-parity-testing)
-- [API Reference](#api-reference)
-- [Contributing](#contributing)
+-   [Installation](#installation)
+-   [Quick Start](#quick-start)
+-   [Architecture](#architecture)
+-   [Components](#components)
+-   [Hooks](#hooks)
+-   [Theme System](#theme-system)
+-   [Component Registry](#component-registry)
+-   [Styles](#styles)
+-   [Development](#development)
+-   [Visual Parity Testing](#visual-parity-testing)
+-   [API Reference](#api-reference)
+-   [Contributing](#contributing)
 
 ## Installation
 
@@ -23,9 +24,7 @@ React renderer for A2UI (Agent-to-User Interface) - enables AI agents to generat
 npm install @a2ui/react
 ```
 
-**Peer Dependencies:**
-- React 18.x or 19.x
-- React DOM 18.x or 19.x
+**Peer Dependencies:** - React 18.x or 19.x - React DOM 18.x or 19.x
 
 ## Quick Start
 
@@ -113,10 +112,15 @@ The React renderer uses a two-context architecture for optimal performance:
 
 **Why two contexts?**
 
-- **A2UIActionsContext**: Contains stable action callbacks that never change reference. Components using `useA2UIActions()` won't re-render when data changes.
-- **A2UIStateContext**: Contains a version counter that increments on state changes. Only components that need to react to data changes subscribe to this.
+-   **A2UIActionsContext**: Contains stable action callbacks that never change
+    reference. Components using `useA2UIActions()` won't re-render when data
+    changes.
+-   **A2UIStateContext**: Contains a version counter that increments on state
+    changes. Only components that need to react to data changes subscribe to
+    this.
 
-This separation prevents unnecessary re-renders and provides fine-grained control over component updates.
+This separation prevents unnecessary re-renders and provides fine-grained
+control over component updates.
 
 ### Data Flow
 
@@ -155,40 +159,41 @@ All components are wrapped with `React.memo()` for performance optimization.
 
 ### Content Components
 
-| Component | Description |
-|-----------|-------------|
-| `Text` | Renders text with markdown support |
-| `Image` | Displays images with various usage hints |
-| `Icon` | Renders Material Symbols icons |
-| `Divider` | Horizontal or vertical divider |
-| `Video` | Video player |
-| `AudioPlayer` | Audio player |
+Component     | Description
+------------- | ----------------------------------------
+`Text`        | Renders text with markdown support
+`Image`       | Displays images with various usage hints
+`Icon`        | Renders Material Symbols icons
+`Divider`     | Horizontal or vertical divider
+`Video`       | Video player
+`AudioPlayer` | Audio player
 
 ### Layout Components
 
-| Component | Description |
-|-----------|-------------|
-| `Column` | Vertical flex container |
-| `Row` | Horizontal flex container |
-| `Card` | Card container with styling |
-| `List` | List container (vertical/horizontal) |
-| `Tabs` | Tabbed interface |
-| `Modal` | Modal dialog |
+Component | Description
+--------- | ------------------------------------
+`Column`  | Vertical flex container
+`Row`     | Horizontal flex container
+`Card`    | Card container with styling
+`List`    | List container (vertical/horizontal)
+`Tabs`    | Tabbed interface
+`Modal`   | Modal dialog
 
 ### Interactive Components
 
-| Component | Description |
-|-----------|-------------|
-| `Button` | Clickable button with action dispatch |
-| `TextField` | Text input (single/multiline) |
-| `CheckBox` | Checkbox input |
-| `Slider` | Range slider |
-| `DateTimeInput` | Date/time picker |
-| `MultipleChoice` | Radio/checkbox group |
+Component        | Description
+---------------- | -------------------------------------
+`Button`         | Clickable button with action dispatch
+`TextField`      | Text input (single/multiline)
+`CheckBox`       | Checkbox input
+`Slider`         | Range slider
+`DateTimeInput`  | Date/time picker
+`MultipleChoice` | Radio/checkbox group
 
 ### Component Structure
 
-Each component mirrors the Lit renderer's Shadow DOM structure for visual parity:
+Each component mirrors the Lit renderer's Shadow DOM structure for visual
+parity:
 
 ```tsx
 // React component structure
@@ -271,7 +276,8 @@ function MyComponent() {
 
 ### useA2UIComponent()
 
-Internal hook for component implementations. Automatically subscribes to state changes so components with path bindings re-render when data updates.
+Internal hook for component implementations. Automatically subscribes to state
+changes so components with path bindings re-render when data updates.
 
 ```tsx
 import { useA2UIComponent } from '@a2ui/react';
@@ -293,7 +299,10 @@ function CustomComponent({ node, surfaceId }) {
 }
 ```
 
-**Path Binding Reactivity**: When a component uses `setValue()` to update the data model, all components reading from the same path via `resolveString()`, `resolveNumber()`, or `resolveBoolean()` will automatically re-render with the new value.
+**Path Binding Reactivity**: When a component uses `setValue()` to update the
+data model, all components reading from the same path via `resolveString()`,
+`resolveNumber()`, or `resolveBoolean()` will automatically re-render with the
+new value.
 
 ## Theme System
 
@@ -398,7 +407,8 @@ registry.register('HeavyChart', {
 });
 ```
 
-> **Note:** Small, commonly-used components (like Tabs, Modal) should be statically imported to avoid Vite cache issues during development.
+> **Note:** Small, commonly-used components (like Tabs, Modal) should be
+> statically imported to avoid Vite cache issues during development.
 
 ## Styles
 
@@ -417,8 +427,10 @@ injectStyles();
 
 The styles module provides:
 
-- **structuralStyles**: Utility classes from Lit renderer (layout-*, typography-*, color-*)
-- **componentSpecificStyles**: CSS that replicates Lit's Shadow DOM scoped styles
+-   **structuralStyles**: Utility classes from Lit renderer (layout-*,
+    typography-*, color-*)
+-   **componentSpecificStyles**: CSS that replicates Lit's Shadow DOM scoped
+    styles
 
 ```typescript
 import { structuralStyles, componentSpecificStyles } from '@a2ui/react/styles';
@@ -480,47 +492,37 @@ npm run lint
 
 ### Unit Tests
 
-Uses [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/).
+Uses [Vitest](https://vitest.dev/) +
+[React Testing Library](https://testing-library.com/docs/react-testing-library/intro/).
 
 ```bash
 npm test              # Run once
 npm run test:watch    # Watch mode
 ```
 
-**Structure:**
-```
-tests/
-├── setup.ts          # Initializes component catalog
-├── helpers.tsx       # TestWrapper, TestRenderer, message creators
-└── components/       # Component tests (*.test.tsx)
-```
+**Structure:** `tests/ ├── setup.ts # Initializes component catalog ├──
+helpers.tsx # TestWrapper, TestRenderer, message creators └── components/ #
+Component tests (*.test.tsx)`
 
-**Example:**
-```tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import { TestWrapper, TestRenderer, createSimpleMessages } from '../helpers';
+**Example:** ```tsx import { render, screen, fireEvent } from
+'@testing-library/react'; import { TestWrapper, TestRenderer,
+createSimpleMessages } from '../helpers';
 
-it('should dispatch action on click', () => {
-  const onAction = vi.fn();
-  const messages = createSimpleMessages('btn-1', 'Button', {
-    child: 'text-1',
-    action: { name: 'submit' },
-  });
+it('should dispatch action on click', () => { const onAction = vi.fn(); const
+messages = createSimpleMessages('btn-1', 'Button', { child: 'text-1', action: {
+name: 'submit' }, });
 
-  render(
-    <TestWrapper onAction={onAction}>
-      <TestRenderer messages={messages} />
-    </TestWrapper>
-  );
+render( <TestWrapper onAction={onAction}> <TestRenderer messages={messages} />
+</TestWrapper> );
 
-  fireEvent.click(screen.getByRole('button'));
-  expect(onAction).toHaveBeenCalled();
-});
-```
+fireEvent.click(screen.getByRole('button'));
+expect(onAction).toHaveBeenCalled(); }); ```
 
 ## Visual Parity Testing
 
-The React renderer maintains visual parity with the Lit renderer (reference implementation). A comprehensive test suite compares pixel-perfect screenshots between both renderers.
+The React renderer maintains visual parity with the Lit renderer (reference
+implementation). A comprehensive test suite compares pixel-perfect screenshots
+between both renderers.
 
 ### Running Visual Parity Tests
 
@@ -550,14 +552,16 @@ npm run dev
 
 ### Documentation
 
-- **[visual-parity/README.md](./visual-parity/README.md)** - Test suite usage and fixture creation
-- **[visual-parity/PARITY.md](./visual-parity/PARITY.md)** - CSS transformation approach and implementation status
+-   **[visual-parity/README.md](./visual-parity/README.md)** - Test suite usage
+    and fixture creation
+-   **[visual-parity/PARITY.md](./visual-parity/PARITY.md)** - CSS
+    transformation approach and implementation status
 
 ### Key Concepts
 
-1. **Structural Mirroring**: React components mirror Lit's Shadow DOM structure
-2. **CSS Selector Transformation**: `:host` → `.a2ui-surface .a2ui-{component}`
-3. **Specificity Matching**: Uses `:where()` to match Lit's low specificity
+1.  **Structural Mirroring**: React components mirror Lit's Shadow DOM structure
+2.  **CSS Selector Transformation**: `:host` → `.a2ui-surface .a2ui-{component}`
+3.  **Specificity Matching**: Uses `:where()` to match Lit's low specificity
 
 ## API Reference
 
@@ -611,15 +615,16 @@ import type {
 
 ### Code Style
 
-- All components use `React.memo()` for performance
-- Use the two-context pattern for state management
-- Follow the existing component structure for visual parity
+-   All components use `React.memo()` for performance
+-   Use the two-context pattern for state management
+-   Follow the existing component structure for visual parity
 
 ### Adding a New Component
 
-1. Create component in `src/components/{category}/{ComponentName}.tsx`
-2. Follow wrapper div + section structure (see [Component Structure](#component-structure))
-3. Register in `src/registry/defaultCatalog.ts`
-4. Export from `src/index.ts`
-5. Add unit tests in `tests/components/{ComponentName}.test.tsx`
-6. Add visual parity fixtures in `visual-parity/fixtures/components/`
+1.  Create component in `src/components/{category}/{ComponentName}.tsx`
+2.  Follow wrapper div + section structure (see
+    [Component Structure](#component-structure))
+3.  Register in `src/registry/defaultCatalog.ts`
+4.  Export from `src/index.ts`
+5.  Add unit tests in `tests/components/{ComponentName}.test.tsx`
+6.  Add visual parity fixtures in `visual-parity/fixtures/components/`

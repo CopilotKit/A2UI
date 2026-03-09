@@ -27,7 +27,9 @@ export default tseslint.config(
   // TypeScript recommended rules
   ...tseslint.configs.recommended,
 
-  // Google
+  // Google TypeScript style guide plugin.
+  // See: https://github.com/google/gts
+  // And: https://google.github.io/styleguide/tsguide.html
   ...require('gts'),
 
   // React configuration

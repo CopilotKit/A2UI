@@ -121,7 +121,7 @@ export function A2UIProvider({onAction, theme, children}: A2UIProviderProps) {
 
       dispatch: (message: Types.A2UIClientEventMessage) => {
         if (onActionRef.current) {
-          onActionRef.current(message);
+          void onActionRef.current(message);
         }
       },
 

@@ -19,6 +19,7 @@ import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import prettierConfig from 'eslint-config-prettier';
+import gts from 'gts';
 
 export default tseslint.config(
   // Base JS recommended rules
@@ -30,7 +31,7 @@ export default tseslint.config(
   // Google TypeScript style guide plugin.
   // See: https://github.com/google/gts
   // And: https://google.github.io/styleguide/tsguide.html
-  ...require('gts'),
+  ...gts,
 
   // React configuration
   {
@@ -83,6 +84,7 @@ export default tseslint.config(
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'prefer-const': 'error',
       'no-var': 'error',
+      'prefer-arrow-callback': 'off',
     },
   },
 
@@ -100,6 +102,6 @@ export default tseslint.config(
 
   // Ignored paths
   {
-    ignores: ['dist/**', 'node_modules/**', 'visual-parity/**'],
+    ignores: ['dist/**', 'node_modules/**', 'visual-parity/**', '**/*.d.ts'],
   }
 );

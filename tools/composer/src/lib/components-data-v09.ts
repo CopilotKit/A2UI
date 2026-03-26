@@ -74,7 +74,7 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             name: 'justify',
             description: 'Horizontal distribution of children along the row.',
             type: 'enum',
-            values: ['start', 'center', 'end', 'spaceBetween', 'spaceAround', 'spaceEvenly'],
+            values: ['start', 'center', 'end', 'spaceBetween', 'spaceAround', 'spaceEvenly', 'stretch'],
             default: 'start',
           },
         ],
@@ -136,7 +136,7 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             name: 'justify',
             description: 'Vertical distribution of children along the column.',
             type: 'enum',
-            values: ['start', 'center', 'end', 'spaceBetween', 'spaceAround', 'spaceEvenly'],
+            values: ['start', 'center', 'end', 'spaceBetween', 'spaceAround', 'spaceEvenly', 'stretch'],
             default: 'start',
           },
         ],
@@ -197,6 +197,13 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             type: 'enum',
             values: ['vertical', 'horizontal'],
             default: 'vertical',
+          },
+          {
+            name: 'align',
+            description: 'Cross-axis alignment of list items.',
+            type: 'enum',
+            values: ['start', 'center', 'end', 'stretch'],
+            default: 'stretch',
           },
         ],
         preview: {
@@ -366,7 +373,7 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             name: 'fit',
             description: 'CSS object-fit value controlling how the image fills its container.',
             type: 'enum',
-            values: ['contain', 'cover', 'fill', 'none', 'scale-down'],
+            values: ['contain', 'cover', 'fill', 'none', 'scaleDown'],
             default: 'fill',
           },
         ],
@@ -510,13 +517,13 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
         usage: `{
   "id": "textfield-1",
   "component": "TextField",
-  "text": { "path": "/user/name" },
+  "value": { "path": "/user/name" },
   "label": "Your name",
   "variant": "shortText"
 }`,
         props: [
           {
-            name: 'text',
+            name: 'value',
             description: 'The current input value. Typically bound to a data path for two-way binding.',
             type: 'string | { path: string }',
           },
@@ -529,7 +536,8 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             name: 'variant',
             description: 'The variant of input field, affecting keyboard and validation behavior.',
             type: 'enum',
-            values: ['shortText', 'number', 'date', 'longText'],
+            values: ['shortText', 'longText', 'number', 'obscured'],
+            default: 'shortText',
           },
           {
             name: 'validationRegexp',
@@ -543,7 +551,7 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             {
               id: 'textfield-1',
               component: 'TextField',
-              text: { path: '/name' },
+              value: { path: '/name' },
               label: 'Enter your name',
               variant: 'shortText',
             } as A2UIComponent,
@@ -602,9 +610,15 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             type: 'number | { path: string }',
           },
           {
+            name: 'label',
+            description: 'The label for the slider.',
+            type: 'string',
+          },
+          {
             name: 'min',
             description: 'Minimum allowed value.',
             type: 'number',
+            default: '0',
           },
           {
             name: 'max',
@@ -644,6 +658,11 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             type: 'string | { path: string }',
           },
           {
+            name: 'label',
+            description: 'The text label for the input field.',
+            type: 'string',
+          },
+          {
             name: 'enableDate',
             description: 'Whether to show the date picker.',
             type: 'boolean',
@@ -658,6 +677,16 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
           {
             name: 'outputFormat',
             description: 'Format string for the output value (e.g., "YYYY-MM-DD").',
+            type: 'string',
+          },
+          {
+            name: 'min',
+            description: 'Minimum allowed date/time value (ISO 8601 format).',
+            type: 'string',
+          },
+          {
+            name: 'max',
+            description: 'Maximum allowed date/time value (ISO 8601 format).',
             type: 'string',
           },
         ],
@@ -682,7 +711,7 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
   "id": "choice-1",
   "component": "ChoicePicker",
   "options": { "path": "/form/country" },
-  "variant": "radio",
+  "variant": "mutuallyExclusive",
   "choices": [
     { "label": "United States", "value": "US" },
     { "label": "Canada", "value": "CA" },
@@ -705,7 +734,20 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             name: 'variant',
             description: 'Visual variant for the choice picker.',
             type: 'enum',
-            values: ['radio', 'checkbox', 'dropdown'],
+            values: ['multipleSelection', 'mutuallyExclusive'],
+          },
+          {
+            name: 'displayStyle',
+            description: 'Visual display style for the choices.',
+            type: 'enum',
+            values: ['checkbox', 'chips'],
+            default: 'checkbox',
+          },
+          {
+            name: 'filterable',
+            description: 'Whether choices can be filtered by typing.',
+            type: 'boolean',
+            default: 'false',
           },
           {
             name: 'maxAllowedSelections',
@@ -747,7 +789,7 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             name: 'variant',
             description: 'Visual variant for the button.',
             type: 'enum',
-            values: ['primary', 'borderless'],
+            values: ['default', 'primary', 'borderless'],
           },
           {
             name: 'action',
@@ -931,8 +973,7 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
         usage: `{
   "id": "divider-1",
   "component": "Divider",
-  "axis": "horizontal",
-  "thickness": 1
+  "axis": "horizontal"
 }`,
         props: [
           {
@@ -940,16 +981,6 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
             description: 'Orientation of the divider line.',
             type: 'enum',
             values: ['horizontal', 'vertical'],
-          },
-          {
-            name: 'color',
-            description: 'Color of the divider (hex code or semantic name).',
-            type: 'string',
-          },
-          {
-            name: 'thickness',
-            description: 'Thickness of the divider line in pixels.',
-            type: 'number',
           },
         ],
         preview: {
@@ -970,7 +1001,6 @@ export const COMPONENTS_DATA_V09: ComponentCategory[] = [
               id: 'divider-1',
               component: 'Divider',
               axis: 'horizontal',
-              thickness: 1,
             } as A2UIComponent,
             {
               id: 'text-below',

@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "sync-gallery": "node scripts/sync-gallery.mjs",
+    "predev": "node scripts/sync-gallery.mjs",
     "dev": "next dev --turbopack --port 3001",
+    "prebuild": "node scripts/sync-gallery.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

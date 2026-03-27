@@ -49,3 +49,7 @@ __pycache__
 
 .playwright-mcp
 RENDERER_ISSUES.md
+
+# Auto-generated gallery data (from scripts/sync-gallery.mjs)
+src/data/gallery/v08/generated.ts
+src/data/gallery/v09/generated.ts

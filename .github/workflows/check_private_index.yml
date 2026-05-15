@@ -18,12 +18,17 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   check-for-private-index:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
       - name: Search for private index URL in uv.lock files
         run: |
           FORBIDDEN_URL="us-python.pkg.dev"
